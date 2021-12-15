@@ -67,7 +67,7 @@ void update_boolean_model_inputs( Cell* pCell, Phenotype& phenotype, double dt )
 void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt)
 {	
     static int nTNF_external = microenvironment.find_density_index( "tnf" );
-    static int nTNF_export_rate = pCell->custom_data.find_variable_index( "TFN_net_production_rate" );
+    static int nTNF_export_rate = pCell->custom_data.find_variable_index( "TNF_net_production_rate" );
 
     static int apoptosis_model_index = phenotype.death.find_death_model_index( "Apoptosis" );
     static int necrosis_model_index = phenotype.death.find_death_model_index( "Necrosis" );
@@ -103,7 +103,7 @@ void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt
         pCell->phenotype.cycle.advance_cycle(pCell, phenotype, dt); 
     }
 
-    // // If NFkB node is active produce some TNF
+    // If NFkB node is active produce some TNF
 	if ( NFkB )	
     { 
         phenotype.secretion.net_export_rates[nTNF_external] = pCell->custom_data[nTNF_export_rate]; 
