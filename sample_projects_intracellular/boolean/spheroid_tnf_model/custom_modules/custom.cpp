@@ -70,53 +70,21 @@
 // declare cell definitions here
 void create_cell_types(void)
 {
-	// use the same random seed so that future experiments have the
-	// same initial histogram of oncoprotein, even if threading means
-	// that future division and other events are still not identical
-	// for all runs
 
-	SeedRandom(parameters.ints("random_seed")); // or specify a seed here
+	SeedRandom(parameters.ints("random_seed"));
 
-	// housekeeping
-	std::cout << cell_defaults.name << std::endl;
+	initialize_default_cell_definition();
 
-	cell_defaults.functions.volume_update_function = standard_volume_update_function;
-	cell_defaults.functions.update_velocity = standard_update_cell_velocity;
-	// no migration_bias needed
-	cell_defaults.functions.update_migration_bias = NULL;
-	// No custom rule needed
-	cell_defaults.functions.custom_cell_rule = NULL;
+	/*  This parses the cell definitions in the XML config file.  */
 
-	/*
-		update_pc_parameters_O2_based flag controls how is the update_phenotypes
-	 	if update_pc_parameters_O2_based is set to true	the model will call
-		tumor_cell_phenotype_with_signaling which just call two functions 
-		sequentially: 1) update_cell_and_death_parameters_O2_based and 
-		2) tnf_bm_interface_main; the former updates growth and death rates 
-		based on oxygen while the second is the	function that update the boolean model. 
-		If the flag is false then only the tnf_bm_interface_main is invoked
-	*/
-	if (parameters.bools("update_pc_parameters_O2_based"))
-	{
-		cell_defaults.functions.update_phenotype = tumor_cell_phenotype_with_signaling;
-	}
-	else
-	{
-		cell_defaults.functions.update_phenotype = tnf_bm_interface_main;
-	}
-
-	cell_defaults.functions.add_cell_basement_membrane_interactions = NULL;
-	cell_defaults.functions.calculate_distance_to_membrane = NULL;
-	cell_defaults.functions.set_orientation = NULL;
-
-	/*
-	   This parses the cell definitions in the XML config file. 
-	*/
 	initialize_cell_definitions_from_pugixml();
 
-	// initialize tnf
-	// the following should be changed
-	//commented today
+	if (parameters.bools("update_pc_parameters_O2_based"))
+	{ cell_defaults.functions.update_phenotype = tumor_cell_phenotype_with_signaling; }
+	else
+	{ cell_defaults.functions.update_phenotype = tnf_bm_interface_main; }
+
+	/*  This initializes the the TNF receptor model	*/
 	tnf_receptor_model_setup();
 	tnf_boolean_model_interface_setup();
 	submodel_registry.display(std::cout);
@@ -134,14 +102,7 @@ void create_cell_types(void)
 
 void setup_microenvironment(void)
 {
-	// make sure to override and go back to 2D
-	if (default_microenvironment_options.simulate_2D == true)
-	{
-		std::cout << "Warning: overriding XML config option and setting to 3D!" << std::endl;
-		default_microenvironment_options.simulate_2D = false;
-	}
 
-	// initialize BioFVM
 	initialize_microenvironment();
 
 	return;
@@ -150,20 +111,71 @@ void setup_microenvironment(void)
 void setup_tissue(void)
 {
 
-	std::vector<init_record> cells = read_init_file(parameters.strings("init_cells_filename"), ';', true);
+	/*
+	double cell_radius = cell_defaults.phenotype.geometry.radius; 
+	double cell_spacing = 0.95 * 2.0 * cell_radius; 
+	double tumor_radius = parameters.doubles("tumor_radius");
+	std::vector<std::vector<double>> positions = create_cell_disc_positions(cell_radius,tumor_radius); 
+	*/
 
-	for (int i = 0; i < cells.size(); i++)
+	double cell_radius = cell_defaults.phenotype.geometry.radius; 
+	double tumor_radius =  parameters.doubles("tumor_radius");
+
+	std::vector<std::vector<double>> positions;
+	if (default_microenvironment_options.simulate_2D == true)
+		positions = create_cell_disc_positions(cell_radius,tumor_radius); 
+	else
+		positions = create_cell_sphere_positions(cell_radius,tumor_radius);
+
+	// std::string csv_fname = parameters.strings("init_cells_filename");
+	// std::vector<std::vector<double>> positions = read_cells_positions(csv_fname, '\t', true);
+
+	Cell* pCell = NULL; 
+	for (int i = 0; i < positions.size(); i++)
 	{
-		Cell *pCell;
-		float x = cells[i].x;
-		float y = cells[i].y;
-		float z = cells[i].z;
-		double elapsed_time = cells[i].elapsed_time;
-		
 		pCell = create_cell(get_cell_definition("default"));
-		pCell->phenotype.cycle.data.elapsed_time_in_phase = elapsed_time;
-		pCell->assign_position(x, y, z);
+		pCell->assign_position(positions[i]);
 
+		// next_physiboss_run
+	        MaBoSSIntracellular* physiboss = static_cast<MaBoSSIntracellular*> (pCell->phenotype.intracellular);
+        	physiboss->next_physiboss_run += NormalRandom(0, 5);
+
+		static int idx_bind_rate = pCell->custom_data.find_variable_index( "TNFR_binding_rate" );
+		static float mean_bind_rate = pCell->custom_data[idx_bind_rate];
+		static float std_bind_rate = parameters.doubles("TNFR_binding_rate_std");
+		static float min_bind_rate = parameters.doubles("TNFR_binding_rate_min");
+		static float max_bind_rate = parameters.doubles("TNFR_binding_rate_max");
+		
+		pCell->custom_data[idx_bind_rate] = NormalRandom(mean_bind_rate, std_bind_rate);
+		if (pCell->custom_data[idx_bind_rate] < min_bind_rate)
+		{ pCell->custom_data[idx_bind_rate] = min_bind_rate; }
+		if (pCell->custom_data[idx_bind_rate] > max_bind_rate)
+		{ pCell->custom_data[idx_bind_rate] = max_bind_rate; }
+
+		static int idx_endo_rate = pCell->custom_data.find_variable_index( "TNFR_endocytosis_rate" );
+		static float mean_endo_rate = pCell->custom_data[idx_endo_rate];
+		static float std_endo_rate = parameters.doubles("TNFR_endocytosis_rate_std");
+		static float min_endo_rate = parameters.doubles("TNFR_endocytosis_rate_min");
+		static float max_endo_rate = parameters.doubles("TNFR_endocytosis_rate_max");
+		
+		pCell->custom_data[idx_endo_rate] = NormalRandom(mean_endo_rate, std_endo_rate);
+		if (pCell->custom_data[idx_endo_rate] < min_endo_rate)
+		{ pCell->custom_data[idx_endo_rate] = min_endo_rate; }
+		if (pCell->custom_data[idx_endo_rate] > max_endo_rate)
+		{ pCell->custom_data[idx_endo_rate] = max_endo_rate; }
+
+		static int idx_recycle_rate = pCell->custom_data.find_variable_index( "TNFR_recycling_rate" ); 
+		static float mean_recycle_rate = pCell->custom_data[idx_recycle_rate];
+		static float std_recycle_rate = parameters.doubles("TNFR_recycling_rate_std");
+		static float min_recycle_rate = parameters.doubles("TNFR_recycling_rate_min");
+		static float max_recycle_rate = parameters.doubles("TNFR_recycling_rate_max");
+
+		pCell->custom_data[idx_recycle_rate] = NormalRandom(mean_recycle_rate, std_recycle_rate);
+		if (pCell->custom_data[idx_recycle_rate] < min_recycle_rate)
+		{ pCell->custom_data[idx_recycle_rate] = min_recycle_rate; }
+		if (pCell->custom_data[idx_recycle_rate] > max_recycle_rate)
+		{ pCell->custom_data[idx_recycle_rate] = max_recycle_rate; }
+		
 		update_monitor_variables(pCell);
 	}
 
@@ -183,8 +195,157 @@ void tumor_cell_phenotype_with_signaling(Cell *pCell, Phenotype &phenotype, doub
 	tnf_bm_interface_main(pCell, phenotype, dt);
 
 }
-//different in physiboss_cell_lines
-// cell coloring function for ploting the svg files
+
+
+std::vector<std::vector<double>>  read_cells_positions(std::string filename, char delimiter, bool header)
+{
+	// File pointer
+	std::fstream fin;
+	std::vector<std::vector<double>> positions;
+
+	// Open an existing file
+	fin.open(filename, std::ios::in);
+
+	// Read the Data from the file
+	// as String Vector
+	std::vector<std::string> row;
+	std::string line, word;
+
+	if (header)
+	{ getline(fin, line); }
+
+	do
+	{
+		row.clear();
+
+		// read an entire row and
+		// store it in a string variable 'line'
+		getline(fin, line);
+
+		// used for breaking words
+		std::stringstream s(line);
+
+		while (getline(s, word, delimiter))
+		{ 
+			row.push_back(word); 
+		}
+
+		std::vector<double> tempPoint(3,0.0);
+		tempPoint[0]= std::stof(row[0]);
+		tempPoint[1]= std::stof(row[1]);
+		tempPoint[2]= std::stof(row[2]);
+
+		positions.push_back(tempPoint);
+	} while (!fin.eof());
+
+	return positions;
+}
+
+
+
+std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius, double sphere_radius)
+{
+	std::vector<std::vector<double>> cells;
+	int xc=0,yc=0,zc=0;
+	double x_spacing= cell_radius*sqrt(3);
+	double y_spacing= cell_radius*2;
+	double z_spacing= cell_radius*sqrt(3);
+	
+	std::vector<double> tempPoint(3,0.0);
+	// std::vector<double> cylinder_center(3,0.0);
+	
+	for(double z=-sphere_radius;z<sphere_radius;z+=z_spacing, zc++)
+	{
+		for(double x=-sphere_radius;x<sphere_radius;x+=x_spacing, xc++)
+		{
+			for(double y=-sphere_radius;y<sphere_radius;y+=y_spacing, yc++)
+			{
+				tempPoint[0]=x + (zc%2) * 0.5 * cell_radius;
+				tempPoint[1]=y + (xc%2) * cell_radius;
+				tempPoint[2]=z;
+				
+				if(sqrt(norm_squared(tempPoint))< sphere_radius)
+				{ cells.push_back(tempPoint); }
+			}
+			
+		}
+	}
+	return cells;
+	
+}
+
+
+std::vector<std::vector<double>> create_cell_disc_positions(double cell_radius, double disc_radius)
+{	 
+	double cell_spacing = 0.95 * 2.0 * cell_radius; 
+	
+	double x = 0.0; 
+	double y = 0.0; 
+	double x_outer = 0.0;
+
+	std::vector<std::vector<double>> positions;
+	std::vector<double> tempPoint(3,0.0);
+	
+	int n = 0; 
+	while( y < disc_radius )
+	{
+		x = 0.0; 
+		if( n % 2 == 1 )
+		{ x = 0.5 * cell_spacing; }
+		x_outer = sqrt( disc_radius*disc_radius - y*y ); 
+		
+		while( x < x_outer )
+		{
+			tempPoint[0]= x; tempPoint[1]= y;	tempPoint[2]= 0.0;
+			positions.push_back(tempPoint);			
+			if( fabs( y ) > 0.01 )
+			{
+				tempPoint[0]= x; tempPoint[1]= -y;	tempPoint[2]= 0.0;
+				positions.push_back(tempPoint);
+			}
+			if( fabs( x ) > 0.01 )
+			{ 
+				tempPoint[0]= -x; tempPoint[1]= y;	tempPoint[2]= 0.0;
+				positions.push_back(tempPoint);
+				if( fabs( y ) > 0.01 )
+				{
+					tempPoint[0]= -x; tempPoint[1]= -y;	tempPoint[2]= 0.0;
+					positions.push_back(tempPoint);
+				}
+			}
+			x += cell_spacing; 
+		}		
+		y += cell_spacing * sqrt(3.0)/2.0; 
+		n++; 
+	}
+	return positions;
+}
+
+
+
+
+void inject_density_sphere(int density_index, double concentration, double membrane_lenght)
+{
+	// Inject given concentration on the extremities only
+	#pragma omp parallel for
+	for (int n = 0; n < microenvironment.number_of_voxels(); n++)
+	{
+		auto current_voxel = microenvironment.voxels(n);
+		std::vector<double> cent = {current_voxel.center[0], current_voxel.center[1], current_voxel.center[2]};
+
+		if ((membrane_lenght - norm(cent)) <= 0)
+			microenvironment.density_vector(n)[density_index] = concentration;
+	}
+}
+
+
+void remove_density(int density_index)
+{
+	for (int n = 0; n < microenvironment.number_of_voxels(); n++)
+		microenvironment.density_vector(n)[density_index] = 0;
+}
+
+
 std::vector<std::string> my_coloring_function(Cell *pCell)
 {
 	// start with live coloring
@@ -211,164 +372,44 @@ std::vector<std::string> my_coloring_function(Cell *pCell)
 	return output;
 }
 
-// Funtion to read init files created with PhysiBoSSv2
-//unneaded
-std::vector<init_record> read_init_file(std::string filename, char delimiter, bool header)
-{
-	// File pointer
-	std::fstream fin;
-	std::vector<init_record> result;
 
-	// Open an existing file
-	fin.open(filename, std::ios::in);
-
-	// Read the Data from the file
-	// as String Vector
-	std::vector<std::string> row;
-	std::string line, word;
-
-	if (header)
-		getline(fin, line);
-
-	do
-	{
-		row.clear();
-
-		// read an entire row and
-		// store it in a string variable 'line'
-		getline(fin, line);
-
-		// used for breaking words
-		std::stringstream s(line);
-
-		// read every column data of a row and
-		// store it in a string variable, 'word'
-		while (getline(s, word, delimiter))
-		{
-
-			// add all the column data
-			// of a row to a vector
-			row.push_back(word);
-		}
-
-		init_record record;
-		record.x = std::stof(row[2]);
-		record.y = std::stof(row[3]);
-		record.z = std::stof(row[4]);
-		record.radius = std::stof(row[5]);
-		record.phase = std::stoi(row[13]);
-		record.elapsed_time = std::stod(row[14]);
-
-		result.push_back(record);
-	} while (!fin.eof());
-
-	return result;
-}
-
-// aded from example 
-void set_input_nodes(Cell* pCell) {}
-
-void from_nodes_to_cell(Cell* pCell, Phenotype& phenotype, double dt) {}
-void color_node(Cell* pCell){
-	std::string node_name = parameters.strings("node_to_visualize");
-	pCell->custom_data[node_name] = pCell->phenotype.intracellular->get_boolean_variable_value(node_name);
-}
-void inject_density_sphere(int density_index, double concentration, double membrane_lenght)
-{
-// Inject given concentration on the extremities only
-#pragma omp parallel for
-	for (int n = 0; n < microenvironment.number_of_voxels(); n++)
-	{
-		auto current_voxel = microenvironment.voxels(n);
-		std::vector<double> cent = {current_voxel.center[0], current_voxel.center[1], current_voxel.center[2]};
-
-		if ((membrane_lenght - norm(cent)) <= 0)
-			microenvironment.density_vector(n)[density_index] = concentration;
-	}
-}
-
-void remove_density(int density_index)
-{
-	for (int n = 0; n < microenvironment.number_of_voxels(); n++)
-		microenvironment.density_vector(n)[density_index] = 0;
-	std::cout << "Removal done" << std::endl;
-}
-
-// std::string cells_message_builder(std::vector<Cell*> all_cells, double timepoint){
-// 	// implement count different situation of cells
-// 	int alive_no,apoptotic_no,necrotic_no=0;
-// 	// int p_id = all_cells[i]->ID
-// 	static int TUMOR_TYPE=0;
-// 	std::string message;
-// 	for(int i=0;i<all_cells.size();i++)
-// 		{
-// 			if( all_cells[i]->phenotype.cycle.pCycle_Model )
-// 			{
-// 				int code= all_cells[i]->phenotype.cycle.current_phase().code;
-// 				if (code ==PhysiCell_constants::Ki67_positive_premitotic || code==PhysiCell_constants::Ki67_positive_postmitotic || code==PhysiCell_constants::Ki67_positive || code==PhysiCell_constants::Ki67_negative || code==PhysiCell_constants::live)
-// 					// _nameCore="LIVE";
-// 					alive_no +=1;
-// 				else if (code==PhysiCell_constants::apoptotic)
-// 					// _nameCore="APOP";
-// 					apoptotic_no +=1;
-// 				else if (code==PhysiCell_constants::necrotic_swelling || code==PhysiCell_constants::necrotic_lysed || code==PhysiCell_constants::necrotic)
-// 					// _nameCore="NEC";
-// 					necrotic_no += 1;
-// 				// else if (code==PhysiCell_constants::debris)
-// 				// 	_nameCore="DEBR";
-// 				// else
-// 				// 	_nameCore="MISC";
-// 			}
-// 			else if(all_cells[i]->type==TUMOR_TYPE)
-// 				// _nameCore="LIVE";
-// 				alive_no+=1;
-// 		}
-// 	// message = std::to_string(p_id) + ';' + std::to_string(timepoint) + ';' + std::to_string(alive_no) + ';' + std::to_string(apoptotic_no) + ';' + std::to_string(necrotic_no) + ';';
-// 	message = std::to_string(timepoint) + ';' + std::to_string(alive_no) + ';' + std::to_string(apoptotic_no) + ';' + std::to_string(necrotic_no) + ';';
-// 	return message;
-// }
 
 double total_live_cell_count()
 {
-	double out = 0.0;
+        double out = 0.0;
 
-	for (int i = 0; i < (*all_cells).size(); i++)
-	{
-		if ((*all_cells)[i]->phenotype.death.dead == false && (*all_cells)[i]->type == 0)
-		{
-			out += 1.0;
-		}
-	}
+        for( int i=0; i < (*all_cells).size() ; i++ )
+        {
+                if( (*all_cells)[i]->phenotype.death.dead == false && (*all_cells)[i]->type == 0 )
+                { out += 1.0; }
+        }
 
-	return out;
+        return out;
 }
 
 double total_dead_cell_count()
 {
-	double out = 0.0;
+        double out = 0.0;
 
-	for (int i = 0; i < (*all_cells).size(); i++)
-	{
-		if ((*all_cells)[i]->phenotype.death.dead == true && (*all_cells)[i]->phenotype.death.current_death_model_index == 0)
-		{
-			out += 1.0;
-		}
-	}
+        for( int i=0; i < (*all_cells).size() ; i++ )
+        {
+                if( (*all_cells)[i]->phenotype.death.dead == true && (*all_cells)[i]->phenotype.death.current_death_model_index == 0 )
+                { out += 1.0; }
+        }
 
-	return out;
+        return out;
 }
 
 double total_necrosis_cell_count()
 {
-	double out = 0.0;
+        double out = 0.0;
 
-	for (int i = 0; i < (*all_cells).size(); i++)
-	{
-		if ((*all_cells)[i]->phenotype.death.dead == true && (*all_cells)[i]->phenotype.death.current_death_model_index == 1)
-		{
-			out += 1.0;
-		}
-	}
+        for( int i=0; i < (*all_cells).size() ; i++ )
+        {
+                if( (*all_cells)[i]->phenotype.death.dead == true && (*all_cells)[i]->phenotype.death.current_death_model_index == 1 )
+                { out += 1.0; }
+        }
 
-	return out;
+        return out;
 }
+

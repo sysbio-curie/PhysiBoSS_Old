@@ -65,26 +65,16 @@
 ###############################################################################
 */
 
+#include <sstream>
+
 #include "../core/PhysiCell.h"
-#include "../modules/PhysiCell_standard_modules.h" 
+#include "../modules/PhysiCell_standard_modules.h"
+
 #include "./tnf_receptor_dynamics.h"
 #include "./tnf_boolean_model_interface.h"
 
-//change
-#include "../addons/PhysiBoSS/src/maboss_network.h"
-
 using namespace BioFVM; 
 using namespace PhysiCell;
-
-struct init_record
-{
-	float x;
-	float y;
-	float z;
-	float radius;
-	int phase;
-	double elapsed_time;
-};
 
 // setup functions to help us along 
 void create_cell_types( void );
@@ -93,18 +83,21 @@ void setup_tissue( void );
 // set up the BioFVM microenvironment 
 void setup_microenvironment( void ); 
 
-// custom pathology coloring function 
-std::vector<std::string> my_coloring_function( Cell* );
-
-// custom cell phenotype function to update cell fate based on the BM and the 
-// tnf receptor model dynamics
+// custom cell phenotype function to update cell fate 
+// based on the BM and the tnf receptor model dynamics
 void tumor_cell_phenotype_with_signaling( Cell* pCell, Phenotype& phenotype, double dt );
 
-// function to keep updated some cell custom variables
+// helper function to keep updated some cell custom variables
 void update_monitor_variables( Cell* pCell );
 
 // helper function to read init files
-std::vector<init_record> read_init_file(std::string filename, char delimiter, bool header);
+std::vector<std::vector<double>>  read_cells_positions(std::string filename, char delimiter, bool header);
+
+// helper function to create a sphere of cells of a given radius
+std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius, double sphere_radius);
+
+// helper function to create a disc of cells of a given radius
+std::vector<std::vector<double>> create_cell_disc_positions(double cell_radius, double disc_radius);
 
 // helper function that calculates phere volume
 inline float sphere_volume_from_radius(float radius) {return 4/3 * PhysiCell_constants::pi * std::pow(radius, 3);}
@@ -115,12 +108,17 @@ void inject_density_sphere(int density_index, double concentration, double membr
 // helper function to remove a density
 void remove_density( int density_index );
 
-//function to create a message
-// std::string cells_message_builder(std::vector<Cell*> all_cells, double timepoint);
+// custom pathology coloring function 
+std::vector<std::string> my_coloring_function( Cell* );
 
 double total_live_cell_count();
 
+// count the number of total dead cells at current time step
 double total_dead_cell_count();
 
+// count the number of necrotic cells at current time step
 double total_necrosis_cell_count();
+
+
+
 

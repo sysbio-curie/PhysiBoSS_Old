@@ -37,6 +37,7 @@ void tnf_boolean_model_interface_setup()
 	tnf_bm_interface_info.cell_variables.push_back( "tnf_node" );
     tnf_bm_interface_info.cell_variables.push_back( "fadd_node" );
     tnf_bm_interface_info.cell_variables.push_back( "nfkb_node" );
+    tnf_bm_interface_info.cell_variables.push_back( "prosurvival" );
 
 	tnf_bm_interface_info.register_model();
 }
@@ -72,20 +73,28 @@ void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt
     static int necrosis_model_index = phenotype.death.find_death_model_index( "Necrosis" );
     
     // Getting the state of the boolean model readouts (Readout can be in the XML)
-    bool apoptosis = pCell->phenotype.intracellular->get_boolean_variable_value( "Apoptosis" );
+    bool apoptosis_val = pCell->phenotype.intracellular->get_boolean_variable_value( "Apoptosis" );
     bool nonACD = pCell->phenotype.intracellular->get_boolean_variable_value( "NonACD" );
     bool survival =pCell->phenotype.intracellular->get_boolean_variable_value( "Survival" );
     bool NFkB = pCell->phenotype.intracellular->get_boolean_variable_value( "NFkB" );
 	
-	if ( apoptosis ) 
+    
+    int necrosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::necrosis_death_model ); 
+    int apoptosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::apoptosis_death_model ); 
+
+    static int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
+	static int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
+	if ( apoptosis_val ) 
     {
-		pCell->start_death(apoptosis_model_index);
+        phenotype.death.rates[apoptosis_index] += 0.02;
+		//pCell->start_death(apoptosis_model_index);
 		return;
 	}
 
 	if ( nonACD ) 
     {
-		pCell->start_death(necrosis_model_index);
+        phenotype.death.rates[necrosis_index] += 0.02;
+		//pCell->start_death(necrosis_model_index);
 		return;
 	}
 
@@ -136,6 +145,15 @@ void tnf_bm_interface_main(Cell* pCell, Phenotype& phenotype, double dt)
     
         // Run maboss to update the boolean state of the cell
         pCell->phenotype.intracellular->update();
+
+        MaBoSSIntracellular* physiboss = static_cast<MaBoSSIntracellular*> (pCell->phenotype.intracellular);
+
+        //next_physiboss_run
+        physiboss->next_physiboss_run += NormalRandom(0, 5);
+
+        //std::cout << physiboss->next_physiboss_run << std::endl;
+
+        //std::cout << "Next noisy time step " << pCell->phenotype.intracellular->next_physiboss_run << std::endl;
 
         // update the cell fate based on the boolean outputs
         update_cell_from_boolean_model(pCell, phenotype, dt);

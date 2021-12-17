@@ -22,3 +22,8 @@ project
 initial.svg
 initial.svg
 interaction_demo
+
+env/
+.env/
+.travis.yml
+.vscode

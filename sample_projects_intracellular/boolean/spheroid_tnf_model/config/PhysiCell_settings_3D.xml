@@ -74,20 +74,20 @@
 
 <PhysiCell_settings version="devel-version">
 	<domain>
-		<x_min>-500</x_min>
-		<x_max>500</x_max>
-		<y_min>-500</y_min>
-		<y_max>500</y_max>
-		<z_min>-10</z_min>
-		<z_max>10</z_max>
+		<x_min>-250</x_min>
+		<x_max>250</x_max>
+		<y_min>-250</y_min>
+		<y_max>250</y_max>
+		<z_min>-250</z_min>
+		<z_max>250</z_max>
 		<dx>20</dx>
 		<dy>20</dy>
 		<dz>20</dz>
-		<use_2D>true</use_2D>
+		<use_2D>false</use_2D>
 	</domain>
 	
 	<overall>
-		<max_time units="min">2880</max_time>
+		<max_time units="min">1440</max_time>
 		<time_units>min</time_units>
 		<space_units>micron</space_units>
 		<dt_diffusion units="min">0.02</dt_diffusion>
@@ -260,7 +260,7 @@
 		
 		<init_cells_filename type="string" units="">./config/init.tsv</init_cells_filename>
 		
-		<tumor_radius type="double" units="um">100.0</tumor_radius>
+		<tumor_radius type="double" units="um">50.0</tumor_radius>
 		
 		<!-- <TNFR_binding_rate_std type="double" units="dimensionless" description="TNF receptor binding rate std">0.237</TNFR_binding_rate_std> -->
 		<TNFR_binding_rate_std type="double" units="dimensionless" description="TNF receptor binding rate std">0.0</TNFR_binding_rate_std>

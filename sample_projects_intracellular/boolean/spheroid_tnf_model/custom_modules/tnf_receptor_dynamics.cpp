@@ -42,7 +42,7 @@ void tnf_receptor_model_setup()
     tnf_receptor_info.cell_variables.push_back( "TNFR_binding_rate" ); 
 	tnf_receptor_info.cell_variables.push_back( "TNFR_endocytosis_rate" );
     tnf_receptor_info.cell_variables.push_back( "TNFR_recycling_rate" );
-	tnf_receptor_info.cell_variables.push_back( "TFN_net_production_rate" );
+	tnf_receptor_info.cell_variables.push_back( "TNF_net_production_rate" );
 
 	tnf_receptor_info.register_model();
 
@@ -129,9 +129,11 @@ void tnf_receptor_model_main( double dt )
 	for( int i=0; i < (*all_cells).size() ; i++ )
 	{
 		Cell* pC = (*all_cells)[i]; 
-		if( pC->phenotype.death.dead == false )
-		{ tnf_receptor_model( pC, pC->phenotype , dt ); }
+		if (  pC->is_out_of_domain )
+		{ continue; }
+		if( pC->phenotype.death.dead )
+		{ continue; }
+		tnf_receptor_model( pC, pC->phenotype , dt );
 	}
-	
 	return;
 }
