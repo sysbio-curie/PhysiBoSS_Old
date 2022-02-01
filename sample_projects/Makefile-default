@@ -72,7 +72,7 @@ name:
 # sample projects 	
 list-projects:
 	@echo "Sample projects: template biorobots-sample cancer-biorobots-sample cancer-immune-sample"
-	@echo "                 celltypes3-sample heterogeneity-sample pred-prey-farmer virus-macrophage-sample"
+	@echo "                 celltypes3-sample heterogeneity-sample heterogeneity-3D pred-prey-farmer virus-macrophage-sample"
 	@echo "                 worm-sample interaction-sample mechano-sample"
 	@echo ""
 	@echo "Sample intracellular projects: ode-energy-sample physiboss-cell-lines-sample physiboss-tnf-model cancer-metabolism-sample"
@@ -134,6 +134,15 @@ heterogeneity-sample:
 	cp ./sample_projects/heterogeneity/Makefile .
 	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
 	cp ./sample_projects/heterogeneity/config/* ./config/
+	
+heterogeneity-3D:
+	cp ./sample_projects/heterogeneity_3D/custom_modules/* ./custom_modules/
+	touch main.cpp && cp main.cpp main-backup.cpp
+	cp ./sample_projects/heterogeneity_3D/main-heterogeneity.cpp ./main.cpp 
+	cp Makefile Makefile-backup
+	cp ./sample_projects/heterogeneity_3D/Makefile .
+	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
+	cp ./sample_projects/heterogeneity_3D/config/* ./config/
 	
 pred-prey-farmer:
 	cp ./sample_projects/pred_prey_farmer/custom_modules/* ./custom_modules/
