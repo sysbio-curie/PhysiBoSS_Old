@@ -75,7 +75,7 @@ list-projects:
 	@echo "                 celltypes3-sample heterogeneity-sample heterogeneity-3D pred-prey-farmer virus-macrophage-sample"
 	@echo "                 worm-sample interaction-sample mechano-sample"
 	@echo ""
-	@echo "Sample intracellular projects: ode-energy-sample physiboss-cell-lines-sample physiboss-tnf-model cancer-metabolism-sample"
+	@echo "Sample intracellular projects: template_BM ode-energy-sample physiboss-cell-lines-sample physiboss-tnf-model cancer-metabolism-sample"
 	@echo ""
 	
 template:
@@ -234,6 +234,17 @@ mechano-sample:
 	cp Makefile Makefile-backup
 	cp ./sample_projects/mechano/Makefile .
 	cp ./sample_projects/mechano/config/* ./config/
+
+template_BM: 	
+	cp ./sample_projects_intracellular/boolean/template_BM/custom_modules/* ./custom_modules/
+	touch main.cpp && cp main.cpp main-backup.cpp
+	cp ./sample_projects_intracellular/boolean/template_BM/main-template_BM.cpp ./main.cpp 
+	cp Makefile Makefile-backup
+	cp ./sample_projects_intracellular/boolean/template_BM/Makefile .
+	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
+	cp -r ./sample_projects_intracellular/boolean/template_BM/config/* ./config/
+	mkdir ./scripts/
+	cp ./sample_projects_intracellular/boolean/template_BM/scripts/* ./scripts/
 
 # early examples for convergence testing 
 
