@@ -88,6 +88,7 @@ void create_cell_types( void )
 	// so it's easier to turn off proliferation
 	
 	cell_defaults.phenotype.cycle.sync_to_cycle_model( live ); 
+	cell_defaults.functions.custom_cell_rule = NULL; 
 
 	int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
 	int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
