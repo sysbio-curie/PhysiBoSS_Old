@@ -244,7 +244,7 @@
 					
 					<options>
 						<enabled>false</enabled>
-						<use_2D>true</use_2D>
+						<use_2D>false</use_2D>
 						<chemotaxis>
 							<enabled>false</enabled>
 							<substrate>oxygen</substrate>
