@@ -31,7 +31,7 @@ void tnf_boolean_model_interface_setup()
     tnf_bm_interface_info.name = "TNF Boolean model interface"; 
 	tnf_bm_interface_info.version = "0.2.0";
 	
-    tnf_bm_interface_info.main_function= tnf_bm_interface_main; 
+    tnf_bm_interface_info.main_function= update_phenotype_with_signaling; 
 
 	// These are just auxiliary variables to keep track of some BN nodes
 	tnf_bm_interface_info.cell_variables.push_back( "tnf_node" );
@@ -42,12 +42,8 @@ void tnf_boolean_model_interface_setup()
 	tnf_bm_interface_info.register_model();
 }
 
-
 void update_boolean_model_inputs( Cell* pCell, Phenotype& phenotype, double dt )
 {
-    if( pCell->phenotype.death.dead == true )
-	{ return; } 
-
     static int nR_EB = pCell->custom_data.find_variable_index( "bound_external_TNFR" ); 
     static int nTNF_threshold = pCell->custom_data.find_variable_index( "TNFR_activation_threshold" );
 
@@ -63,40 +59,45 @@ void update_boolean_model_inputs( Cell* pCell, Phenotype& phenotype, double dt )
 
 }
 
-
 void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt)
 {	
-    static int nTNF_external = microenvironment.find_density_index( "tnf" );
-    static int nTNF_export_rate = pCell->custom_data.find_variable_index( "TNF_net_production_rate" );
 
-    static int apoptosis_model_index = phenotype.death.find_death_model_index( "Apoptosis" );
-    static int necrosis_model_index = phenotype.death.find_death_model_index( "Necrosis" );
+    static int nTNF_external = microenvironment.find_density_index( "tnf" );      
+    static int nTNF_export_rate = pCell->custom_data.find_variable_index( "TNF_net_production_rate" );
+    static int necrosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::necrosis_death_model ); 
+    static int apoptosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::apoptosis_death_model );
+    static int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
+	static int cycle_end_index = live.find_phase_index( PhysiCell_constants::live );  
+
+    static float necrosis_rate = pCell->custom_data["necrosis_rate"];
+    static float apoptosis_rate = pCell->custom_data["apoptosis_rate"];
     
     // Getting the state of the boolean model readouts (Readout can be in the XML)
-    bool apoptosis_val = pCell->phenotype.intracellular->get_boolean_variable_value( "Apoptosis" );
+    bool apoptosis = pCell->phenotype.intracellular->get_boolean_variable_value( "Apoptosis" );
     bool nonACD = pCell->phenotype.intracellular->get_boolean_variable_value( "NonACD" );
     bool survival =pCell->phenotype.intracellular->get_boolean_variable_value( "Survival" );
     bool NFkB = pCell->phenotype.intracellular->get_boolean_variable_value( "NFkB" );
 	
+
+    if ( apoptosis ) {
+        phenotype.death.rates[apoptosis_index] = apoptosis_rate;
+		return;
+	} else {
+        phenotype.death.rates[apoptosis_index] -= phenotype.death.rates[apoptosis_index] * 1E-9;
+        if (phenotype.death.rates[apoptosis_index] < 0)
+            phenotype.death.rates[apoptosis_index] = 0;
+    }
+
+    if ( nonACD ) {
+        phenotype.death.rates[necrosis_index] = necrosis_rate;
+		return;
+	}
+    else {
+        phenotype.death.rates[necrosis_index] -= phenotype.death.rates[necrosis_index] * 1E-9;
+        if (phenotype.death.rates[necrosis_index] < 0)
+            phenotype.death.rates[necrosis_index] = 0;
+    } 
     
-    int necrosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::necrosis_death_model ); 
-    int apoptosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::apoptosis_death_model ); 
-
-    static int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
-	static int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
-	if ( apoptosis_val ) 
-    {
-        phenotype.death.rates[apoptosis_index] += 0.02;
-		//pCell->start_death(apoptosis_model_index);
-		return;
-	}
-
-	if ( nonACD ) 
-    {
-        phenotype.death.rates[necrosis_index] += 0.02;
-		//pCell->start_death(necrosis_model_index);
-		return;
-	}
 
 	if ( survival && pCell->phenotype.cycle.current_phase_index() == PhysiCell_constants::Ki67_negative ) 
     { 
@@ -111,10 +112,38 @@ void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt
     {
         phenotype.secretion.net_export_rates[nTNF_external] = 0;
     }
+
+    update_cell_and_death_parameters_O2_based(pCell, phenotype, dt);
     
     return;
 }
 
+// custom cell phenotype function to run PhysiBoSS when is needed
+void update_phenotype_with_signaling(Cell *pCell, Phenotype &phenotype, double dt)
+{
+	if( phenotype.death.dead == true )
+	{
+		pCell->functions.update_phenotype = NULL;
+		return;
+	}
+
+    if ( pCell->phenotype.intracellular->need_update() )
+    {
+        // First we update the Boolean Model inputs
+        update_boolean_model_inputs(pCell, phenotype, dt );
+        
+		// Run maboss to update the boolean state of the cell
+        pCell->phenotype.intracellular->update();
+        
+		// update the cell fate based on the boolean outputs
+        update_cell_from_boolean_model(pCell, phenotype, dt);
+
+        // Get track of some boolean node values for debugging
+        update_monitor_variables(pCell);
+    }
+
+    return;
+}
 
 void update_monitor_variables(Cell* pCell )
 {
@@ -125,42 +154,6 @@ void update_monitor_variables(Cell* pCell )
 	pCell->custom_data[index_nfkb_node] = pCell->phenotype.intracellular->get_boolean_variable_value( "NFkB" ) ;
 	pCell->custom_data[index_tnf_node] =pCell->phenotype.intracellular->get_boolean_variable_value("TNF");
 	pCell->custom_data[index_fadd_node] = pCell->phenotype.intracellular->get_boolean_variable_value("FADD");
-
-    return;
-}
-
-
-void tnf_bm_interface_main(Cell* pCell, Phenotype& phenotype, double dt)
-{
-    if( phenotype.death.dead == true )
-	{
-		pCell->functions.update_phenotype = NULL;
-		return;
-	}
-
-    if ( pCell->phenotype.intracellular->need_update() )
-    {
-        // First we update the Boolean Model inputs
-        update_boolean_model_inputs(pCell, phenotype, dt );
-    
-        // Run maboss to update the boolean state of the cell
-        pCell->phenotype.intracellular->update();
-
-        MaBoSSIntracellular* physiboss = static_cast<MaBoSSIntracellular*> (pCell->phenotype.intracellular);
-
-        //next_physiboss_run
-        physiboss->next_physiboss_run += NormalRandom(0, 5);
-
-        //std::cout << physiboss->next_physiboss_run << std::endl;
-
-        //std::cout << "Next noisy time step " << pCell->phenotype.intracellular->next_physiboss_run << std::endl;
-
-        // update the cell fate based on the boolean outputs
-        update_cell_from_boolean_model(pCell, phenotype, dt);
-
-        // Get track of some boolean node values for debugging
-        update_monitor_variables(pCell);
-    }
 
     return;
 }

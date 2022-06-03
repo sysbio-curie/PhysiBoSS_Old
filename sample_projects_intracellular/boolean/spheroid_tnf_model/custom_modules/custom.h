@@ -83,13 +83,6 @@ void setup_tissue( void );
 // set up the BioFVM microenvironment 
 void setup_microenvironment( void ); 
 
-// custom cell phenotype function to update cell fate 
-// based on the BM and the tnf receptor model dynamics
-void tumor_cell_phenotype_with_signaling( Cell* pCell, Phenotype& phenotype, double dt );
-
-// helper function to keep updated some cell custom variables
-void update_monitor_variables( Cell* pCell );
-
 // helper function to read init files
 std::vector<std::vector<double>>  read_cells_positions(std::string filename, char delimiter, bool header);
 

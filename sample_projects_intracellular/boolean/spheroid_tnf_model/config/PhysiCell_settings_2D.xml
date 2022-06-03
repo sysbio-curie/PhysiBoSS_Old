@@ -87,7 +87,7 @@
 	</domain>
 	
 	<overall>
-		<max_time units="min">2880</max_time>
+		<max_time units="min">1440</max_time>
 		<time_units>min</time_units>
 		<space_units>micron</space_units>
 		<dt_diffusion units="min">0.02</dt_diffusion>
@@ -229,6 +229,7 @@
 					<bnd_filename>./config/TNF_nodes.bnd</bnd_filename>
 					<cfg_filename>./config/TNF_conf.cfg</cfg_filename>
 					<time_step>10</time_step>
+					<time_stochasticity>25</time_stochasticity>
 				</intracellular>
 			</phenotype>
 			<custom_data>
@@ -249,42 +250,36 @@
 				<nfkb_node units="dimensionless">0</nfkb_node>
 				<external_tnf units="TNF/um^3">0</external_tnf>
 
+				<!-- Rates that are set when the corresponding node is active-->
+				<necrosis_rate type="double" units="1/min" description="Necrotic rate value when NonACD node becomes active">0.027</necrosis_rate>
+                <apoptosis_rate type="double" units="1/min" description="Apoptotic rate value when Apoptosis node becomes active">0.015</apoptosis_rate>
 			</custom_data>
 		</cell_definition>
 	</cell_definitions>
 
 	<user_parameters>
 		<random_seed type="int" units="dimensionless">0</random_seed> 
-		<!-- example parameters from the template --> 
-
-		
+		<read_init type="bool">false</read_init>
 		<init_cells_filename type="string" units="">./config/init.tsv</init_cells_filename>
-		
 		<tumor_radius type="double" units="um">100.0</tumor_radius>
 		
-		<!-- <TNFR_binding_rate_std type="double" units="dimensionless" description="TNF receptor binding rate std">0.237</TNFR_binding_rate_std> -->
 		<TNFR_binding_rate_std type="double" units="dimensionless" description="TNF receptor binding rate std">0.0</TNFR_binding_rate_std>
 		<TNFR_binding_rate_min type="double" units="dimensionless" description="TNF receptor binding rate min">0.05</TNFR_binding_rate_min>
 		<TNFR_binding_rate_max type="double" units="dimensionless" description="TNF receptor binding rate max">0.95</TNFR_binding_rate_max>
 
-		<!-- <TNFR_endocytosis_rate_std type="double" units="dimensionless" description="TNF receptor-TNF endocytosis rate std">0.237</TNFR_endocytosis_rate_std> -->
 		<TNFR_endocytosis_rate_std type="double" units="dimensionless" description="TNF receptor-TNF endocytosis rate std">0.0</TNFR_endocytosis_rate_std>
 		<TNFR_endocytosis_rate_min type="double" units="dimensionless" description="TNF receptor-TNF endocytosis rate min">0.05</TNFR_endocytosis_rate_min>
 		<TNFR_endocytosis_rate_max type="double" units="dimensionless" description="TNF receptor-TNF endocytosis rate max">0.95</TNFR_endocytosis_rate_max>
 
-		<!-- <TNFR_recycling_rate_std type="double" units="dimensionless" description="TNF receptor recycling std">0.237</TNFR_recycling_rate_std> -->
 		<TNFR_recycling_rate_std type="double" units="dimensionless" description="TNF receptor recycling std">0.0</TNFR_recycling_rate_std>
 		<TNFR_recycling_rate_min type="double" units="dimensionless" description="TNF receptor recycling min">0.05</TNFR_recycling_rate_min>
 		<TNFR_recycling_rate_max type="double" units="dimensionless" description="TNF receptor recycling max">0.95</TNFR_recycling_rate_max>
 
-		<tnf_pulse_period type="double" units="min">275.32</tnf_pulse_period> 
-		<tnf_pulse_duration type="double" units="min">25.0</tnf_pulse_duration> 
-		<tnf_pulse_concentration type="double" units="TNF/um^3">0.004</tnf_pulse_concentration> 
+		<tnf_pulse_period type="double" units="min">150.0</tnf_pulse_period> 
+		<tnf_pulse_duration type="double" units="min">10.0</tnf_pulse_duration> 
+		<tnf_pulse_concentration type="double" units="TNF/um^3">0.0025</tnf_pulse_concentration> 
 		<time_remove_tnf type="double" units="min">999999</time_remove_tnf> 
-		<membrane_length type="double" units="">180</membrane_length>
-
-		<update_pc_parameters_O2_based type="bool" units="">false</update_pc_parameters_O2_based>
-		<seed_tnf type="bool">false</seed_tnf>
+		<membrane_length type="double" units="">120</membrane_length>
 </user_parameters>
 	
 	

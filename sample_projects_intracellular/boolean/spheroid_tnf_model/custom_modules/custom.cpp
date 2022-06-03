@@ -70,21 +70,17 @@
 // declare cell definitions here
 void create_cell_types(void)
 {
-
 	SeedRandom(parameters.ints("random_seed"));
 
 	initialize_default_cell_definition();
 
 	/*  This parses the cell definitions in the XML config file.  */
-
 	initialize_cell_definitions_from_pugixml();
 
-	if (parameters.bools("update_pc_parameters_O2_based"))
-	{ cell_defaults.functions.update_phenotype = tumor_cell_phenotype_with_signaling; }
-	else
-	{ cell_defaults.functions.update_phenotype = tnf_bm_interface_main; }
+	//  This sets the custom phenotype function
+	cell_defaults.functions.update_phenotype = update_phenotype_with_signaling;
 
-	/*  This initializes the the TNF receptor model	*/
+	//  This initializes the the TNF receptor model
 	tnf_receptor_model_setup();
 	tnf_boolean_model_interface_setup();
 	submodel_registry.display(std::cout);
@@ -100,35 +96,33 @@ void create_cell_types(void)
 	return;
 }
 
+
 void setup_microenvironment(void)
 {
-
 	initialize_microenvironment();
-
 	return;
 }
 
 void setup_tissue(void)
 {
-
-	/*
-	double cell_radius = cell_defaults.phenotype.geometry.radius; 
-	double cell_spacing = 0.95 * 2.0 * cell_radius; 
-	double tumor_radius = parameters.doubles("tumor_radius");
-	std::vector<std::vector<double>> positions = create_cell_disc_positions(cell_radius,tumor_radius); 
-	*/
-
-	double cell_radius = cell_defaults.phenotype.geometry.radius; 
-	double tumor_radius =  parameters.doubles("tumor_radius");
-
 	std::vector<std::vector<double>> positions;
-	if (default_microenvironment_options.simulate_2D == true)
-		positions = create_cell_disc_positions(cell_radius,tumor_radius); 
-	else
-		positions = create_cell_sphere_positions(cell_radius,tumor_radius);
+	
+	if ( parameters.bools("read_init") )
+	{
+		std::string csv_fname = parameters.strings("init_cells_filename");
+		positions = read_cells_positions(csv_fname, '\t', true);
 
-	// std::string csv_fname = parameters.strings("init_cells_filename");
-	// std::vector<std::vector<double>> positions = read_cells_positions(csv_fname, '\t', true);
+	}
+	else
+	{
+		double cell_radius = cell_defaults.phenotype.geometry.radius; 
+		double tumor_radius =  parameters.doubles("tumor_radius");
+		if (default_microenvironment_options.simulate_2D == true)
+			positions = create_cell_disc_positions(cell_radius,tumor_radius); 
+		else
+			positions = create_cell_sphere_positions(cell_radius,tumor_radius);
+
+	}
 
 	Cell* pCell = NULL; 
 	for (int i = 0; i < positions.size(); i++)
@@ -136,21 +130,21 @@ void setup_tissue(void)
 		pCell = create_cell(get_cell_definition("default"));
 		pCell->assign_position(positions[i]);
 
-		// next_physiboss_run
-	        MaBoSSIntracellular* physiboss = static_cast<MaBoSSIntracellular*> (pCell->phenotype.intracellular);
-        	physiboss->next_physiboss_run += NormalRandom(0, 5);
-
 		static int idx_bind_rate = pCell->custom_data.find_variable_index( "TNFR_binding_rate" );
 		static float mean_bind_rate = pCell->custom_data[idx_bind_rate];
 		static float std_bind_rate = parameters.doubles("TNFR_binding_rate_std");
 		static float min_bind_rate = parameters.doubles("TNFR_binding_rate_min");
 		static float max_bind_rate = parameters.doubles("TNFR_binding_rate_max");
 		
-		pCell->custom_data[idx_bind_rate] = NormalRandom(mean_bind_rate, std_bind_rate);
-		if (pCell->custom_data[idx_bind_rate] < min_bind_rate)
-		{ pCell->custom_data[idx_bind_rate] = min_bind_rate; }
-		if (pCell->custom_data[idx_bind_rate] > max_bind_rate)
-		{ pCell->custom_data[idx_bind_rate] = max_bind_rate; }
+		if(std_bind_rate > 0 )
+		{
+			pCell->custom_data[idx_bind_rate] = NormalRandom(mean_bind_rate, std_bind_rate);
+			if (pCell->custom_data[idx_bind_rate] < min_bind_rate)
+			{ pCell->custom_data[idx_bind_rate] = min_bind_rate; }
+			if (pCell->custom_data[idx_bind_rate] > max_bind_rate)
+			{ pCell->custom_data[idx_bind_rate] = max_bind_rate; }
+		}
+
 
 		static int idx_endo_rate = pCell->custom_data.find_variable_index( "TNFR_endocytosis_rate" );
 		static float mean_endo_rate = pCell->custom_data[idx_endo_rate];
@@ -158,23 +152,29 @@ void setup_tissue(void)
 		static float min_endo_rate = parameters.doubles("TNFR_endocytosis_rate_min");
 		static float max_endo_rate = parameters.doubles("TNFR_endocytosis_rate_max");
 		
-		pCell->custom_data[idx_endo_rate] = NormalRandom(mean_endo_rate, std_endo_rate);
-		if (pCell->custom_data[idx_endo_rate] < min_endo_rate)
-		{ pCell->custom_data[idx_endo_rate] = min_endo_rate; }
-		if (pCell->custom_data[idx_endo_rate] > max_endo_rate)
-		{ pCell->custom_data[idx_endo_rate] = max_endo_rate; }
-
+		if(std_endo_rate > 0)
+		{
+			pCell->custom_data[idx_endo_rate] = NormalRandom(mean_endo_rate, std_endo_rate);
+			if (pCell->custom_data[idx_endo_rate] < min_endo_rate)
+			{ pCell->custom_data[idx_endo_rate] = min_endo_rate; }
+			if (pCell->custom_data[idx_endo_rate] > max_endo_rate)
+			{ pCell->custom_data[idx_endo_rate] = max_endo_rate; }
+		}
+		
 		static int idx_recycle_rate = pCell->custom_data.find_variable_index( "TNFR_recycling_rate" ); 
 		static float mean_recycle_rate = pCell->custom_data[idx_recycle_rate];
 		static float std_recycle_rate = parameters.doubles("TNFR_recycling_rate_std");
 		static float min_recycle_rate = parameters.doubles("TNFR_recycling_rate_min");
 		static float max_recycle_rate = parameters.doubles("TNFR_recycling_rate_max");
 
-		pCell->custom_data[idx_recycle_rate] = NormalRandom(mean_recycle_rate, std_recycle_rate);
-		if (pCell->custom_data[idx_recycle_rate] < min_recycle_rate)
-		{ pCell->custom_data[idx_recycle_rate] = min_recycle_rate; }
-		if (pCell->custom_data[idx_recycle_rate] > max_recycle_rate)
-		{ pCell->custom_data[idx_recycle_rate] = max_recycle_rate; }
+		if(std_recycle_rate > 0)
+		{
+			pCell->custom_data[idx_recycle_rate] = NormalRandom(mean_recycle_rate, std_recycle_rate);
+			if (pCell->custom_data[idx_recycle_rate] < min_recycle_rate)
+			{ pCell->custom_data[idx_recycle_rate] = min_recycle_rate; }
+			if (pCell->custom_data[idx_recycle_rate] > max_recycle_rate)
+			{ pCell->custom_data[idx_recycle_rate] = max_recycle_rate; }
+		}
 		
 		update_monitor_variables(pCell);
 	}
@@ -182,22 +182,7 @@ void setup_tissue(void)
 	return;
 }
 
-// custom cell phenotype function to run PhysiBoSS when is needed
-void tumor_cell_phenotype_with_signaling(Cell *pCell, Phenotype &phenotype, double dt)
-{
-	if (phenotype.death.dead == true)
-	{
-		pCell->functions.update_phenotype = NULL;
-		return;
-	}
-
-	update_cell_and_death_parameters_O2_based(pCell, phenotype, dt);
-	tnf_bm_interface_main(pCell, phenotype, dt);
-
-}
-
-
-std::vector<std::vector<double>>  read_cells_positions(std::string filename, char delimiter, bool header)
+std::vector<std::vector<double>> read_cells_positions(std::string filename, char delimiter, bool header)
 {
 	// File pointer
 	std::fstream fin;
@@ -241,8 +226,6 @@ std::vector<std::vector<double>>  read_cells_positions(std::string filename, cha
 	return positions;
 }
 
-
-
 std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius, double sphere_radius)
 {
 	std::vector<std::vector<double>> cells;
@@ -273,7 +256,6 @@ std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius
 	return cells;
 	
 }
-
 
 std::vector<std::vector<double>> create_cell_disc_positions(double cell_radius, double disc_radius)
 {	 
@@ -321,9 +303,6 @@ std::vector<std::vector<double>> create_cell_disc_positions(double cell_radius, 
 	return positions;
 }
 
-
-
-
 void inject_density_sphere(int density_index, double concentration, double membrane_lenght)
 {
 	// Inject given concentration on the extremities only
@@ -338,13 +317,11 @@ void inject_density_sphere(int density_index, double concentration, double membr
 	}
 }
 
-
 void remove_density(int density_index)
 {
 	for (int n = 0; n < microenvironment.number_of_voxels(); n++)
 		microenvironment.density_vector(n)[density_index] = 0;
 }
-
 
 std::vector<std::string> my_coloring_function(Cell *pCell)
 {
@@ -371,7 +348,6 @@ std::vector<std::string> my_coloring_function(Cell *pCell)
 
 	return output;
 }
-
 
 
 double total_live_cell_count()
