@@ -25,5 +25,11 @@ interaction_demo
 
 env/
 .env/
+.venv/
+
+
 .travis.yml
 .vscode
+
+
+*.tar.gz
