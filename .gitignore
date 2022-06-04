@@ -33,3 +33,5 @@ env/
 
 
 *.tar.gz
+
+addons/PhysiBoSS/MaBoSS-env-2.0/*
