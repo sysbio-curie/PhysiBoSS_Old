@@ -197,15 +197,15 @@ reset:
 	cp ./sample_projects/Makefile-default Makefile 
 	rm -f ./custom_modules/*
 	touch ./custom_modules/empty.txt 
-	touch ALL_CITATIONS.txt 
 	rm ALL_CITATIONS.txt 
-	cp ./config/PhysiCell_settings-backup.xml ./config/PhysiCell_settings.xml 
-	rm ./config/PhysiCell_settings_2D.xml 
-	rm ./config/PhysiCell_settings_3D.xml 
-	rm -f ./config/init.txt
+	rm -f ./config/PhysiCell_settings.xml 
+	rm -f ./config/PhysiCell_settings_2D.xml 
+	rm -f ./config/PhysiCell_settings_3D.xml 
+	rm -f ./config/init.tsv 
 	rm -f ./config/TNF_conf.cfg
 	rm -f ./config/TNF_nodes.bnd
 	rm -fr ./scripts
+	cp ./config/PhysiCell_settings-backup.xml ./config/PhysiCell_settings.xml
 
 MaBoSS-clean:
 	rm -fr addons/PhysiBoSS/MaBoSS-env-2.0

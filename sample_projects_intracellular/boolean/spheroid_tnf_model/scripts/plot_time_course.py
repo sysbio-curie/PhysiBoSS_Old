@@ -9,10 +9,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-modules_path = "../scripts/"
-sys.path.append(modules_path)
 
-from multicellds import MultiCellDS
+
+from pctk.multicellds import MultiCellDS
 
 
 def labelsubplot(ax, idx, xpos=-0.1, ypos=1.05, weight="bold", fontsize=12, color='#434343'):
@@ -86,7 +85,7 @@ def plot_time_course(df_time_course, df_time_tnf, df_cell_variables, list_of_var
     fig, axes = plt.subplots(2, 1, figsize=(10,4), dpi=300, sharex=True)
     
     custom_palette = sns.color_palette("deep")
-    color_dict = {"alive": custom_palette[2], "apoptotic": custom_palette[3], "necrotic":custom_palette[5]}
+    color_dict = {"live": custom_palette[2], "apoptotic": custom_palette[3], "necrotic":custom_palette[5]}
     
     plot_cells(df_time_course, color_dict, axes[0])
 
@@ -125,8 +124,8 @@ def load_datasets(instance_folder, labels_dict):
     df_cell_variables = get_timeserie_mean(mcds)
     df_cell_variables = df_cell_variables.rename(labels_dict, axis=1)
     
-    if (df_time_course["alive"] == 0).sum() > 0:
-        idx = df_time_course.index[df_time_course["alive"] == 0][0]
+    if (df_time_course["live"] == 0).sum() > 0:
+        idx = df_time_course.index[df_time_course["live"] == 0][0]
         df_time_course = df_time_course.iloc[:idx]
         df_cell_variables = df_cell_variables.iloc[:idx]
         df_time_tnf = df_time_tnf.iloc[:idx]
@@ -137,19 +136,24 @@ def load_datasets(instance_folder, labels_dict):
 sns.set_style("white")
 sns.set_palette("deep")
 
-if len(sys.argv) == 1:
-    instance_folder = "output"
-else:
-    instance_folder = sys.argv[1]
+
+def main():
+    if len(sys.argv) == 1:
+        output_folder = "output"
+    else:
+        output_folder = sys.argv[1]
 
 
-labels_dict = {}
-labels_dict['bound_external_TNFR'] = "TNFR-TNF[e]"
-labels_dict['unbound_external_TNFR'] = "TNFR[e]"
-labels_dict['bound_internal_TNFR'] = "TNFR-TNF[i]"
-df_time_course, df_time_tnf, df_cell_variables = load_datasets(instance_folder, labels_dict)
+    labels_dict = {}
+    labels_dict['bound_external_TNFR'] = "TNFR-TNF[e]"
+    labels_dict['unbound_external_TNFR'] = "TNFR[e]"
+    labels_dict['bound_internal_TNFR'] = "TNFR-TNF[i]"
+    df_time_course, df_time_tnf, df_cell_variables = load_datasets(output_folder, labels_dict)
 
-list_of_variables = list(labels_dict.values())
-fig = plot_time_course(df_time_course, df_time_tnf, df_cell_variables, list_of_variables)
+    list_of_variables = list(labels_dict.values())
+    fig = plot_time_course(df_time_course, df_time_tnf, df_cell_variables, list_of_variables)
 
-fig.savefig(f"{instance_folder}/Time_course.png")
+    fig.savefig(f"{output_folder}/Time_course.png")
+
+    
+main()

@@ -229,18 +229,16 @@
 					<bnd_filename>./config/TNF_nodes.bnd</bnd_filename>
 					<cfg_filename>./config/TNF_conf.cfg</cfg_filename>
 					<time_step>10</time_step>
-					<time_stochasticity>25</time_stochasticity>
+					<time_stochasticity>1</time_stochasticity>
 				</intracellular>
 			</phenotype>
 			<custom_data>
-				<!-- Time steps for maboss update-->
-				<next_physiboss_run units="dimensionless">10.</next_physiboss_run>
-				
 				<!-- Molecular model internal variables-->
 				<TNFR_binding_rate type="double" units="1/min" description="TNF receptor binding rate">0.243</TNFR_binding_rate>
 				<TNFR_endocytosis_rate type="double" units="1/min" description="TNF receptor-TNF endocytosis rate">0.128</TNFR_endocytosis_rate>
 				<TNFR_recycling_rate type="double" units="1/min" description="TNF receptor recycling">0.293</TNFR_recycling_rate>
-				<TNFR_activation_threshold type="double" units="" description="TNFR threshold to update booleano model input">0.5</TNFR_activation_threshold>
+				
+				<TNFR_activation_threshold type="double" units="" description="TNFR threshold to update booleano model input">0.50</TNFR_activation_threshold>
 				<TNFR_receptors_per_cell type="double" units="dimensionless" description="number of TNFR receptors per cell">1.0</TNFR_receptors_per_cell>
 				<TNF_net_production_rate type="double" units="TNF/cell/min" description="The total TNF produced by the cell when NFkB is active">0</TNF_net_production_rate> <!-- 0.5 ng/mL -->
 
@@ -249,10 +247,10 @@
 				<fadd_node units="dimensionless">0</fadd_node>
 				<nfkb_node units="dimensionless">0</nfkb_node>
 				<external_tnf units="TNF/um^3">0</external_tnf>
-
+				
 				<!-- Rates that are set when the corresponding node is active-->
-				<necrosis_rate type="double" units="1/min" description="Necrotic rate value when NonACD node becomes active">0.027</necrosis_rate>
-                <apoptosis_rate type="double" units="1/min" description="Apoptotic rate value when Apoptosis node becomes active">0.015</apoptosis_rate>
+				<necrosis_rate type="double" units="1/min" description="Necrotic rate value when NonACD node becomes active">0.0027</necrosis_rate>
+                <apoptosis_rate type="double" units="1/min" description="Apoptotic rate value when Apoptosis node becomes active">0.0055</apoptosis_rate>
 			</custom_data>
 		</cell_definition>
 	</cell_definitions>
@@ -277,7 +275,7 @@
 
 		<tnf_pulse_period type="double" units="min">150.0</tnf_pulse_period> 
 		<tnf_pulse_duration type="double" units="min">10.0</tnf_pulse_duration> 
-		<tnf_pulse_concentration type="double" units="TNF/um^3">0.0025</tnf_pulse_concentration> 
+		<tnf_pulse_concentration type="double" units="TNF/um^3">0.0015</tnf_pulse_concentration> 
 		<time_remove_tnf type="double" units="min">999999</time_remove_tnf> 
 		<membrane_length type="double" units="">120</membrane_length>
 </user_parameters>
