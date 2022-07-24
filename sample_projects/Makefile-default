@@ -75,7 +75,8 @@ list-projects:
 	@echo "                 celltypes3-sample heterogeneity-sample heterogeneity-3D pred-prey-farmer virus-macrophage-sample"
 	@echo "                 worm-sample interaction-sample mechano-sample"
 	@echo ""
-	@echo "Sample intracellular projects: template_BM ode-energy-sample physiboss-cell-lines-sample physiboss-tnf-model cancer-metabolism-sample"
+	@echo "Sample intracellular projects: template_BM simple-spheroid-tnf ode-energy-sample physiboss-cell-lines-sample"
+	@echo "                               physiboss-tnf-model cancer-metabolism-sample"
 	@echo ""
 	
 template:
@@ -245,6 +246,17 @@ template_BM:
 	cp -r ./sample_projects_intracellular/boolean/template_BM/config/* ./config/
 	mkdir ./scripts/
 	cp ./sample_projects_intracellular/boolean/template_BM/scripts/* ./scripts/
+
+simple-spheroid-tnf: 	
+	cp ./sample_projects_intracellular/boolean/simple_spheroid_tnf/custom_modules/* ./custom_modules/
+	touch main.cpp && cp main.cpp main-backup.cpp
+	cp ./sample_projects_intracellular/boolean/simple_spheroid_tnf/main.cpp ./main.cpp 
+	cp Makefile Makefile-backup
+	cp ./sample_projects_intracellular/boolean/simple_spheroid_tnf/Makefile .
+	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
+	cp -r ./sample_projects_intracellular/boolean/simple_spheroid_tnf/config/* ./config/
+	mkdir ./scripts/
+	cp ./sample_projects_intracellular/boolean/simple_spheroid_tnf/scripts/* ./scripts/
 
 # early examples for convergence testing 
 
