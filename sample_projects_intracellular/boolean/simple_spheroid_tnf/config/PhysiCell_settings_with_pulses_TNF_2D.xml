@@ -260,9 +260,8 @@
 		<random_seed description="" type="int" units="dimensionless">0</random_seed>
     <tumor_radius description="" type="double" units="micron">100.0</tumor_radius>
     <tnf_treatment description="" type="bool" units="dimensionless">True</tnf_treatment>
-    <pulse_tnf description="" type="bool" units="dimensionless">False</pulse_tnf>
+    <pulse_tnf description="" type="bool" units="dimensionless">True</pulse_tnf>
     <percentage_mutants description="" type="double" units="dimensionless">0</percentage_mutants>
-
     </user_parameters>
 	
 </PhysiCell_settings>

@@ -1,5 +1,5 @@
 VERSION := $(shell grep . VERSION.txt | cut -f1 -d:)
-PROGRAM_NAME := template_BM
+PROGRAM_NAME := simple_spheroid_TNF
 
 CC := g++
 # CC := g++-mp-7 # typical macports compiler name
@@ -73,7 +73,7 @@ PhysiCell_pugixml.o PhysiCell_settings.o PhysiCell_basic_signaling.o PhysiCell_g
 
 PhysiBoSS_OBJECTS := maboss_network.o maboss_intracellular.o
 
-PhysiCell_custom_module_OBJECTS := custom.o custom_main.o
+PhysiCell_custom_module_OBJECTS := custom.o
 
 pugixml_OBJECTS := pugixml.o
 
@@ -189,9 +189,6 @@ maboss_intracellular.o: ./addons/PhysiBoSS/src/maboss_intracellular.cpp
 
 custom.o: ./custom_modules/custom.cpp 
 	$(COMPILE_COMMAND) $(INC) -c ./custom_modules/custom.cpp
-
-custom_main.o: ./custom_modules/custom_main.cpp
-	$(COMPILE_COMMAND) $(INC) -c ./custom_modules/custom_main.cpp
 
 # cleanup
 

@@ -164,7 +164,10 @@ void setup_tissue( void )
 
 	for( int i=0; i < positions.size(); i++ )
 	{
-		pCell = create_cell(get_cell_definition((PhysiCell::UniformRandom()*100) > parameters.doubles("percentage_mutants") ? "default":"mutant")); // tumor cell
+		pCell = create_cell(get_cell_definition(
+			(PhysiCell::UniformRandom()*100) > parameters.doubles("percentage_mutants") ? "default":"mutant")
+		); 
+		
 		pCell->assign_position( positions[i] );
 	}
 	

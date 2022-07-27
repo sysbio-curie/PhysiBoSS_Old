@@ -228,44 +228,47 @@ int main( int argc, char* argv[] )
 				microenvironment.set_substrate_dirichlet_activation(tnf_index, false);
 			}
 			
-			if (PhysiCell_globals.current_time >= 1000 && PhysiCell_globals.current_time < 5320 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
-			{
-				std::cout << "TNF activation" << std::endl;
-				microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
-			}
-
-			if (parameters.bools("pulse_tnf")){
-
-				if (PhysiCell_globals.current_time >= 5320 && PhysiCell_globals.current_time < 8200 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
-				{
-					std::cout << "TNF in activation" << std::endl;
-					microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
-				}
-
-				if (PhysiCell_globals.current_time >= 8200 && PhysiCell_globals.current_time < 12520 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
+			if (parameters.bools("tnf_treatment")){
+				if (PhysiCell_globals.current_time >= 1000 && PhysiCell_globals.current_time < 5320 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
 				{
 					std::cout << "TNF activation" << std::endl;
 					microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
 				}
 
-				if (PhysiCell_globals.current_time >= 12520 && PhysiCell_globals.current_time < 15400 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
-				{
-					std::cout << "TNF inactivation" << std::endl;
-					microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
-				}
-				
-				if (PhysiCell_globals.current_time >= 15400 && PhysiCell_globals.current_time < 19720 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
-				{
-					std::cout << "TNF activation" << std::endl;
-					microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
-				}
+				if (parameters.bools("pulse_tnf")){
 
-				if (PhysiCell_globals.current_time >= 19720 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
-				{
-					std::cout << "TNF inactivation" << std::endl;
-					microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
+					if (PhysiCell_globals.current_time >= 5320 && PhysiCell_globals.current_time < 8200 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
+					{
+						std::cout << "TNF inactivation" << std::endl;
+						microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
+					}
+
+					if (PhysiCell_globals.current_time >= 8200 && PhysiCell_globals.current_time < 12520 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
+					{
+						std::cout << "TNF activation" << std::endl;
+						microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
+					}
+
+					if (PhysiCell_globals.current_time >= 12520 && PhysiCell_globals.current_time < 15400 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
+					{
+						std::cout << "TNF inactivation" << std::endl;
+						microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
+					}
+					
+					if (PhysiCell_globals.current_time >= 15400 && PhysiCell_globals.current_time < 19720 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
+					{
+						std::cout << "TNF activation" << std::endl;
+						microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
+					}
+
+					if (PhysiCell_globals.current_time >= 19720 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
+					{
+						std::cout << "TNF inactivation" << std::endl;
+						microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
+					}
 				}
 			}
+
 			// update the microenvironment
 			microenvironment.simulate_diffusion_decay( diffusion_dt );
 			
