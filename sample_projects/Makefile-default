@@ -255,7 +255,7 @@ simple-spheroid-tnf:
 	cp ./sample_projects_intracellular/boolean/simple_spheroid_tnf/Makefile .
 	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
 	cp -r ./sample_projects_intracellular/boolean/simple_spheroid_tnf/config/* ./config/
-	mkdir ./scripts/
+	mkdir -p ./scripts/
 	cp ./sample_projects_intracellular/boolean/simple_spheroid_tnf/scripts/* ./scripts/
 
 # early examples for convergence testing 
