@@ -238,6 +238,7 @@
               <intracellular_dt>1440.0</intracellular_dt>
               <time_stochasticity>0.2</time_stochasticity>
               <scaling>60.0</scaling>
+              <start_time>200</start_time>
             </settings>
             <mapping>
               <input intracellular_name="TNF" physicell_name="TNF">

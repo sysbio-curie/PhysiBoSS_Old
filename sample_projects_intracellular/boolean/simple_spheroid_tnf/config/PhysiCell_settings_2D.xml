@@ -13,7 +13,7 @@
 	</domain>
 	
 	<overall>
-		<max_time units="min">1440</max_time> 
+		<max_time units="min">5760</max_time> 
 		<time_units>min</time_units>
 		<space_units>micron</space_units>
 	
@@ -222,12 +222,11 @@
 	</initial_conditions>	
 	
 	<user_parameters>
-		<random_seed description="" type="int" units="dimensionless">0</random_seed>
+    <random_seed description="" type="int" units="dimensionless">0</random_seed>
     <tumor_radius description="" type="double" units="micron">100.0</tumor_radius>
-    <tnf_treatment description="" type="bool" units="dimensionless">True</tnf_treatment>
+    <tnf_treatment description="" type="bool" units="dimensionless">False</tnf_treatment>
     <pulse_tnf description="" type="bool" units="dimensionless">False</pulse_tnf>
     <percentage_mutants description="" type="double" units="dimensionless">0</percentage_mutants>
-
-    </user_parameters>
+  </user_parameters>
 	
 </PhysiCell_settings>

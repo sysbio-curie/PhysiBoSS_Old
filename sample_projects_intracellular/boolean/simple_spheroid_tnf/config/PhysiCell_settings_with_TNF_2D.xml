@@ -13,7 +13,7 @@
 	</domain>
 	
 	<overall>
-		<max_time units="min">1440</max_time> 
+		<max_time units="min">5760</max_time> 
 		<time_units>min</time_units>
 		<space_units>micron</space_units>
 	
@@ -168,7 +168,6 @@
                 <enabled>false</enabled>
                 <normalize_each_gradient>false</normalize_each_gradient>
                 <chemotactic_sensitivities>
-                  <chemotactic_sensitivity substrate="substrate">0.0</chemotactic_sensitivity>
                   <chemotactic_sensitivity substrate="TNF">0.0</chemotactic_sensitivity>
                   </chemotactic_sensitivities>
                 </advanced_chemotaxis>
@@ -206,7 +205,7 @@
                 <transformation_rate name="default" units="1/min">0.0</transformation_rate>
                 </transformation_rates>
             </cell_transformations>
-
+			<intracellular />
           </phenotype>
         <custom_data>
           <somedata conserved="false" description="" units="dimensionless">1.0</somedata>
@@ -223,12 +222,11 @@
 	</initial_conditions>	
 	
 	<user_parameters>
-  	<random_seed description="" type="int" units="dimensionless">0</random_seed>
+		<random_seed description="" type="int" units="dimensionless">0</random_seed>
     <tumor_radius description="" type="double" units="micron">100.0</tumor_radius>
     <tnf_treatment description="" type="bool" units="dimensionless">True</tnf_treatment>
     <pulse_tnf description="" type="bool" units="dimensionless">False</pulse_tnf>
     <percentage_mutants description="" type="double" units="dimensionless">0</percentage_mutants>
-
     </user_parameters>
 	
 </PhysiCell_settings>
