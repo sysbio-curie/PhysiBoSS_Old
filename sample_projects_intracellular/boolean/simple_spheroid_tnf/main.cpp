@@ -80,6 +80,7 @@
 
 #include "./custom_modules/custom.h" 
 #include "./addons/PhysiBoSS/src/maboss_intracellular.h"	
+#include "modules/PhysiCell_settings.h"
 
 using namespace BioFVM;
 using namespace PhysiCell;
@@ -219,53 +220,28 @@ int main( int argc, char* argv[] )
 					PhysiCell_globals.next_SVG_save_time  += PhysiCell_settings.SVG_save_interval;
 				}
 			}
-
-			
-			int tnf_index = microenvironment.find_density_index("TNF");
-			
-			if (PhysiCell_globals.current_time < 1000 && microenvironment.get_substrate_dirichlet_activation(tnf_index)) 
-			{
-				microenvironment.set_substrate_dirichlet_activation(tnf_index, false);
-			}
-			
-			if (parameters.bools("tnf_treatment")){
-				if (PhysiCell_globals.current_time >= 1000 && PhysiCell_globals.current_time < 5320 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
+		
+			if (parameters.bools("treatment")){
+				int treatment_substrate_index = microenvironment.find_density_index(parameters.strings("treatment_substrate"));
+				std::cout << "TREATMENT ACTIVE : " << treatment_substrate_index << std::endl;
+				// std::cout << "t_treatment = " << (((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) << std::endl;
+				
+				if (
+					(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == 0 
+					&& !microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
+				)
 				{
-					std::cout << "TNF activation" << std::endl;
-					microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
+					std::cout << parameters.strings("treatment_substrate") << " activation at t=" << PhysiCell_globals.current_time << std::endl;
+					microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, true);	
 				}
 
-				if (parameters.bools("pulse_tnf")){
-
-					if (PhysiCell_globals.current_time >= 5320 && PhysiCell_globals.current_time < 8200 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
-					{
-						std::cout << "TNF inactivation" << std::endl;
-						microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
-					}
-
-					if (PhysiCell_globals.current_time >= 8200 && PhysiCell_globals.current_time < 12520 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
-					{
-						std::cout << "TNF activation" << std::endl;
-						microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
-					}
-
-					if (PhysiCell_globals.current_time >= 12520 && PhysiCell_globals.current_time < 15400 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
-					{
-						std::cout << "TNF inactivation" << std::endl;
-						microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
-					}
-					
-					if (PhysiCell_globals.current_time >= 15400 && PhysiCell_globals.current_time < 19720 && !microenvironment.get_substrate_dirichlet_activation(tnf_index))
-					{
-						std::cout << "TNF activation" << std::endl;
-						microenvironment.set_substrate_dirichlet_activation(tnf_index, true);	
-					}
-
-					if (PhysiCell_globals.current_time >= 19720 && microenvironment.get_substrate_dirichlet_activation(tnf_index))
-					{
-						std::cout << "TNF inactivation" << std::endl;
-						microenvironment.set_substrate_dirichlet_activation(tnf_index, false);	
-					}
+				if (
+					(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == parameters.ints("treatment_duration") 
+					&& microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
+				)
+				{
+					std::cout << parameters.strings("treatment_substrate") << " inactivation at t=" << PhysiCell_globals.current_time << std::endl;
+					microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, false);	
 				}
 			}
 

@@ -213,7 +213,7 @@
               <intracellular_dt>1440.0</intracellular_dt>
               <time_stochasticity>0.2</time_stochasticity>
               <scaling>60.0</scaling>
-                            <inheritance global="True"/>
+              <inheritance global="True"/>
 
             </settings>
             <mapping>
