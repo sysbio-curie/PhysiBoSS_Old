@@ -431,7 +431,7 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 	
 	if(PhysiCell_settings.enable_substrate_plot == true && (*substrate_coloring_function) != NULL){
 
-		double legend_padding = 200.0; // I have to add a margin on the left to visualize the bar plot and the values
+		double legend_padding = 140.0; // I have to add a margin on the left to visualize the bar plot and the values
 
 		Write_SVG_start( os, plot_width + legend_padding, plot_height + top_margin );
 
@@ -561,6 +561,47 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 
 			}
 
+			// add legend for the substrate
+
+			os << " <g id=\"legend\" " << std::endl 
+	   		   << "    transform=\"translate(0," << plot_height + 25 << ") scale(1,-1)\">" << std::endl;  //for some misterious reasons, the tissue part in the SVG is rotated so I have to re-rotate to draw
+																										  // the legend, otherwise it will be printed upside down
+
+			double conc_interval = (max_conc - min_conc) / 10; // setting the interval for the values in the legend. I will divide the legend in 13 parts (as in the jupyter notebook)
+
+			char* szString; 
+			szString = new char [1024]; 
+			double upper_left_x = plot_width + 25.0;
+
+			for(int i = 0; i <= 9; i++){ //creating 13 rectangoles for the bar, each one with a different shade of color.
+
+				double concentration_sample = min_conc + (conc_interval * i); // the color depends on the concentration, starting from the min concentration to the max (which was sampled before)
+
+				std::vector< std::string > output = substrate_coloring_function(concentration_sample, max_conc, min_conc );
+
+				double upper_left_y = ((plot_height - 25) / 10.0) * i; // here I set the position of each rectangole
+
+				Write_SVG_rect(os, upper_left_x, plot_height - upper_left_y - 78.2, 25.0, ((plot_height - 25.0) / 10.0), 0 , "none", output[0]); //drawing each piece of the barplot
+
+				if(i%2 == 0){ // of course I am not printing each value of the barplot, otherwise is too crowded, so just one each 2
+
+					sprintf( szString , "- %.2g", concentration_sample);
+
+					Write_SVG_text( os , szString, upper_left_x + 24, plot_height - upper_left_y + 5.31, font_size , 
+						PhysiCell_SVG_options.font_color.c_str() , PhysiCell_SVG_options.font.c_str() ); // misterious values set with a trial and error approach due to OCD. But now the legend is coherent at pixel level
+				}
+			}
+
+			sprintf( szString , "- %.2g", max_conc);
+			double upper_left_y = ((plot_height - 25) / 10.0) * 10; // here I set the position of the last text
+			Write_SVG_text( os , szString, upper_left_x + 24, plot_height - upper_left_y + 5.31, font_size , 
+				PhysiCell_SVG_options.font_color.c_str() , PhysiCell_SVG_options.font.c_str() ); // misterious values set with a trial and error approach due to OCD. But now the legend is coherent at pixel level
+
+			delete [] szString;
+
+			Write_SVG_rect(os, 25.0 + plot_width, 25.0, 25.0, plot_height - 25.0, 0.002 * plot_height , "black", "none"); // nice black contour around the legend
+
+			os << "  </g>" << std::endl; // no more rotation, restoring the tissue object in the SVG
 		}
 	}
 /* 
