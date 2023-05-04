@@ -103,6 +103,37 @@ std::unordered_map<std::string,int> cycle_model_codes =
 	
 }; 
 
+std::unordered_map<int, std::string> cycle_phase_names = 
+{
+	{ PhysiCell_constants::G0G1_phase, "G0G1 phase"}, 
+	{ PhysiCell_constants::S_phase, "S phase"},
+	{ PhysiCell_constants::G2M_phase, "G2M phase"}, 
+	{ PhysiCell_constants::M_phase, "M phase"}, 
+	{PhysiCell_constants::Ki67_positive_premitotic, "Ki67+ premitotic"},
+	{PhysiCell_constants::Ki67_positive_postmitotic, "Ki67+ postmitotic"},
+	{PhysiCell_constants::Ki67_positive, "Ki67+"},
+	{PhysiCell_constants::Ki67_negative, "Ki67-"},
+	{PhysiCell_constants::G0_phase, "G0 phase"},
+	{PhysiCell_constants::G1_phase, "G1 phase"},
+	{PhysiCell_constants::G2_phase, "G2 phase"},
+	{PhysiCell_constants::live, "live"},
+	{PhysiCell_constants::apoptotic, "Apoptotic"},
+	{PhysiCell_constants::necrotic_swelling, "Necrotic swelling"},
+	{PhysiCell_constants::necrotic_lysed, "Necrotic lysed"},
+	{PhysiCell_constants::necrotic, "Necrotic"},
+	{PhysiCell_constants::debris, "Debris"}
+	
+}; 
+
+std::string find_cycle_phase_names( int model_code )
+{
+	auto search = cycle_phase_names.find( model_code );
+	if( search == cycle_phase_names.end() )
+	{ return "not found"; }
+	else
+	{ return search->second; }
+}
+
 int find_cycle_model_code( std::string model_name )
 {
 	auto search = cycle_model_codes.find( model_name );
