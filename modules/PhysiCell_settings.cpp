@@ -196,6 +196,20 @@ void PhysiCell_Settings::read_from_pugixml( void )
 	SVG_save_interval = xml_get_double_value( node , "interval" );
 	enable_SVG_saves = xml_get_bool_value( node , "enable" ); 
 
+	pugi::xml_node node_legend;
+	node_legend = xml_find_node( node , "legend" );
+	enable_legend = node_legend.attribute("enabled").as_bool();
+
+	if(enable_legend){
+		cell_phase = xml_get_bool_value(node_legend, "cell_phase");
+		cell_type = xml_get_bool_value(node_legend, "cell_type");
+		if(cell_phase && cell_type){
+			std::cout << "PLEASE SELECT IN THE XML FILE JUST ONE OF THE TWO CRITERIA, CANNOT MONITOR BOTH PHASE AND CELL TYPE" << std::endl;
+			cell_phase = false;
+			cell_type = true;
+		}
+	}
+
 	pugi::xml_node node_plot_substrate; 
 	node_plot_substrate = xml_find_node( node , "plot_substrate" );
 	enable_substrate_plot = node_plot_substrate.attribute("enabled").as_bool();
