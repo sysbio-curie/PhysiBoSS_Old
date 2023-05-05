@@ -403,16 +403,18 @@
 
     <initial_conditions>
         <cell_positions enabled="true" type="csv">
-            <folder>./config</folder>
-            <filename>cells.csv</filename>
+            <folder>/home/vincent/Work/code/PhysiBoSSa/config</folder>
+            <filename>cells_mutant.csv</filename>
         </cell_positions>
     </initial_conditions>
 
     <user_parameters>
         <random_seed type="int" units="dimensionless" description="">0</random_seed>
-        <treatment type="bool" units="dimensionless" description="">False</treatment>
+        <tumor_radius type="double" units="micron" description="">275.0</tumor_radius>
+        <treatment type="bool" units="dimensionless" description="">True</treatment>
         <treatment_substrate type="string" units="dimensionless" description="">TNF</treatment_substrate>
-        <treatment_period type="int" units="minutes" description="">1500</treatment_period>
-        <treatment_duration type="int" units="minutes" description="">1500</treatment_duration>
+        <treatment_period type="int" units="dimensionless" description="">500</treatment_period>
+        <treatment_duration type="int" units="" description="">250</treatment_duration>
+        <percentage_mutants type="double" units="" description="">0</percentage_mutants>
     </user_parameters>
 </PhysiCell_settings>

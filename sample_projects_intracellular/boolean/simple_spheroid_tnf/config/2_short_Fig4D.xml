@@ -29,11 +29,11 @@
     <save>
         <folder>output</folder>
         <full_data>
-            <interval units="min">10</interval>
+            <interval units="min">5</interval>
             <enable>true</enable>
         </full_data>
         <SVG>
-            <interval units="min">10</interval>
+            <interval units="min">5</interval>
             <enable>true</enable>
         </SVG>
         <legacy_data>
@@ -44,6 +44,7 @@
     <options>
         <legacy_random_points_on_sphere_in_divide>false</legacy_random_points_on_sphere_in_divide>
         <virtual_wall_at_domain_edge>true</virtual_wall_at_domain_edge>
+        <disable_automated_spring_adhesions>false</disable_automated_spring_adhesions>
     </options>
 
     <microenvironment_setup>
@@ -59,17 +60,17 @@
                 <boundary_value ID="xmax" enabled="True">10.0</boundary_value>
                 <boundary_value ID="ymin" enabled="True">10.0</boundary_value>
                 <boundary_value ID="ymax" enabled="True">10.0</boundary_value>
-                <boundary_value ID="zmin" enabled="True">10.0</boundary_value>
-                <boundary_value ID="zmax" enabled="True">10.0</boundary_value>
+                <boundary_value ID="zmin" enabled="False">10.0</boundary_value>
+                <boundary_value ID="zmax" enabled="False">10.0</boundary_value>
             </Dirichlet_options>
         </variable>
         <options>
             <calculate_gradients>true</calculate_gradients>
             <track_internalized_substrates_in_each_agent>true</track_internalized_substrates_in_each_agent>
-            <initial_condition type="matlab" enabled="false">
+            <initial_condition enabled="false" type="matlab">
                 <filename>./config/initial.mat</filename>
             </initial_condition>
-            <dirichlet_nodes type="matlab" enabled="false">
+            <dirichlet_nodes enabled="false" type="matlab">
                 <filename>./config/dirichlet.mat</filename>
             </dirichlet_nodes>
         </options>
@@ -86,9 +87,9 @@
                 <death>
                     <model code="100" name="apoptosis">
                         <death_rate units="1/min">5.31667e-05</death_rate>
-                        <phase_durations units="min">
-                            <duration index="0" fixed_duration="true">516</duration>
-                        </phase_durations>
+                        <phase_transition_rates units="1/min">
+                            <rate start_index="0" end_index="1" fixed_duration="false">0.020000</rate>
+                        </phase_transition_rates>
                         <parameters>
                             <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
                             <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
@@ -100,16 +101,16 @@
                     </model>
                     <model code="101" name="necrosis">
                         <death_rate units="1/min">0.0</death_rate>
-                        <phase_durations units="min">
-                            <duration index="0" fixed_duration="true">0</duration>
-                            <duration index="1" fixed_duration="true">86400</duration>
-                        </phase_durations>
+                        <phase_transition_rates units="1/min">
+                            <rate start_index="0" end_index="1" fixed_duration="false">9000000000.0</rate>
+                            <rate start_index="1" end_index="2" fixed_duration="true">1.15741e-05</rate>
+                        </phase_transition_rates>
                         <parameters>
-                            <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
-                            <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
-                            <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
-                            <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
-                            <calcification_rate units="1/min">0</calcification_rate>
+                            <unlysed_fluid_change_rate units="1/min">1.11667e-02</unlysed_fluid_change_rate>
+                            <lysed_fluid_change_rate units="1/min">8.33333e-4</lysed_fluid_change_rate>
+                            <cytoplasmic_biomass_change_rate units="1/min">5.33333e-05</cytoplasmic_biomass_change_rate>
+                            <nuclear_biomass_change_rate units="1/min">2.16667e-4</nuclear_biomass_change_rate>
+                            <calcification_rate units="1/min">7e-05</calcification_rate>
                             <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
                         </parameters>
                     </model>
@@ -131,6 +132,7 @@
                     <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
                     <cell_adhesion_affinities>
                         <cell_adhesion_affinity name="default">1.0</cell_adhesion_affinity>
+                        <cell_adhesion_affinity name="mutant">1.0</cell_adhesion_affinity>
                     </cell_adhesion_affinities>
                     <options>
                         <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
@@ -165,43 +167,49 @@
                 </motility>
                 <secretion>
                     <substrate name="TNF">
-                        <secretion_rate units="1/min">0</secretion_rate>
-                        <secretion_target units="substrate density">38</secretion_target>
-                        <uptake_rate units="1/min">0.1</uptake_rate>
-                        <net_export_rate units="total substrate/min">0</net_export_rate>
+                        <secretion_rate units="1/min">0.0</secretion_rate>
+                        <secretion_target units="substrate density">1.0</secretion_target>
+                        <uptake_rate units="1/min">0.0</uptake_rate>
+                        <net_export_rate units="total substrate/min">0.0</net_export_rate>
                     </substrate>
                 </secretion>
                 <cell_interactions>
                     <dead_phagocytosis_rate units="1/min">0.0</dead_phagocytosis_rate>
                     <live_phagocytosis_rates>
                         <phagocytosis_rate name="default" units="1/min">0.0</phagocytosis_rate>
+                        <phagocytosis_rate name="mutant" units="1/min">0.0</phagocytosis_rate>
                     </live_phagocytosis_rates>
                     <attack_rates>
                         <attack_rate name="default" units="1/min">0.0</attack_rate>
+                        <attack_rate name="mutant" units="1/min">0.0</attack_rate>
                     </attack_rates>
                     <damage_rate units="1/min">1.0</damage_rate>
                     <fusion_rates>
                         <fusion_rate name="default" units="1/min">0.0</fusion_rate>
+                        <fusion_rate name="mutant" units="1/min">0.0</fusion_rate>
                     </fusion_rates>
                 </cell_interactions>
                 <cell_transformations>
                     <transformation_rates>
                         <transformation_rate name="default" units="1/min">0.0</transformation_rate>
+                        <transformation_rate name="mutant" units="1/min">0.0</transformation_rate>
                     </transformation_rates>
                 </cell_transformations>
                 <intracellular type="maboss">
                     <bnd_filename>config/boolean_network/cellfate_gaelle.bnd</bnd_filename>
                     <cfg_filename>config/boolean_network/cellfate_gaelle.cfg</cfg_filename>
                     <settings>
-                        <intracellular_dt>10.0</intracellular_dt>
-                        <time_stochasticity>0.2</time_stochasticity>
+                        <intracellular_dt>50</intracellular_dt>
+                        <time_stochasticity>0.5</time_stochasticity>
                         <scaling>1</scaling>
+                        <start_time>0.0</start_time>
+                        <inheritance global="True" />
                     </settings>
                     <mapping>
                         <input physicell_name="TNF" intracellular_name="TNF">
                             <settings>
                                 <action>activation</action>
-                                <threshold>0.1</threshold>
+                                <threshold>1</threshold>
                                 <smoothing>0</smoothing>
                             </settings>
                         </input>
@@ -228,10 +236,11 @@
                 <somedata conserved="false" units="dimensionless" description="">1.0</somedata>
             </custom_data>
         </cell_definition>
+        
     </cell_definitions>
 
     <initial_conditions>
-        <cell_positions type="csv" enabled="false">
+        <cell_positions enabled="true" type="csv">
             <folder>./config</folder>
             <filename>cells.csv</filename>
         </cell_positions>
@@ -239,11 +248,9 @@
 
     <user_parameters>
         <random_seed type="int" units="dimensionless" description="">0</random_seed>
-        <tumor_radius type="double" units="micron" description="">275.0</tumor_radius>
         <treatment type="bool" units="dimensionless" description="">True</treatment>
         <treatment_substrate type="string" units="dimensionless" description="">TNF</treatment_substrate>
-        <treatment_duration type="int" units="dimensionless" description="">50</treatment_duration>
-        <treatment_period type="int" units="dimensionless" description="">300</treatment_period>
-        <percentage_mutants type="double" units="dimensionless" description="">0</percentage_mutants>
+        <treatment_period type="int" units="minutes" description="">500</treatment_period>
+        <treatment_duration type="int" units="minutes" description="">250</treatment_duration>
     </user_parameters>
 </PhysiCell_settings>

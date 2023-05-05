@@ -221,29 +221,7 @@ int main( int argc, char* argv[] )
 				}
 			}
 		
-			if (parameters.bools("treatment")){
-				int treatment_substrate_index = microenvironment.find_density_index(parameters.strings("treatment_substrate"));
-				std::cout << "TREATMENT ACTIVE : " << treatment_substrate_index << std::endl;
-				// std::cout << "t_treatment = " << (((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) << std::endl;
-				
-				if (
-					(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == 0 
-					&& !microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
-				)
-				{
-					std::cout << parameters.strings("treatment_substrate") << " activation at t=" << PhysiCell_globals.current_time << std::endl;
-					microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, true);	
-				}
-
-				if (
-					(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == parameters.ints("treatment_duration") 
-					&& microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
-				)
-				{
-					std::cout << parameters.strings("treatment_substrate") << " inactivation at t=" << PhysiCell_globals.current_time << std::endl;
-					microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, false);	
-				}
-			}
+			treatment_function();
 
 			// update the microenvironment
 			microenvironment.simulate_diffusion_decay( diffusion_dt );

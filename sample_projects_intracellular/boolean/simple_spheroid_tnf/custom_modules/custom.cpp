@@ -146,85 +146,8 @@ void setup_microenvironment( void )
 
 void setup_tissue( void )
 {
-	// place a cluster of tumor cells at the center 
-	double cell_radius = cell_defaults.phenotype.geometry.radius; 
-	double cell_spacing = 0.95 * 2.0 * cell_radius; 
-	
-	double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
-	
-	// Parameter<double> temp; 
-	
-	int i = parameters.doubles.find_index( "tumor_radius" ); 
-	
-	Cell* pCell = NULL; 
-	
-	std::vector<std::vector<double>> positions = create_cell_sphere_positions(cell_radius,tumor_radius);
-	std::cout << "creating " << positions.size() << " closely-packed tumor cells ... " << std::endl;
-
-
-	for( int i=0; i < positions.size(); i++ )
-	{
-		pCell = create_cell(get_cell_definition(
-			(PhysiCell::UniformRandom()*100) > parameters.doubles("percentage_mutants") ? "default":"mutant")
-		); 
-		
-		pCell->assign_position( positions[i] );
-	}
-	
-	return; 
+	load_cells_from_pugixml(); 	
 }
-
-
-std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius, double sphere_radius)
-{
-	std::vector<std::vector<double>> cells;
-	int xc=0,yc=0,zc=0;
-	double x_spacing= cell_radius*sqrt(3);
-	double y_spacing= cell_radius*2;
-	double z_spacing= cell_radius*sqrt(3);
-
-	std::vector<double> tempPoint(3,0.0);
-	// std::vector<double> cylinder_center(3,0.0);
-	
-	if (!BioFVM::default_microenvironment_options.simulate_2D) {
-		for(double z=-sphere_radius;z<sphere_radius;z+=z_spacing, zc++)
-		{
-			for(double x=-sphere_radius;x<sphere_radius;x+=x_spacing, xc++)
-			{
-				for(double y=-sphere_radius;y<sphere_radius;y+=y_spacing, yc++)
-				{
-					tempPoint[0]=x + (zc%2) * 0.5 * cell_radius;
-					tempPoint[1]=y + (xc%2) * cell_radius;
-					tempPoint[2]=z;
-
-					if(sqrt(norm_squared(tempPoint))< sphere_radius)
-					{ cells.push_back(tempPoint); }
-				}
-
-			}
-		}
-			
-	} else {	
-		for(double x=-sphere_radius;x<sphere_radius;x+=x_spacing, xc++)
-		{
-			for(double y=-sphere_radius;y<sphere_radius;y+=y_spacing, yc++)
-			{
-				tempPoint[0]=x + (zc%2) * 0.5 * cell_radius;
-				tempPoint[1]=y + (xc%2) * cell_radius;
-				// tempPoint[2]=z;
-
-				if(sqrt(norm_squared(tempPoint))< sphere_radius)
-				{ cells.push_back(tempPoint); }
-			}
-
-		}		
-	}
-
-
-	return cells;
-
-}
-
 
 std::vector<std::string> my_coloring_function( Cell* pCell )
 { return paint_by_number_cell_coloring(pCell); }
@@ -237,3 +160,36 @@ void custom_function( Cell* pCell, Phenotype& phenotype , double dt )
 
 void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& phenoOther , double dt )
 { return; } 
+
+void treatment_function () 
+{
+	if (parameters.bools.find_index("treatment") != -1) 
+	{
+		int treatment_substrate_index = microenvironment.find_density_index(parameters.strings("treatment_substrate"));
+
+		if (parameters.bools("treatment")){
+		
+			if (
+				(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == 0 
+				&& !microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
+			)
+			{
+				std::cout << parameters.strings("treatment_substrate") << " activation at t=" << PhysiCell_globals.current_time << std::endl;
+				microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, true);	
+			}
+
+			if (
+				(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == parameters.ints("treatment_duration") 
+				&& microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
+			)
+			{
+				std::cout << parameters.strings("treatment_substrate") << " inactivation at t=" << PhysiCell_globals.current_time << std::endl;
+				microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, false);	
+			}
+			
+		} else if ( microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index) ){
+			std::cout << parameters.strings("treatment_substrate") << " inactivation (NO TREATMENT) at t=" << PhysiCell_globals.current_time << std::endl;
+			microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, false);	
+		}
+	}
+}
