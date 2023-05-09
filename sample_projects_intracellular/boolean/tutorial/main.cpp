@@ -221,6 +221,9 @@ int main( int argc, char* argv[] )
 				}
 			}
 
+			// Configure treatments
+			treatment_function();
+
 			// update the microenvironment
 			microenvironment.simulate_diffusion_decay( diffusion_dt );
 			

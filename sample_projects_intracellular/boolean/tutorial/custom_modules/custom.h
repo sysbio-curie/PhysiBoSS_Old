@@ -93,5 +93,6 @@ void custom_function( Cell* pCell, Phenotype& phenotype , double dt );
 void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt);
 void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt);
 void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& phenoOther , double dt ); 
+void treatment_function ();
 
 void SVG_plot_with_legend( std::string filename , Microenvironment& M, double z_slice , double time, std::vector<std::string> (*cell_coloring_function)(Cell*) );

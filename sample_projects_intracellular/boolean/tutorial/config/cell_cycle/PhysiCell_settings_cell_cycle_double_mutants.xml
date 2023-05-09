@@ -27,7 +27,7 @@
 	</parallel> 
 	
 	<save>
-		<folder>output_foxo3_knockout</folder>  
+		<folder>output_double_mutants</folder>  
 
 		<full_data>
 			<interval units="min">6</interval>
@@ -203,8 +203,8 @@
           </cell_transformations>
 
 			    <intracellular type="maboss">
-            <bnd_filename>config/boolean_network/intracellular_model.bnd</bnd_filename>
-            <cfg_filename>config/boolean_network/intracellular_model.cfg</cfg_filename>
+            <bnd_filename>config/cell_cycle/boolean_network/intracellular_model.bnd</bnd_filename>
+            <cfg_filename>config/cell_cycle/boolean_network/intracellular_model.cfg</cfg_filename>
             <settings>
               <intracellular_dt>6.0</intracellular_dt>
               <time_stochasticity>0</time_stochasticity>
@@ -213,8 +213,9 @@
               <initial_conditions>
                 <initial_condition intracellular_name="Trail">1.0</initial_condition>
               </initial_conditions>
-              <mutations>output_foxo3_knockout
-                <mutation intracellular_name="FoxO3">0.0</mutation>
+              <mutations>
+                <mutation intracellular_name="PI3K_H">1.0</mutation>
+                <mutation intracellular_name="p110_H">1.0</mutation>
               </mutations>
               <mutations>
               </mutations>
@@ -263,7 +264,7 @@
 	
 	<initial_conditions>
 		<cell_positions enabled="false" type="csv">
-			<folder>./config</folder>
+			<folder>./config/cell_cycle</folder>
 			<filename>cells.csv</filename>
 		</cell_positions>
 	</initial_conditions>	
