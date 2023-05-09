@@ -307,3 +307,36 @@ void custom_function( Cell* pCell, Phenotype& phenotype , double dt )
 
 void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& phenoOther , double dt )
 { return; } 
+
+void treatment_function () 
+{
+	if (parameters.bools.find_index("treatment") != -1) 
+	{
+		int treatment_substrate_index = microenvironment.find_density_index(parameters.strings("treatment_substrate"));
+
+		if (parameters.bools("treatment")){
+		
+			if (
+				(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == 0 
+				&& !microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
+			)
+			{
+				std::cout << parameters.strings("treatment_substrate") << " activation at t=" << PhysiCell_globals.current_time << std::endl;
+				microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, true);	
+			}
+
+			if (
+				(((int)PhysiCell_globals.current_time) % parameters.ints("treatment_period")) == parameters.ints("treatment_duration") 
+				&& microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index)
+			)
+			{
+				std::cout << parameters.strings("treatment_substrate") << " inactivation at t=" << PhysiCell_globals.current_time << std::endl;
+				microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, false);	
+			}
+			
+		} else if ( microenvironment.get_substrate_dirichlet_activation(treatment_substrate_index) ){
+			std::cout << parameters.strings("treatment_substrate") << " inactivation (NO TREATMENT) at t=" << PhysiCell_globals.current_time << std::endl;
+			microenvironment.set_substrate_dirichlet_activation(treatment_substrate_index, false);	
+		}
+	}
+}

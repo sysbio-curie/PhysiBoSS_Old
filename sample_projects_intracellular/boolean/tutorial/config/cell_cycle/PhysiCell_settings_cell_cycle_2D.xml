@@ -27,7 +27,7 @@
 	</parallel> 
 	
 	<save>
-		<folder>output_plk1_knockout</folder>  
+		<folder>output</folder>  
 
 		<full_data>
 			<interval units="min">6</interval>
@@ -35,8 +35,17 @@
 		</full_data>
 		
 		<SVG>
-			<interval units="min">60</interval>
+			<interval units="min">30</interval>
 			<enable>true</enable>
+      <legend enabled="true">
+        <cell_phase>true</cell_phase>
+        <cell_type>false</cell_type>
+      </legend>
+      <plot_substrate enabled="false" limits="true">
+        <substrate>oxygen</substrate>
+        <min_conc>0.0</min_conc>
+        <max_conc>0.1</max_conc>
+      </plot_substrate>
 		</SVG>
 		
 		<legacy_data>
@@ -136,24 +145,6 @@
             <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
           </volume>
 
-          <mechanics>
-            <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
-            <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
-            <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
-            <cell_adhesion_affinities>
-                <cell_adhesion_affinity name="default">1.0</cell_adhesion_affinity>
-                </cell_adhesion_affinities>
-            <options>
-              <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
-              <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
-            </options>
-            <cell_BM_adhesion_strength units="micron/min">4.0</cell_BM_adhesion_strength>
-            <cell_BM_repulsion_strength units="micron/min">10.0</cell_BM_repulsion_strength>
-            <attachment_elastic_constant units="1/min">0.01</attachment_elastic_constant>
-            <attachment_rate units="1/min">10.0</attachment_rate>
-            <detachment_rate units="1/min">0.0</detachment_rate>
-          </mechanics>
-
           <motility>
             <speed units="micron/min">0</speed>
             <persistence_time units="min">1</persistence_time>
@@ -203,8 +194,8 @@
           </cell_transformations>
 
 			    <intracellular type="maboss">
-            <bnd_filename>config/boolean_network/intracellular_model.bnd</bnd_filename>
-            <cfg_filename>config/boolean_network/intracellular_model.cfg</cfg_filename>
+            <bnd_filename>config/cell_cycle/boolean_network/intracellular_model.bnd</bnd_filename>
+            <cfg_filename>config/cell_cycle/boolean_network/intracellular_model.cfg</cfg_filename>
             <settings>
               <intracellular_dt>6.0</intracellular_dt>
               <time_stochasticity>0</time_stochasticity>
@@ -213,9 +204,6 @@
               <initial_conditions>
                 <initial_condition intracellular_name="Trail">1.0</initial_condition>
               </initial_conditions>
-              <mutations>
-                <mutation intracellular_name="Plk1">0.0</mutation>
-              </mutations>
               <mutations>
               </mutations>
             </settings>
@@ -263,7 +251,7 @@
 	
 	<initial_conditions>
 		<cell_positions enabled="false" type="csv">
-			<folder>./config</folder>
+			<folder>./config/cell_cycle</folder>
 			<filename>cells.csv</filename>
 		</cell_positions>
 	</initial_conditions>	
