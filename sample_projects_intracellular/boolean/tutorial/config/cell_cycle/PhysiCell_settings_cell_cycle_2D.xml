@@ -37,6 +37,7 @@
 		<SVG>
 			<interval units="min">30</interval>
 			<enable>true</enable>
+      <cell_coloring_function>cell_cycle</cell_coloring_function>
       <legend enabled="true">
         <cell_phase>true</cell_phase>
         <cell_type>false</cell_type>

@@ -37,6 +37,7 @@
 		<SVG>
 			<interval units="min">60</interval>
 			<enable>true</enable>
+      <cell_coloring_function>cell_cycle</cell_coloring_function>
 		</SVG>
 		
 		<legacy_data>

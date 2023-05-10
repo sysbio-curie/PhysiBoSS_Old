@@ -153,7 +153,7 @@ int main( int argc, char* argv[] )
 
 	// for simplicity, set a pathology coloring function 
 	
-	std::vector<std::string> (*cell_coloring_function)(Cell*) = paint_by_number_cell_coloring; 
+	std::vector<std::string> (*cell_coloring_function)(Cell*) = cell_coloring_functions(PhysiCell_settings.cell_coloring_function); 
 	std::vector<std::string> (*substrate_coloring_function)(double, double, double) = paint_by_density_percentage; 
 	
 	sprintf( filename , "%s/initial.svg" , PhysiCell_settings.folder.c_str() ); 
