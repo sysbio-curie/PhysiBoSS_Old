@@ -146,158 +146,49 @@ void setup_microenvironment( void )
 
 void setup_tissue( void )
 {
-	// place a cluster of tumor cells at the center 
-	double cell_radius = cell_defaults.phenotype.geometry.radius; 
-	double cell_spacing = 0.95 * 2.0 * cell_radius; 
-	
-	double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
-	
-	// Parameter<double> temp; 
-	
-	int i = parameters.doubles.find_index( "tumor_radius" ); 
-	
-	Cell* pCell = NULL; 
-
-	std::vector<std::vector<double>> positions;	
-	
-	if (default_microenvironment_options.simulate_2D == true){
-		positions = create_cell_disc_positions(cell_radius,tumor_radius);
-		std::cout << "ENABLED 2D SIMULATION" << std::endl; 
-	}
-	else
-		positions = create_cell_sphere_positions(cell_radius,tumor_radius);
-	std::cout << "creating " << positions.size() << " closely-packed tumor cells ... " << std::endl;
-
-
-	for( int i=0; i < positions.size(); i++ )
-	{
-		pCell = create_cell(get_cell_definition(
-			(PhysiCell::UniformRandom()*100) > parameters.doubles("percentage_mutants") ? "default":"mutant")
-		); 
-		
-		pCell->assign_position( positions[i] );
-	}
-	
-	return; 
+	// load cells from your CSV file
+	load_cells_from_pugixml(); 	
 }
 
+// std::vector<std::string> my_coloring_function( Cell* pCell )
+// { 
+// 	std::vector< std::string > output( 4 , "rgb(0,0,0)" );
 
-std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius, double sphere_radius)
-{
-	std::vector<std::vector<double>> cells;
-	int xc=0,yc=0,zc=0;
-	double x_spacing= cell_radius*sqrt(3);
-	double y_spacing= cell_radius*2;
-	double z_spacing= cell_radius*sqrt(3);
-
-	std::vector<double> tempPoint(3,0.0);
-	// std::vector<double> cylinder_center(3,0.0);
-
-	for(double z=-sphere_radius;z<sphere_radius;z+=z_spacing, zc++)
-	{
-		for(double x=-sphere_radius;x<sphere_radius;x+=x_spacing, xc++)
-		{
-			for(double y=-sphere_radius;y<sphere_radius;y+=y_spacing, yc++)
-			{
-				tempPoint[0]=x + (zc%2) * 0.5 * cell_radius;
-				tempPoint[1]=y + (xc%2) * cell_radius;
-				tempPoint[2]=z;
-
-				if(sqrt(norm_squared(tempPoint))< sphere_radius)
-				{ cells.push_back(tempPoint); }
-			}
-
-		}
-	}
-	return cells;
-
-}
-
-std::vector<std::vector<double>> create_cell_disc_positions(double cell_radius, double disc_radius)
-{	 
-	double cell_spacing = 0.95 * 2.0 * cell_radius; 
-	
-	double x = 0.0; 
-	double y = 0.0; 
-	double x_outer = 0.0;
-
-	std::vector<std::vector<double>> positions;
-	std::vector<double> tempPoint(3,0.0);
-	
-	int n = 0; 
-	while( y < disc_radius )
-	{
-		x = 0.0; 
-		if( n % 2 == 1 )
-		{ x = 0.5 * cell_spacing; }
-		x_outer = sqrt( disc_radius*disc_radius - y*y ); 
-		
-		while( x < x_outer )
-		{
-			tempPoint[0]= x; tempPoint[1]= y;	tempPoint[2]= 0.0;
-			positions.push_back(tempPoint);			
-			if( fabs( y ) > 0.01 )
-			{
-				tempPoint[0]= x; tempPoint[1]= -y;	tempPoint[2]= 0.0;
-				positions.push_back(tempPoint);
-			}
-			if( fabs( x ) > 0.01 )
-			{ 
-				tempPoint[0]= -x; tempPoint[1]= y;	tempPoint[2]= 0.0;
-				positions.push_back(tempPoint);
-				if( fabs( y ) > 0.01 )
-				{
-					tempPoint[0]= -x; tempPoint[1]= -y;	tempPoint[2]= 0.0;
-					positions.push_back(tempPoint);
-				}
-			}
-			x += cell_spacing; 
-		}		
-		y += cell_spacing * sqrt(3.0)/2.0; 
-		n++; 
-	}
-	return positions;
-}
-
-std::vector<std::string> my_coloring_function( Cell* pCell )
-{ 
-	std::vector< std::string > output( 4 , "rgb(0,0,0)" );
-
-	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::G0G1_phase)
-	{
-		output[0] = "rgb(255,255,0)"; //yellow
-		output[2] = "rgb(125,125,0)";
+// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::G0G1_phase)
+// 	{
+// 		output[0] = "rgb(255,255,0)"; //yellow
+// 		output[2] = "rgb(125,125,0)";
 		
 		
-	}
-	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::S_phase)
-	{
-		output[0] = "rgb(0,255,0)"; //green
-		output[2] = "rgb(0,125,0)";
+// 	}
+// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::S_phase)
+// 	{
+// 		output[0] = "rgb(0,255,0)"; //green
+// 		output[2] = "rgb(0,125,0)";
 		
-	}
-	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::G2M_phase )
-	{
-		output[0] = "rgb(95,158,160)"; //cadetblue
-		output[2] = "rgb(47,79,80)";
+// 	}
+// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::G2M_phase )
+// 	{
+// 		output[0] = "rgb(95,158,160)"; //cadetblue
+// 		output[2] = "rgb(47,79,80)";
 		
-	}
+// 	}
 
-	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::M_phase )
-	{
-		output[0] = "rgb(138,43,226)"; //purple
-		output[2] = "rgb(69,21,113)";
+// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::M_phase )
+// 	{
+// 		output[0] = "rgb(138,43,226)"; //purple
+// 		output[2] = "rgb(69,21,113)";
 		
-	}
+// 	}
 
-	if (pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::apoptotic )  
-	{
-		output[0] = "rgb(0,0,0)"; //black
-		output[2] = "rgb(0,0,0)";
-	}
+// 	if (pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::apoptotic )  
+// 	{
+// 		output[0] = "rgb(0,0,0)"; //black
+// 		output[2] = "rgb(0,0,0)";
+// 	}
 
-	return output;
-}
+// 	return output;
+// }
 
 void phenotype_function( Cell* pCell, Phenotype& phenotype, double dt )
 { return; }
