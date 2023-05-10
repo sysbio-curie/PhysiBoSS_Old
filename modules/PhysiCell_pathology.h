@@ -127,6 +127,9 @@ void SVG_plot_with_stroma( std::string filename , Microenvironment& M, double z_
 	
 void create_plot_legend( std::string filename , std::vector<std::string> (*cell_coloring_function)(Cell*) ); 
 
+typedef std::vector<std::string> (*cell_coloring_function)(Cell*);
+cell_coloring_function cell_coloring_functions(std::string);
+
 };
 
 #endif

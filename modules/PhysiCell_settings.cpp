@@ -218,6 +218,12 @@ void PhysiCell_Settings::read_from_pugixml( void )
 			max_concentration = xml_get_double_value(node_plot_substrate, "max_conc");
 		}
 	};
+
+	pugi::xml_node node_cell_coloring_function;
+	node_cell_coloring_function = xml_find_node( node , "cell_coloring_function");
+	if (node_cell_coloring_function){
+		cell_coloring_function = xml_get_my_string_value(node_cell_coloring_function);
+	}
 	node = node.parent(); 
 
 	node = xml_find_node( node , "intracellular_data" ); 

@@ -1063,4 +1063,33 @@ void create_plot_legend( std::string filename , std::vector<std::string> (*cell_
 	os.close(); 
 }
 
+cell_coloring_function cell_coloring_functions(std::string function_string){
+	std::cout << "Choosing coloring function : " << function_string << std::endl;
+	if (function_string == "simple") {
+		return simple_cell_coloring;
+		
+	} else if (function_string == "type") {
+		return paint_by_number_cell_coloring;
+		
+	} else if (function_string == "cell_cycle") {
+		
+		if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::live_cells_cycle_model) {
+			return false_cell_coloring_live_dead;
+		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::flow_cytometry_cycle_model || cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::flow_cytometry_separated_cycle_model) {
+			return false_cell_coloring_cytometry;
+		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::basic_Ki67_cycle_model || cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::advanced_Ki67_cycle_model) {
+			return false_cell_coloring_Ki67;
+		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::cycling_quiescent_model) {
+			return false_cell_coloring_cycling_quiescent;
+		} else {
+			std::cout << "Could not find cell coloring function for cell cycle " << cell_defaults.phenotype.cycle.model().name << ", setting it to live cell cycle model coloring function" << std::endl;
+			return false_cell_coloring_live_dead;
+		}
+		
+	} else {
+		std::cout << "Could not find cell coloring function for " << function_string << ", setting it to simple cell coloring" << std::endl;
+		return simple_cell_coloring;
+	}
+}
+
 };
