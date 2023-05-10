@@ -117,6 +117,7 @@ class PhysiCell_Settings
 	double SVG_save_interval = 60; 
 	bool enable_SVG_saves = true; 
 
+	std::string cell_coloring_function = "type";
 	bool enable_legend = false;
 	bool cell_phase = false;
 	bool cell_type = true;

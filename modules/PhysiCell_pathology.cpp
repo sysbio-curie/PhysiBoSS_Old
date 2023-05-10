@@ -1124,7 +1124,35 @@ void standard_agent_legend(std::ofstream& os, Cell_Definition* cell_definition, 
 	Write_SVG_circle(os,cursor_x, cursor_y , temp_cell_radius , 1.0 , colors[1] , colors[0] ); 
 	// place a small circle with nuclear colors 
 	Write_SVG_circle(os,cursor_x, cursor_y , 0.5*temp_cell_radius , 1.0 , colors[3] , colors[2] ); 
+}
 
+cell_coloring_function cell_coloring_functions(std::string function_string){
+	std::cout << "Choosing coloring function : " << function_string << std::endl;
+	if (function_string == "simple") {
+		return simple_cell_coloring;
+		
+	} else if (function_string == "type") {
+		return paint_by_number_cell_coloring;
+		
+	} else if (function_string == "cell_cycle") {
+		
+		if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::live_cells_cycle_model) {
+			return false_cell_coloring_live_dead;
+		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::flow_cytometry_cycle_model || cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::flow_cytometry_separated_cycle_model) {
+			return false_cell_coloring_cytometry;
+		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::basic_Ki67_cycle_model || cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::advanced_Ki67_cycle_model) {
+			return false_cell_coloring_Ki67;
+		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::cycling_quiescent_model) {
+			return false_cell_coloring_cycling_quiescent;
+		} else {
+			std::cout << "Could not find cell coloring function for cell cycle " << cell_defaults.phenotype.cycle.model().name << ", setting it to live cell cycle model coloring function" << std::endl;
+			return false_cell_coloring_live_dead;
+		}
+		
+	} else {
+		std::cout << "Could not find cell coloring function for " << function_string << ", setting it to simple cell coloring" << std::endl;
+		return simple_cell_coloring;
+	}
 }
 
 };
