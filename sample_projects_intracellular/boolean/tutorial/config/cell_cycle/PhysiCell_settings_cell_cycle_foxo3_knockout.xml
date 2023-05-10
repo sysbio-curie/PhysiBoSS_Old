@@ -262,7 +262,7 @@
   </cell_definitions>
 	
 	<initial_conditions>
-		<cell_positions enabled="false" type="csv">
+		<cell_positions enabled="true" type="csv">
 			<folder>./config/cell_cycle</folder>
 			<filename>cells.csv</filename>
 		</cell_positions>
