@@ -204,7 +204,7 @@ void PhysiCell_Settings::read_from_pugixml( void )
 		cell_phase = xml_get_bool_value(node_legend, "cell_phase");
 		cell_type = xml_get_bool_value(node_legend, "cell_type");
 		if(cell_phase && cell_type){
-			std::cout << "PLEASE SELECT IN THE XML FILE JUST ONE OF THE TWO CRITERIA, CANNOT MONITOR BOTH PHASE AND CELL TYPE" << std::endl;
+			std::cout << "Please select just one criteria for the legend in the .xml file" << std::endl;
 			cell_phase = false;
 			cell_type = true;
 		}
