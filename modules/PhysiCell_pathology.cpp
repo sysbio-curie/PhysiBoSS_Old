@@ -434,8 +434,6 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 	
 	if(PhysiCell_settings.enable_substrate_plot && (*substrate_coloring_function) != NULL && !PhysiCell_settings.enable_legend){ // in this case I want just the substrate visualization
 
-		std::cout << "JUST SUBSTRATE VISUALIZATION!!!" << std::endl;
-
 		double legend_padding = 140.0; // I have to add a margin on the left to visualize the bar plot and the values
 
 		Write_SVG_start( os, plot_width + legend_padding, plot_height + top_margin );
@@ -446,8 +444,6 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 	}
 	else if (PhysiCell_settings.enable_substrate_plot && (*substrate_coloring_function) != NULL && PhysiCell_settings.enable_legend) // in this case I want both the legend and the substrate
 	{
-
-		std::cout << "BOTH LEGEND AND SUBSTRATE VISUALIZATION!!!" << std::endl;
 
 		// useful parameters to fit the legend and the barplot into the svg
 
@@ -468,7 +464,6 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 	}
 	else if (!PhysiCell_settings.enable_substrate_plot && (*substrate_coloring_function) == NULL && PhysiCell_settings.enable_legend) // in this case I want just the legend and NOT the substrate
 	{
-		std::cout << "JUST LEGEND !!!" << std::endl;
 
 		// useful parameters to fit the legend into the svg
 
@@ -621,7 +616,7 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 
 				double upper_left_y = ((plot_height - 25) / 10.0) * i; // here I set the position of each rectangole
 
-				Write_SVG_rect(os, upper_left_x, plot_height - upper_left_y - 78.2, 25.0, ((plot_height - 25.0) / 10.0), 0 , "none", output[0]); //drawing each piece of the barplot
+				Write_SVG_rect(os, upper_left_x, plot_height - upper_left_y - 58.2, 25.0, ((plot_height - 25.0) / 10.0), 0 , "none", output[0]); //drawing each piece of the barplot
 
 				if(i%2 == 0){ // of course I am not printing each value of the barplot, otherwise is too crowded, so just one each 2
 
