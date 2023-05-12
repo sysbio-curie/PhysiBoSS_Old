@@ -462,7 +462,7 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 		// draw the background 
 		Write_SVG_rect( os , 0 , 0 , plot_width + legend_padding, plot_height + top_margin + (row_height * 3) , 0.002 * plot_height , "white", "white" );
 	}
-	else if (!PhysiCell_settings.enable_substrate_plot && (*substrate_coloring_function) == NULL && PhysiCell_settings.enable_legend) // in this case I want just the legend and NOT the substrate
+	else if (!PhysiCell_settings.enable_substrate_plot && PhysiCell_settings.enable_legend) // in this case I want just the legend and NOT the substrate
 	{
 
 		// useful parameters to fit the legend into the svg
