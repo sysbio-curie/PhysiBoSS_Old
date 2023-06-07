@@ -1124,7 +1124,7 @@ void Cell::convert_to_cell_definition( Cell_Definition& cd )
 	parameters = cd.parameters; 
 	functions = cd.functions; 
 	
-	phenotype = cd.phenotype; 
+	phenotype = cd.phenotype;
 	// is_movable = true;
 	// is_out_of_domain = false;
 	
