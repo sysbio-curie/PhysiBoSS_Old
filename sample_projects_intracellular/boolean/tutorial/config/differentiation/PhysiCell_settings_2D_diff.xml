@@ -41,7 +41,7 @@
         <cell_phase>false</cell_phase>
         <cell_type>true</cell_type>
       </legend>
-      <plot_substrate enabled="true" limits="true">
+      <plot_substrate enabled="true" limits="false">
         <substrate>CCL19</substrate>
         <min_conc>0.0</min_conc>
         <max_conc>0.1</max_conc>
@@ -179,7 +179,7 @@
 
           <secretion>
             <substrate name="CCL19">
-              <secretion_rate units="1/min">1000</secretion_rate>
+              <secretion_rate units="1/min">10</secretion_rate>
               <secretion_target units="substrate density">100</secretion_target>
               <uptake_rate units="1/min">0.0</uptake_rate>
               <net_export_rate units="total substrate/min">0</net_export_rate>
@@ -192,7 +192,7 @@
             <settings>
               <intracellular_dt>6.0</intracellular_dt>
               <time_stochasticity>0</time_stochasticity>
-              <scaling>30.0</scaling>
+              <scaling>1.0</scaling>
               <inheritance global="False"/>
               <initial_conditions>
               </initial_conditions>
@@ -300,9 +300,9 @@
 
           <death>
             <model code="100" name="apoptosis">
-              <death_rate units="1/min">5.31667e-05</death_rate>
+              <death_rate units="1/min">0</death_rate>
               <phase_durations units="min">
-                <duration fixed_duration="true" index="0">516</duration>
+                <duration fixed_duration="true" index="0">0</duration>
               </phase_durations>
               <parameters>
                 <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
@@ -391,7 +391,7 @@
 
           <death>
             <model code="100" name="apoptosis">
-              <death_rate units="1/min">5.31667e-05</death_rate>
+              <death_rate units="1/min">0</death_rate>
               <phase_durations units="min">
                 <duration fixed_duration="true" index="0">516</duration>
               </phase_durations>
@@ -487,7 +487,7 @@
 
           <death>
             <model code="100" name="apoptosis">
-              <death_rate units="1/min">5.31667e-05</death_rate>
+              <death_rate units="1/min">0</death_rate>
               <phase_durations units="min">
                 <duration fixed_duration="true" index="0">516</duration>
               </phase_durations>
@@ -578,7 +578,7 @@
 
           <death>
             <model code="100" name="apoptosis">
-              <death_rate units="1/min">5.31667e-05</death_rate>
+              <death_rate units="1/min">0</death_rate>
               <phase_durations units="min">
                 <duration fixed_duration="true" index="0">516</duration>
               </phase_durations>
@@ -674,7 +674,7 @@
               <input intracellular_name="HGMB1" physicell_name="CCL19">
                 <settings>
                   <action>activation</action>
-                  <threshold>20.0</threshold>
+                  <threshold>1.0</threshold>
                   <smoothing>0</smoothing>
                 </settings>
               </input>
