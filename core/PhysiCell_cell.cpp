@@ -1089,7 +1089,7 @@ void Cell::convert_to_cell_definition( Cell_Definition& cd )
 	parameters = cd.parameters; 
 	functions = cd.functions; 
 	
-	phenotype = cd.phenotype; 
+	phenotype = cd.phenotype;
 	// is_movable = true;
 	// is_out_of_domain = false;
 	
@@ -2982,7 +2982,9 @@ Cell_Definition* initialize_cell_definition_from_pugixml( pugi::xml_node cd_node
 		}
 #endif
 
-	}	
+	} else {
+		pCD->phenotype.intracellular = NULL;
+	}
 
 	// set up custom data 
 	node = cd_node.child( "custom_data" );
