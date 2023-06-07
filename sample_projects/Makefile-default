@@ -200,13 +200,13 @@ physiboss-tutorial:
 	cp -r ./sample_projects_intracellular/boolean/tutorial/config/* ./config/
 
 physiboss-tutorial-invasion:
-	cp ./sample_projects_intracellular/boolean/invasion2/custom_modules/* ./custom_modules/
+	cp ./sample_projects_intracellular/boolean/cancer_invasion/custom_modules/* ./custom_modules/
 	touch main.cpp && cp main.cpp main-backup.cpp
-	cp ./sample_projects_intracellular/boolean/invasion2/main.cpp ./main.cpp 
+	cp ./sample_projects_intracellular/boolean/cancer_invasion/main.cpp ./main.cpp 
 	cp Makefile Makefile-backup
-	cp ./sample_projects_intracellular/boolean/invasion2/Makefile .
+	cp ./sample_projects_intracellular/boolean/cancer_invasion/Makefile .
 	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
-	cp -r ./sample_projects_intracellular/boolean/invasion2/config/* ./config/
+	cp -r ./sample_projects_intracellular/boolean/cancer_invasion/config/* ./config/
 
 ecoli-acetic-switch-sample:
 	cp ./sample_projects_intracellular/fba/ecoli_acetic_switch/custom_modules/* ./custom_modules/

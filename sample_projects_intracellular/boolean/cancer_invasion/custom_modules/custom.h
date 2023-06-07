@@ -102,10 +102,6 @@ inline double get_motility_amplitude( double percent )
 
 void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& phenoOther , double dt ); 
 
-void custom_cell_attach(Cell* pCell);
-
-void custom_detach_cells(Cell* pCell);
-
 /** \brief Return amount of contact with ECM */
 inline double contact_ecm(Cell* pCell)
 { double ecm_contact = pCell->custom_data["ecm_contact"]; return ecm_contact / pCell->phenotype.geometry.radius ; };
