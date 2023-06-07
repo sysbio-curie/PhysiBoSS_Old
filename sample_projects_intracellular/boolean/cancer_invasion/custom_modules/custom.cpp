@@ -361,20 +361,10 @@ void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& 
 
 void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
 
-	//std::cout << "how much ? " << pCell->custom_data["ecm_contact"] << std::endl;
-
 	return;
 }
 
 void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
-
-/*
-	if ( pCell->phenotype.intracellular->has_variable( "EMT" )){
-		if (pCell->phenotype.intracellular->get_boolean_variable_value( "EMT" ))
-			custom_detach_cells(pCell);
-		else
-			custom_cell_attach(pCell);
-		} */
 
 	return;
 }
@@ -445,48 +435,6 @@ void add_ecm_interaction(Cell* pC, int index_ecm, int index_voxel )
 		tmp_r/=distance;
 
 		pC->velocity += tmp_r * pC->displacement;
-	}
-
-}
-
-void custom_detach_cells(Cell* pCell){
-
-	double junction = pCell->custom_data["padhesion"];
-
-	for (auto cell_attached : pCell->state.attached_cells){
-
-		double otherJunction = cell_attached->custom_data["padhesion"];
-
-		if (junction * otherJunction < PhysiCell::parameters.doubles("cell_junctions_detach_threshold"))
-			detach_cells( cell_attached , pCell );
-
-	};
-
-	if (junction == 0.0)
-		pCell->remove_all_attached_cells();
-
-}
-
-void custom_cell_attach(Cell* pCell){
-
-	// check the neighbors of current cells, if there is a high level of integrins, it triggers the attachment
-
-	std::vector<Cell*> neigh = pCell->nearby_interacting_cells(); 
-
-	double junction = pCell->custom_data["padhesion"];
-
-	if (neigh.size() == 0)
-		return ;
-
-	for (int i = 0; i != neigh.size(); i++){
-
-		double otherJunction = neigh[i]->custom_data["padhesion"];
-
-		//should I also check the distance between the cells?
-
-		if (junction * otherJunction > PhysiCell::parameters.doubles("cell_junctions_attach_threshold"))
-			attach_cells( neigh[i] , pCell ); 
-
 	}
 
 }
