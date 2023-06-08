@@ -106,7 +106,6 @@ void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& 
 inline double contact_ecm(Cell* pCell)
 { double ecm_contact = pCell->custom_data["ecm_contact"]; return ecm_contact / pCell->phenotype.geometry.radius ; };
 
-void custom_update_cell_velocity( Cell* pCell, Phenotype& phenotype, double dt);
 void add_ecm_interaction( Cell* pCell, int index_ecm, int index_voxel );
 void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt);
 void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt);
