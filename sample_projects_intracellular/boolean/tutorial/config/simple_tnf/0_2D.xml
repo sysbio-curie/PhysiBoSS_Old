@@ -35,6 +35,11 @@
         <SVG>
             <interval units="min">5</interval>
             <enable>true</enable>
+            <plot_substrate enabled="true" limits="true">
+                <substrate>TNF</substrate>
+                <min_conc>0.0</min_conc>
+                <max_conc>10.0</max_conc>
+            </plot_substrate>
         </SVG>
         <legacy_data>
             <enable>false</enable>
