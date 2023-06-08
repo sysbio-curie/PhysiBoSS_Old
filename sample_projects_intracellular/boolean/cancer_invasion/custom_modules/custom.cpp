@@ -133,14 +133,14 @@ void create_cell_types( void )
 	pCD->functions.post_update_intracellular = post_update_intracellular;
 	pCD->functions.custom_cell_rule = custom_function; 
 	pCD->functions.contact_function = contact_function; 
-	pCD->functions.update_velocity = custom_update_cell_velocity; 
+	pCD->functions.update_velocity = standard_update_cell_velocity; 
 
 	pCD = find_cell_definition( "mesenchymal");
 	pCD->functions.pre_update_intracellular = pre_update_intracellular;
 	pCD->functions.post_update_intracellular = post_update_intracellular;
 	pCD->functions.custom_cell_rule = custom_function; 
 	pCD->functions.contact_function = contact_function;
-	pCD->functions.update_velocity = custom_update_cell_velocity; 
+	pCD->functions.update_velocity = standard_update_cell_velocity; 
 	
 	/*
 	   This builds the map of cell definitions and summarizes the setup. 
@@ -315,6 +315,17 @@ void phenotype_function( Cell* pCell, Phenotype& phenotype, double dt )
 
 void custom_function( Cell* pCell, Phenotype& phenotype , double dt )
 { 	
+	pCell->custom_data["ecm_contact"] = 0.0;
+	pCell->custom_data["nucleus_deform"] = 0.0;
+
+	int ecm_index = BioFVM::microenvironment.find_density_index("ecm");
+	if ( ecm_index >= 0 ){
+		add_ecm_interaction( pCell, ecm_index, pCell->get_current_mechanics_voxel_index() );
+		//add_TGFbeta_interaction(pCell, pCell->get_current_mechanics_voxel_index());
+	}
+
+	pCell->update_motility_vector(dt); 
+	pCell->velocity += phenotype.motility.motility_vector;
 	return; 	
 } 
 
@@ -437,57 +448,6 @@ void add_ecm_interaction(Cell* pC, int index_ecm, int index_voxel )
 		pC->velocity += tmp_r * pC->displacement;
 	}
 
-}
-
-
-void custom_update_cell_velocity( Cell* pCell, Phenotype& phenotype, double dt)
-{
-	if( pCell->functions.add_cell_basement_membrane_interactions )
-	{
-		pCell->functions.add_cell_basement_membrane_interactions(pCell, phenotype,dt);
-	}
-	
-	pCell->state.simple_pressure = 0.0; 
-	pCell->state.neighbors.clear(); // new 1.8.0
-	
-	//First check the neighbors in my current voxel
-	std::vector<Cell*>::iterator neighbor;
-	std::vector<Cell*>::iterator end = pCell->get_container()->agent_grid[pCell->get_current_mechanics_voxel_index()].end();
-	for(neighbor = pCell->get_container()->agent_grid[pCell->get_current_mechanics_voxel_index()].begin(); neighbor != end; ++neighbor)
-	{
-		pCell->add_potentials(*neighbor);
-	}
-	std::vector<int>::iterator neighbor_voxel_index;
-	std::vector<int>::iterator neighbor_voxel_index_end = 
-		pCell->get_container()->underlying_mesh.moore_connected_voxel_indices[pCell->get_current_mechanics_voxel_index()].end();
-
-	for( neighbor_voxel_index = 
-		pCell->get_container()->underlying_mesh.moore_connected_voxel_indices[pCell->get_current_mechanics_voxel_index()].begin();
-		neighbor_voxel_index != neighbor_voxel_index_end; 
-		++neighbor_voxel_index )
-	{
-		if(!is_neighbor_voxel(pCell, pCell->get_container()->underlying_mesh.voxels[pCell->get_current_mechanics_voxel_index()].center, pCell->get_container()->underlying_mesh.voxels[*neighbor_voxel_index].center, *neighbor_voxel_index))
-			continue;
-		end = pCell->get_container()->agent_grid[*neighbor_voxel_index].end();
-		for(neighbor = pCell->get_container()->agent_grid[*neighbor_voxel_index].begin();neighbor != end; ++neighbor)
-		{
-			pCell->add_potentials(*neighbor);
-		}
-	}
-
-	pCell->custom_data["ecm_contact"] = 0.0;
-	pCell->custom_data["nucleus_deform"] = 0.0;
-
-	int ecm_index = BioFVM::microenvironment.find_density_index("ecm");
-	if ( ecm_index >= 0 ){
-		add_ecm_interaction( pCell, ecm_index, pCell->get_current_mechanics_voxel_index() );
-		//add_TGFbeta_interaction(pCell, pCell->get_current_mechanics_voxel_index());
-	}
-
-	pCell->update_motility_vector(dt); 
-	pCell->velocity += phenotype.motility.motility_vector; 
-	
-	return; 
 }
 
 	// FUNCTIONS TO PLOT CELLS
