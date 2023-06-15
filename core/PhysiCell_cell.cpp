@@ -2982,7 +2982,11 @@ Cell_Definition* initialize_cell_definition_from_pugixml( pugi::xml_node cd_node
 		}
 #endif
 
-	}	
+	} else{
+
+		phenotype.intracellular = NULL;
+
+	}
 
 	// set up custom data 
 	node = cd_node.child( "custom_data" );
