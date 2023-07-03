@@ -4,8 +4,8 @@
 		<x_max>300</x_max>
 		<y_min>-300</y_min>
 		<y_max>300</y_max>
-		<z_min>-10</z_min>
-		<z_max>10</z_max>
+		<z_min>-300</z_min>
+		<z_max>300</z_max>
 		<dx>10</dx>
 		<dy>10</dy>
 		<dz>10</dz>
@@ -35,7 +35,7 @@
 		</full_data>
 		
 		<SVG>
-			<interval units="min">30</interval>
+			<interval units="min">10</interval>
 			<enable>true</enable>
       <legend enabled="true">
         <cell_phase>false</cell_phase>
@@ -139,9 +139,9 @@
           <cycle code="0" name="advanced_Ki67_cycle_model"> 
             <phase_transition_rates units="1/min"> 
 						<!-- - to + -->
-						<!--rate start_index="0" end_index="1" fixed_duration="true">1e30</rate-->
+						<rate start_index="0" end_index="1" fixed_duration="true">1e30</rate>
 						<!-- + (pre-mitotic) to + (post-mitotic)  -->
-<!-- 						<rate start_index="1" end_index="2" fixed_duration="true">1e30</rate> -->
+						<rate start_index="1" end_index="2" fixed_duration="true">0.001282051</rate>
 						<!-- + (post-mitotic) to - -->
 						<rate start_index="2" end_index="0" fixed_duration="true">0.006666667</rate>
 					  </phase_transition_rates>
@@ -235,6 +235,12 @@
               <secretion_rate units="1/min">0</secretion_rate>
               <secretion_target units="substrate density">0</secretion_target>
               <uptake_rate units="1/min">10</uptake_rate>
+              <net_export_rate units="total substrate/min">0</net_export_rate>
+            </substrate>
+            <substrate name="light">
+              <secretion_rate units="1/min">0</secretion_rate>
+              <secretion_target units="substrate density">0</secretion_target>
+              <uptake_rate units="1/min">0.0</uptake_rate>
               <net_export_rate units="total substrate/min">0</net_export_rate>
             </substrate>
             </secretion>
@@ -364,9 +370,9 @@
           <cycle code="0" name="advanced_Ki67_cycle_model"> 
             <phase_transition_rates units="1/min"> 
 						<!-- - to + -->
-						<!--rate start_index="0" end_index="1" fixed_duration="true">1e30</rate-->
+						<rate start_index="0" end_index="1" fixed_duration="true">1e30</rate>
 						<!-- + (pre-mitotic) to + (post-mitotic)  -->
-						<rate start_index="1" end_index="2" fixed_duration="true">1e30</rate>
+						<rate start_index="1" end_index="2" fixed_duration="true">0.001282051</rate>
 						<!-- + (post-mitotic) to - -->
 						<rate start_index="2" end_index="0" fixed_duration="true">0.006666667</rate>
 					  </phase_transition_rates>
@@ -467,6 +473,12 @@
               <uptake_rate units="1/min">10</uptake_rate>
               <net_export_rate units="total substrate/min">0</net_export_rate>
             </substrate>
+            <substrate name="light">
+              <secretion_rate units="1/min">0</secretion_rate>
+              <secretion_target units="substrate density">0</secretion_target>
+              <uptake_rate units="1/min">0.0</uptake_rate>
+              <net_export_rate units="total substrate/min">0</net_export_rate>
+            </substrate>
             </secretion>
 
           <!-- <cell_transformations>
@@ -495,7 +507,7 @@
               <input intracellular_name="Pressure" physicell_name="pressure">
                 <settings>
                   <action>activation</action>
-                  <threshold>1.0</threshold>
+                  <threshold>0.1</threshold>
                   <smoothing>0</smoothing>
                 </settings>
               </input>
