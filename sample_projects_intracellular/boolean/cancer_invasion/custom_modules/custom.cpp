@@ -192,7 +192,7 @@ void setup_microenvironment( void )
 	initialize_microenvironment(); 	
 	set_substrate_density(ecm_index, ECM_max, ECM_min, radius_ECM);
 	
-	//set_substrate_density(tgfbeta_index, tgfbeta_max, tgfbeta_min, radius_tgfbeta);
+	set_substrate_density(tgfbeta_index, tgfbeta_max, tgfbeta_min, radius_tgfbeta);
 
 	return; 
 }
