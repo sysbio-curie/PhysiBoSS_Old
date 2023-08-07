@@ -23,7 +23,7 @@
     </domain>
 
     <overall>
-        <max_time units="min">12000</max_time>
+        <max_time units="min">300</max_time>
         <time_units>min</time_units>
         <space_units>micron</space_units>
         <dt_diffusion units="min">0.5</dt_diffusion>
@@ -182,7 +182,7 @@
                     <substrate name="TNF">
                         <secretion_rate units="1/min">0.0</secretion_rate>
                         <secretion_target units="substrate density">1.0</secretion_target>
-                        <uptake_rate units="1/min">0</uptake_rate>
+                        <uptake_rate units="1/min">0.0</uptake_rate>
                         <net_export_rate units="total substrate/min">0.0</net_export_rate>
                     </substrate>
                 </secretion>
@@ -204,42 +204,6 @@
                         <transformation_rate name="default" units="1/min">0.0</transformation_rate>
                     </transformation_rates>
                 </cell_transformations>
-                <intracellular type="maboss">
-                    <bnd_filename>config/simple_tnf/boolean_network/cellfate.bnd</bnd_filename>
-                    <cfg_filename>config/simple_tnf/boolean_network/cellfate.cfg</cfg_filename>
-                    <settings>
-                        <intracellular_dt>1440</intracellular_dt>
-                        <time_stochasticity>0.5</time_stochasticity>
-                        <scaling>60</scaling>
-                        <start_time>0.0</start_time>
-                        <inheritance global="True" />
-                    </settings>
-                    <mapping>
-                        <input physicell_name="TNF" intracellular_name="TNF">
-                            <settings>
-                                <action>activation</action>
-                                <threshold>1</threshold>
-                                <smoothing>0</smoothing>
-                            </settings>
-                        </input>
-                        <output physicell_name="apoptosis" intracellular_name="Apoptosis">
-                            <settings>
-                                <action>activation</action>
-                                <value>1000000</value>
-                                <base_value>0</base_value>
-                                <smoothing>0</smoothing>
-                            </settings>
-                        </output>
-                        <output physicell_name="necrosis" intracellular_name="NonACD">
-                            <settings>
-                                <action>activation</action>
-                                <value>1000000</value>
-                                <base_value>0</base_value>
-                                <smoothing>0</smoothing>
-                            </settings>
-                        </output>
-                    </mapping>
-                </intracellular>
             </phenotype>
             <custom_data>
                 <somedata conserved="false" units="dimensionless" description="">1.0</somedata>
@@ -258,7 +222,7 @@
         <random_seed type="int" units="dimensionless" description="">0</random_seed>
         <treatment type="bool" units="dimensionless" description="">True</treatment>
         <treatment_substrate type="string" units="dimensionless" description="">TNF</treatment_substrate>
-        <treatment_period type="int" units="minutes" description="">3440</treatment_period>
-        <treatment_duration type="int" units="minutes" description="">2000</treatment_duration>
+        <treatment_period type="int" units="minutes" description="">11000</treatment_period>
+        <treatment_duration type="int" units="minutes" description="">10500</treatment_duration>
     </user_parameters>
 </PhysiCell_settings>
