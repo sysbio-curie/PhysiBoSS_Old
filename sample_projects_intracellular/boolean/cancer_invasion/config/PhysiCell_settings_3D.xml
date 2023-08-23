@@ -4,11 +4,11 @@
 		<x_max>300</x_max>
 		<y_min>-300</y_min>
 		<y_max>300</y_max>
-		<z_min>-10</z_min>
-		<z_max>10</z_max>
-		<dx>10</dx>
-		<dy>10</dy>
-		<dz>10</dz>
+		<z_min>-300</z_min>
+		<z_max>300</z_max>
+		<dx>20</dx>
+		<dy>20</dy>
+		<dz>20</dz>
 		<use_2D>false</use_2D>
 	</domain>
 	
