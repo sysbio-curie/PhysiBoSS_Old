@@ -174,25 +174,10 @@ void setup_microenvironment( void )
 	
 	// put any custom code to set non-homogeneous initial conditions or 
 	// extra Dirichlet nodes here. 
-
-	double radius_ECM = parameters.doubles("config_radius");
-	double radius_tgfbeta = parameters.doubles("tgfbeta_radius");
-
-	double ECM_min = parameters.doubles("density_ECM_min");
-	double ECM_max = parameters.doubles("density_ECM_max");
-	double tgfbeta_max = parameters.doubles("density_tgfbeta_max");
-	double tgfbeta_min = parameters.doubles("density_tgfbeta_min");
-
-	int ecm_index = microenvironment.find_density_index("ecm");
-	int tgfbeta_index = microenvironment.find_density_index("tgfbeta");
-	
 	
 	// initialize BioFVM 
 	
 	initialize_microenvironment(); 	
-	set_substrate_density(ecm_index, ECM_max, ECM_min, radius_ECM);
-	
-	set_substrate_density(tgfbeta_index, tgfbeta_max, tgfbeta_min, radius_tgfbeta);
 
 	return; 
 }
@@ -200,36 +185,19 @@ void setup_microenvironment( void )
 void setup_tissue( void )
 {
 	// place a cluster of tumor cells at the center 
-	double cell_radius = cell_defaults.phenotype.geometry.radius; 
-	double cell_spacing = 0.95 * 2.0 * cell_radius; 
-	
-	double tumor_radius = parameters.doubles( "tumor_radius" ); // 250.0; 
-	
-	// Parameter<double> temp; 
-	
-	int i = parameters.doubles.find_index( "tumor_radius" ); 
-	
-	Cell* pCell = NULL; 
-	
-	std::vector<std::vector<double>> positions;	
+	load_cells_from_pugixml(); 
 
-	if (default_microenvironment_options.simulate_2D == true){
-		positions = create_cell_disc_positions(cell_radius,tumor_radius);
-		std::cout << "ENABLED 2D SIMULATION" << std::endl; 
-	}
-	else
-		positions = create_cell_sphere_positions(cell_radius,tumor_radius);
-	std::cout << "creating " << positions.size() << " closely-packed tumor cells ... " << std::endl;
+	// removing substrate in cell voxel
+	int ecm_index = BioFVM::microenvironment.find_density_index("ecm");
+	int tgfbeta_index = BioFVM::microenvironment.find_density_index("tgfbeta");
+	for( int i=0; i < (*all_cells).size(); i++ )
+		{
+			Cell* pC = (*all_cells)[i]; 
 
-
-	for( int i=0; i < positions.size(); i++ )
-	{
-		pCell = create_cell(get_cell_definition("epithelial")); 
-		
-		pCell->assign_position( positions[i] );
-	}
-	
-	return; 
+			int voxel_index = pC->get_current_voxel_index();
+			microenvironment.density_vector(voxel_index)[ecm_index] = 0.0;
+			microenvironment.density_vector(voxel_index)[tgfbeta_index] = 0.0;
+		}
 }
 
 
@@ -320,7 +288,7 @@ void custom_function( Cell* pCell, Phenotype& phenotype , double dt )
 
 	int ecm_index = BioFVM::microenvironment.find_density_index("ecm");
 	if ( ecm_index >= 0 ){
-		add_ecm_interaction( pCell, ecm_index, pCell->get_current_mechanics_voxel_index() );
+		add_ecm_interaction( pCell, ecm_index, pCell->get_current_voxel_index() );
 		//add_TGFbeta_interaction(pCell, pCell->get_current_mechanics_voxel_index());
 	}
 
@@ -392,7 +360,7 @@ void add_ecm_interaction(Cell* pC, int index_ecm, int index_voxel )
 	if ( dens > EPSILON )
 	{
 		// Distance between agent center and ECM voxel center
-		pC->displacement = pC->position - pC->get_container()->underlying_mesh.voxels[index_voxel].center;
+		pC->displacement = pC->position - microenvironment.mesh.voxels[index_voxel].center;
 		double distance = norm(pC->displacement);
 		// Make sure that the distance is not zero
 		distance = std::max(distance, EPSILON);

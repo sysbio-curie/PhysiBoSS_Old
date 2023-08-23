@@ -1,20 +1,29 @@
 <PhysiCell_settings version="devel-version">
 
+    <cell_rules>
+        <rulesets>
+            <ruleset protocol="CBHG" version="2.0" format="csv" enabled="true">
+                <folder>config</folder>
+                <filename>rules.csv</filename>
+            </ruleset>
+        </rulesets>
+    </cell_rules>
+
     <domain>
-        <x_min>-300</x_min>
-        <x_max>300</x_max>
-        <y_min>-300</y_min>
-        <y_max>300</y_max>
-        <z_min>-5</z_min>
-        <z_max>5</z_max>
-        <dx>10</dx>
-        <dy>10</dy>
-        <dz>10</dz>
+        <x_min>-500</x_min>
+        <x_max>500</x_max>
+        <y_min>-500</y_min>
+        <y_max>500</y_max>
+        <z_min>-10</z_min>
+        <z_max>10</z_max>
+        <dx>20</dx>
+        <dy>20</dy>
+        <dz>20</dz>
         <use_2D>true</use_2D>
     </domain>
 
     <overall>
-        <max_time units="min">3500</max_time>
+        <max_time units="min">5760.0</max_time>
         <time_units>min</time_units>
         <space_units>micron</space_units>
         <dt_diffusion units="min">0.01</dt_diffusion>
@@ -59,7 +68,7 @@
     <microenvironment_setup>
         <variable name="oxygen" units="dimensionless" ID="0">
             <physical_parameter_set>
-                <diffusion_coefficient units="micron^2/min">6000.0</diffusion_coefficient>
+                <diffusion_coefficient units="micron^2/min">60000.0</diffusion_coefficient>
                 <decay_rate units="1/min">0.0</decay_rate>
             </physical_parameter_set>
             <initial_condition units="mmHg">38.0</initial_condition>
@@ -78,7 +87,7 @@
                 <diffusion_coefficient units="micron^2/min">0.0</diffusion_coefficient>
                 <decay_rate units="1/min">0.0</decay_rate>
             </physical_parameter_set>
-            <initial_condition units="mmHg">0.0</initial_condition>
+            <initial_condition units="mmHg">0.5</initial_condition>
             <Dirichlet_boundary_condition units="mmHg" enabled="False">0.0</Dirichlet_boundary_condition>
             <Dirichlet_options>
                 <boundary_value ID="xmin" enabled="False">0.0</boundary_value>
@@ -94,7 +103,7 @@
                 <diffusion_coefficient units="micron^2/min">0.0</diffusion_coefficient>
                 <decay_rate units="1/min">0.0</decay_rate>
             </physical_parameter_set>
-            <initial_condition units="mmHg">0.0</initial_condition>
+            <initial_condition units="mmHg">0.5</initial_condition>
             <Dirichlet_boundary_condition units="mmHg" enabled="False">0.0</Dirichlet_boundary_condition>
             <Dirichlet_options>
                 <boundary_value ID="xmin" enabled="False">0.0</boundary_value>
@@ -139,8 +148,8 @@
                 <cycle code="0" name="advanced Ki67">
                     <phase_transition_rates units="1/min">
                         <rate start_index="0" end_index="1" fixed_duration="true">1e30</rate>
-                        <rate start_index="1" end_index="2" fixed_duration="false">0.001282051</rate>
-                        <rate start_index="2" end_index="0" fixed_duration="false">0.006666667</rate>
+                        <rate start_index="1" end_index="2" fixed_duration="true">0.001282051</rate>
+                        <rate start_index="2" end_index="0" fixed_duration="true">0.006666667</rate>
                     </phase_transition_rates>
                 </cycle>
                 <death>
@@ -187,8 +196,8 @@
                 </volume>
                 <mechanics>
                     <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
-                    <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
-                    <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+                    <cell_cell_repulsion_strength units="micron/min">100.0</cell_cell_repulsion_strength>
+                    <relative_maximum_adhesion_distance units="dimensionless">1.6</relative_maximum_adhesion_distance>
                     <cell_adhesion_affinities>
                         <cell_adhesion_affinity name="epithelial">1.0</cell_adhesion_affinity>
                         <cell_adhesion_affinity name="mesenchymal">1.0</cell_adhesion_affinity>
@@ -199,8 +208,8 @@
                     </options>
                     <cell_BM_adhesion_strength units="micron/min">4.0</cell_BM_adhesion_strength>
                     <cell_BM_repulsion_strength units="micron/min">10.0</cell_BM_repulsion_strength>
-                    <attachment_elastic_constant units="1/min">0.1</attachment_elastic_constant>
-                    <attachment_rate units="1/min">0.0</attachment_rate>
+                    <attachment_elastic_constant units="1/min">0.05</attachment_elastic_constant>
+                    <attachment_rate units="1/min">10.0</attachment_rate>
                     <detachment_rate units="1/min">0.0</detachment_rate>
                 </mechanics>
                 <motility>
@@ -208,7 +217,7 @@
                     <persistence_time units="min">1</persistence_time>
                     <migration_bias units="dimensionless">0.0</migration_bias>
                     <options>
-                        <enabled>true</enabled>
+                        <enabled>false</enabled>
                         <use_2D>true</use_2D>
                         <chemotaxis>
                             <enabled>false</enabled>
@@ -231,7 +240,7 @@
                     <substrate name="oxygen">
                         <secretion_rate units="1/min">0</secretion_rate>
                         <secretion_target units="substrate density">0</secretion_target>
-                        <uptake_rate units="1/min">0.1</uptake_rate>
+                        <uptake_rate units="1/min">0.05</uptake_rate>
                         <net_export_rate units="total substrate/min">0</net_export_rate>
                     </substrate>
                     <substrate name="ecm">
@@ -279,7 +288,7 @@
                     <bnd_filename>config/boolean_network/intracellular_model.bnd</bnd_filename>
                     <cfg_filename>config/boolean_network/intracellular_model.cfg</cfg_filename>
                     <settings>
-                        <intracellular_dt>10.0</intracellular_dt>
+                        <intracellular_dt>6.0</intracellular_dt>
                         <time_stochasticity>0.2</time_stochasticity>
                         <scaling>60.0</scaling>
                         <start_time>0.0</start_time>
@@ -289,8 +298,8 @@
                         <input physicell_name="oxygen" intracellular_name="Oxy">
                             <settings>
                                 <action>activation</action>
-                                <threshold>1.0</threshold>
-                                <smoothing>0</smoothing>
+                                <threshold>5.0</threshold>
+                                <smoothing>10</smoothing>
                             </settings>
                         </input>
                         <input physicell_name="custom:cell_contact" intracellular_name="Neigh">
@@ -364,7 +373,7 @@
                         <output physicell_name="ecm uptake" intracellular_name="ECM_degrad">
                             <settings>
                                 <action>activation</action>
-                                <value>1</value>
+                                <value>0.01</value>
                                 <base_value>0</base_value>
                                 <smoothing>0</smoothing>
                             </settings>
@@ -395,8 +404,8 @@
                 <cycle code="0" name="advanced Ki67">
                     <phase_transition_rates units="1/min">
                         <rate start_index="0" end_index="1" fixed_duration="true">1e30</rate>
-                        <rate start_index="1" end_index="2" fixed_duration="false">0.001282051</rate>
-                        <rate start_index="2" end_index="0" fixed_duration="false">0.006666667</rate>
+                        <rate start_index="1" end_index="2" fixed_duration="true">0.001282051</rate>
+                        <rate start_index="2" end_index="0" fixed_duration="true">0.006666667</rate>
                     </phase_transition_rates>
                 </cycle>
                 <death>
@@ -443,11 +452,11 @@
                 </volume>
                 <mechanics>
                     <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
-                    <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
-                    <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+                    <cell_cell_repulsion_strength units="micron/min">100.0</cell_cell_repulsion_strength>
+                    <relative_maximum_adhesion_distance units="dimensionless">1.5</relative_maximum_adhesion_distance>
                     <cell_adhesion_affinities>
-                        <cell_adhesion_affinity name="mesenchymal">0.0</cell_adhesion_affinity>
-                        <cell_adhesion_affinity name="epithelial">0.2</cell_adhesion_affinity>
+                        <cell_adhesion_affinity name="mesenchymal">0.1</cell_adhesion_affinity>
+                        <cell_adhesion_affinity name="epithelial">0.1</cell_adhesion_affinity>
                     </cell_adhesion_affinities>
                     <options>
                         <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
@@ -455,9 +464,9 @@
                     </options>
                     <cell_BM_adhesion_strength units="micron/min">4.0</cell_BM_adhesion_strength>
                     <cell_BM_repulsion_strength units="micron/min">10.0</cell_BM_repulsion_strength>
-                    <attachment_elastic_constant units="1/min">0.0</attachment_elastic_constant>
-                    <attachment_rate units="1/min">0.0</attachment_rate>
-                    <detachment_rate units="1/min">0.0</detachment_rate>
+                    <attachment_elastic_constant units="1/min">0.01</attachment_elastic_constant>
+                    <attachment_rate units="1/min">10.0</attachment_rate>
+                    <detachment_rate units="1/min">1.0</detachment_rate>
                 </mechanics>
                 <motility>
                     <speed units="micron/min">0.3</speed>
@@ -487,7 +496,7 @@
                     <substrate name="oxygen">
                         <secretion_rate units="1/min">0</secretion_rate>
                         <secretion_target units="substrate density">0</secretion_target>
-                        <uptake_rate units="1/min">0.1</uptake_rate>
+                        <uptake_rate units="1/min">0.05</uptake_rate>
                         <net_export_rate units="total substrate/min">0</net_export_rate>
                     </substrate>
                     <substrate name="ecm">
@@ -534,12 +543,8 @@
                 <intracellular type="maboss">
                     <bnd_filename>config/boolean_network/intracellular_model.bnd</bnd_filename>
                     <cfg_filename>config/boolean_network/intracellular_model.cfg</cfg_filename>
-                    <initial_values>
-                        <initial_value intracellular_name="Pressure">0.0</initial_value>
-                        <initial_value intracellular_name="GF">1.0</initial_value>
-                    </initial_values>
                     <settings>
-                        <intracellular_dt>10.0</intracellular_dt>
+                        <intracellular_dt>6.0</intracellular_dt>
                         <time_stochasticity>0.2</time_stochasticity>
                         <scaling>60.0</scaling>
                         <start_time>0.0</start_time>
@@ -550,7 +555,7 @@
                             <settings>
                                 <action>activation</action>
                                 <threshold>5.0</threshold>
-                                <smoothing>0</smoothing>
+                                <smoothing>10</smoothing>
                             </settings>
                         </input>
                         <input physicell_name="custom:cell_contact" intracellular_name="Neigh">
@@ -600,49 +605,41 @@
                         <output physicell_name="migration speed" intracellular_name="Migration">
                             <settings>
                                 <action>activation</action>
-                                <value>1</value>
+                                <value>1.2</value>
                                 <base_value>0.5</base_value>
-                                <smoothing>1</smoothing>
+                                <smoothing>10</smoothing>
                             </settings>
                         </output>
                         <output physicell_name="migration bias" intracellular_name="Migration">
                             <settings>
                                 <action>activation</action>
-                                <value>0.85</value>
-                                <base_value>0.5</base_value>
-                                <smoothing>1</smoothing>
+                                <value>0.98</value>
+                                <base_value>0.8</base_value>
+                                <smoothing>10</smoothing>
                             </settings>
                         </output>
                         <output physicell_name="migration persistence time" intracellular_name="Migration">
                             <settings>
                                 <action>activation</action>
-                                <value>5</value>
-                                <base_value>0</base_value>
-                                <smoothing>1</smoothing>
+                                <value>15</value>
+                                <base_value>1</base_value>
+                                <smoothing>15</smoothing>
                             </settings>
                         </output>
                         <output physicell_name="chemotactic response to oxygen" intracellular_name="Migration">
                             <settings>
                                 <action>activation</action>
-                                <value>1</value>
+                                <value>10</value>
                                 <base_value>0.5</base_value>
                                 <smoothing>1</smoothing>
                             </settings>
                         </output>
-                        <output physicell_name="transform to epithelial" intracellular_name="EMT">
-                            <settings>
-                                <action>inhibition</action>
-                                <value>1</value>
-                                <base_value>0</base_value>
-                                <smoothing>50</smoothing>
-                            </settings>
-                        </output>
-                        <output physicell_name="adhesive affinity to epithelial" intracellular_name="EMT">
+                        <output physicell_name="cell-cell adhesion elastic constant" intracellular_name="EMT">
                             <settings>
                                 <action>activation</action>
                                 <value>0</value>
-                                <base_value>1</base_value>
-                                <smoothing>20</smoothing>
+                                <base_value>0.01</base_value>
+                                <smoothing>25</smoothing>
                             </settings>
                         </output>
                         <output physicell_name="custom:pintegrin" intracellular_name="ECM_adh">
@@ -664,9 +661,17 @@
                         <output physicell_name="exit from cycle phase 1" intracellular_name="Cell_growth">
                             <settings>
                                 <action>activation</action>
-                                <value>0.05</value>
+                                <value>50</value>
                                 <base_value>0</base_value>
-                                <smoothing>20</smoothing>
+                                <smoothing>50</smoothing>
+                            </settings>
+                        </output>
+                        <output physicell_name="transform to epithelial" intracellular_name="EMT">
+                            <settings>
+                                <action>inhibition</action>
+                                <value>0.5</value>
+                                <base_value>0.0</base_value>
+                                <smoothing>100</smoothing>
                             </settings>
                         </output>
                     </mapping>
@@ -685,7 +690,7 @@
     </cell_definitions>
 
     <initial_conditions>
-        <cell_positions enabled="false" type="csv">
+        <cell_positions enabled="true" type="csv">
             <folder>./config</folder>
             <filename>cells.csv</filename>
         </cell_positions>
@@ -705,7 +710,7 @@
         <ECM_TGFbeta_ratio type="double" units="" description="change the threshold needed to start sensing TGFbeta inside a voxel with ECM (cell must degrades a certain amount of ECM before sensing TGFbeta)">0.75</ECM_TGFbeta_ratio>
         <ecm_adhesion_min type="double" units="" description="used to set the min adhesion between cells and ECM"> 1 </ecm_adhesion_min>
         <ecm_adhesion_max type="double" units="" description="used to set the min adhesion between cells and ECM"> 2 </ecm_adhesion_max>
-        <cell_ecm_repulsion type="double" units="" description="change the value of ECM repulsion"> 15 </cell_ecm_repulsion>
+        <cell_ecm_repulsion type="double" units="" description="change the value of ECM repulsion"> 20</cell_ecm_repulsion>
         <cell_junctions_attach_threshold type="double" units="" description="change the threshold needed to attach cells in cluster with cell junction">0.6</cell_junctions_attach_threshold>
         <cell_junctions_detach_threshold type="double" units="" description="change the threshold needed to detach cells in cluster with cell junction">0.003</cell_junctions_detach_threshold>
         <migration_bias type="double" units="" description="change value of migration bias for cells with migration node active">0.85</migration_bias>
