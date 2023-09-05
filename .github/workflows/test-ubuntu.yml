@@ -59,12 +59,12 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get install flex bison
       
-    - name: Build Virus Macrophage project
+    - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
         make
         
-    - name: Run PhysiBoSS cell lines project
+    - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
         ./project config/simple_tnf/4_mutants.xml
