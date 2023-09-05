@@ -417,7 +417,7 @@
 
     <initial_conditions>
         <cell_positions enabled="true" type="csv">
-            <folder>/home/vincent/Work/code/PhysiBoSSa/config/simple_tnf</folder>
+            <folder>config/simple_tnf</folder>
             <filename>cells_mutant.csv</filename>
         </cell_positions>
     </initial_conditions>
