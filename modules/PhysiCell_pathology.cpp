@@ -753,12 +753,13 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 	// draw a box around the plot window
 	Write_SVG_rect( os , 0 , top_margin, plot_width, plot_height , 0.002 * plot_height , "rgb(0,0,0)", "none" );
 
-	if(substrate_coloring_function != NULL){
+	if(PhysiCell_settings.enable_substrate_plot == true && (*substrate_coloring_function) != NULL)
+	{
 
 		// add legend for the substrate
 
 		double conc_interval = (max_conc - min_conc) / 10; // setting the interval for the values in the legend.
- 
+	
 		szString = new char [1024]; 
 		double upper_left_x = plot_width + 25.0;
 		double sub_rect_height = (plot_height - 25.0) / 10.0;
@@ -788,9 +789,10 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 			PhysiCell_SVG_options.font_color.c_str() , PhysiCell_SVG_options.font.c_str() ); // misterious values set with a trial and error approach due to OCD. But now the legend is coherent at pixel level
 
 		delete [] szString;
+		
+		Write_SVG_rect(os, 25.0 + plot_width, top_margin, 25.0, plot_height - 25, 0.002 * plot_height , "black", "none"); // nice black contour around the legend
 	}
 	
-	Write_SVG_rect(os, 25.0 + plot_width, top_margin, 25.0, plot_height - 25, 0.002 * plot_height , "black", "none"); // nice black contour around the legend
 	std::map<std::string, int> color_map;
 	if (PhysiCell_settings.cell_phase && PhysiCell_settings.enable_legend)
 	{
