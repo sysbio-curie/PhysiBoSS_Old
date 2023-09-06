@@ -74,4 +74,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with: 
         name: tutorial_binary_linux
-        path: project
+        path: project config
