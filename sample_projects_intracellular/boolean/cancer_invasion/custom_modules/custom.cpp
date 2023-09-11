@@ -201,149 +201,105 @@ void setup_tissue( void )
 }
 
 
-std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius, double sphere_radius)
-{
-	std::vector<std::vector<double>> cells;
-	int xc=0,yc=0,zc=0;
-	double x_spacing= cell_radius*sqrt(3);
-	double y_spacing= cell_radius*2;
-	double z_spacing= cell_radius*sqrt(3);
-
-	std::vector<double> tempPoint(3,0.0);
-	// std::vector<double> cylinder_center(3,0.0);
-
-	for(double z=-sphere_radius;z<sphere_radius;z+=z_spacing, zc++)
-	{
-		for(double x=-sphere_radius;x<sphere_radius;x+=x_spacing, xc++)
-		{
-			for(double y=-sphere_radius;y<sphere_radius;y+=y_spacing, yc++)
-			{
-				tempPoint[0]=x + (zc%2) * 0.5 * cell_radius;
-				tempPoint[1]=y + (xc%2) * cell_radius;
-				tempPoint[2]=z;
-
-				if(sqrt(norm_squared(tempPoint))< sphere_radius)
-				{ cells.push_back(tempPoint); }
-			}
-
-		}
-	}
-	return cells;
-
-}
-
-std::vector<std::vector<double>> create_cell_disc_positions(double cell_radius, double disc_radius)
-{	 
-	double cell_spacing = 0.95 * 2.0 * cell_radius; 
-	
-	double x = 0.0; 
-	double y = 0.0; 
-	double x_outer = 0.0;
-
-	std::vector<std::vector<double>> positions;
-	std::vector<double> tempPoint(3,0.0);
-	
-	int n = 0; 
-	while( y < disc_radius )
-	{
-		x = 0.0; 
-		if( n % 2 == 1 )
-		{ x = 0.5 * cell_spacing; }
-		x_outer = sqrt( disc_radius*disc_radius - y*y ); 
-		
-		while( x < x_outer )
-		{
-			tempPoint[0]= x; tempPoint[1]= y;	tempPoint[2]= 0.0;
-			positions.push_back(tempPoint);			
-			if( fabs( y ) > 0.01 )
-			{
-				tempPoint[0]= x; tempPoint[1]= -y;	tempPoint[2]= 0.0;
-				positions.push_back(tempPoint);
-			}
-			if( fabs( x ) > 0.01 )
-			{ 
-				tempPoint[0]= -x; tempPoint[1]= y;	tempPoint[2]= 0.0;
-				positions.push_back(tempPoint);
-				if( fabs( y ) > 0.01 )
-				{
-					tempPoint[0]= -x; tempPoint[1]= -y;	tempPoint[2]= 0.0;
-					positions.push_back(tempPoint);
-				}
-			}
-			x += cell_spacing; 
-		}		
-		y += cell_spacing * sqrt(3.0)/2.0; 
-		n++; 
-	}
-	return positions;
-}
-
 void phenotype_function( Cell* pCell, Phenotype& phenotype, double dt )
 { return; }
 
 void custom_function( Cell* pCell, Phenotype& phenotype , double dt )
 { 	
+
+	pCell->custom_data["cell_contact"] = 0.0;
+	for( int j=0; j < pCell->nearby_interacting_cells().size(); j++ )
+    {
+        Cell* pTest = pCell->nearby_interacting_cells()[j]; 
+		contact_function(pCell, phenotype, pTest, pTest->phenotype, dt);
+    }
+	
+	for( int j=0; j < pCell->state.spring_attachments.size(); j++ )
+    {
+        Cell* pTest = pCell->state.spring_attachments[j]; 
+        contact_function(pCell, phenotype, pTest, pTest->phenotype, dt);
+    }
+
+	// ADDING ECM PHYSICAL INTERACTION AND ADHESION
+
 	pCell->custom_data["ecm_contact"] = 0.0;
 	pCell->custom_data["nucleus_deform"] = 0.0;
+	//std::cout << pCell->custom_data["nucleus_deform"] << std::endl;
 
 	int ecm_index = BioFVM::microenvironment.find_density_index("ecm");
 	if ( ecm_index >= 0 ){
 		add_ecm_interaction( pCell, ecm_index, pCell->get_current_voxel_index() );
 		//add_TGFbeta_interaction(pCell, pCell->get_current_mechanics_voxel_index());
-	}
+		std::vector<int>::iterator neighbor_voxel_index;
+		std::vector<int>::iterator neighbor_voxel_index_end = 
+		microenvironment.mesh.moore_connected_voxel_indices[pCell->get_current_voxel_index()].end();
 
-	pCell->update_motility_vector(dt); 
-	pCell->velocity += phenotype.motility.motility_vector;
+		for( neighbor_voxel_index = 
+			microenvironment.mesh.moore_connected_voxel_indices[pCell->get_current_voxel_index()].begin();
+			neighbor_voxel_index != neighbor_voxel_index_end; 
+			++neighbor_voxel_index )
+		{
+			add_ecm_interaction( pCell, ecm_index, *neighbor_voxel_index );
+			
+		}
+
+		/* pCell->update_motility_vector(dt); 
+		pCell->velocity += phenotype.motility.motility_vector; */
+	}
+	
 	return; 	
 } 
 
+// This function is never called because I am not using "dynamic attachment" but I am using the "dynamic SPRING adhesion"
 void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& phenoOther , double dt )
 { 
+
 	std::vector<double> displacement = pOther->position;
 	displacement -= pMe->position;
 	double distance = norm( displacement ); 
 			
 	double max_distance = pMe->phenotype.geometry.radius + 
 				pOther->phenotype.geometry.radius; 
-	max_distance *=  1.1;  //parameters.doubles("max_interaction_factor"); 
+	max_distance *=  pMe->phenotype.mechanics.relative_maximum_adhesion_distance;  //parameters.doubles("max_interaction_factor"); 
 
 			//std::cout << max_distance << " - " << distance << "\n";
 
 	double interaction_distance = max_distance - distance;
-	if (interaction_distance < 0){
 
-		// let's try to calculate the shared surface between two overlapping agents:
-		// I will start calculating the shared volume (volume of a frustum of a sphere)
-		// theoretically this should be more 'rigorous' than using a general percentage
-
-		double r1 = pMe->phenotype.geometry.radius;
-		double r2 = pOther->phenotype.geometry.radius;
-
-
-		double a = (r1 + r2 + distance) / 2.0;
-  		double h = 2.0 / distance * std::sqrt(a * (a - r1) * (a - r2) * (a - distance));
-  		double V = M_PI / 3.0 * h * (r1 + r2 - distance) * (r1 + r2 - distance);
-
-		// once I have the amount of overlap volume, I can calculate the amount of area overlap
-
-		double r = std::min(r1, r2);
-  		double S = 4.0 * M_PI * r * r - V; // this is the amount of area overlap between two agents
-
-		double new_perc_distance = S / (4 * M_PI * (pMe->phenotype.geometry.radius * pMe->phenotype.geometry.radius));
+	if (interaction_distance > 0){
 
 		double perc_distance = distance / pMe->phenotype.geometry.radius ;
-		pMe->custom_data["cell_contact"] += new_perc_distance;
+		pMe->custom_data["cell_contact"] += perc_distance;
 			}
+	else {
+		pMe->detach_cell_as_spring(pOther);
+	}
 
 	return; 
 } 
 
 void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
-
 	return;
 }
 
 void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
+
+
+	if (pCell->phenotype.intracellular->get_boolean_variable_value("ECM_degrad")){
+		std::vector<double> scaled_orientation = phenotype.geometry.radius * pCell->state.orientation;
+		std::vector<double> position_membrane = pCell->position + scaled_orientation;
+		int voxel_membrane = microenvironment.nearest_voxel_index( position_membrane );
+		int ecm_index = BioFVM::microenvironment.find_density_index("ecm");
+		double collagen_density = microenvironment.density_vector(voxel_membrane)[ecm_index];
+		
+		// Compute the new collagen density to simulate degradation
+		collagen_density *= (1 - pCell->phenotype.secretion.uptake_rates[ecm_index]); 
+		
+		// Update the current voxel with the new collagen density
+		microenvironment.density_vector(voxel_membrane)[ecm_index] = collagen_density;
+
+
+	}
 
 	return;
 }
@@ -413,7 +369,7 @@ void add_ecm_interaction(Cell* pC, int index_ecm, int index_voxel )
 			return;
 		tmp_r/=distance;
 
-		pC->velocity += tmp_r * pC->displacement;
+		axpy( &pC->velocity , tmp_r , pC->displacement ); 
 	}
 
 }

@@ -86,8 +86,6 @@ std::vector<std::string> my_coloring_function( Cell* );
 
 // custom functions can go here 
 
-std::vector<std::vector<double>> create_cell_sphere_positions(double cell_radius, double sphere_radius);
-std::vector<std::vector<double>> create_cell_disc_positions(double cell_radius, double disc_radius);
 
 void phenotype_function( Cell* pCell, Phenotype& phenotype, double dt );
 void custom_function( Cell* pCell, Phenotype& phenotype , double dt );
@@ -102,17 +100,9 @@ inline double get_motility_amplitude( double percent )
 
 void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& phenoOther , double dt ); 
 
-/** \brief Return amount of contact with ECM */
-inline double contact_ecm(Cell* pCell)
-{ double ecm_contact = pCell->custom_data["ecm_contact"]; return ecm_contact / pCell->phenotype.geometry.radius ; };
-
 void add_ecm_interaction( Cell* pCell, int index_ecm, int index_voxel );
 void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt);
 void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt);
 
-std::vector<std::string> my_coloring_function( Cell* );
-std::vector<std::string> ECM_coloring_function( Cell*);
-std::vector<std::string> phase_coloring_function( Cell* );
-std::vector<std::string> node_coloring_function( Cell* );
 std::vector<std::string> my_coloring_function_for_stroma( double concentration, double max_conc, double min_conc );
 void color_node(Cell* pCell);
