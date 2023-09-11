@@ -107,7 +107,7 @@ Node Neigh {
 }
 
 Node NICD {
-  logic = (!p73 & !p53 & !p63 & !miR34 & !miR200 & (ECM | FAK));
+  logic = (!p73 & !p53 & !miR34 & !miR200 & (ECM | FAK));
   rate_up = @logic ? $u_NICD : 0.0;
   rate_down = @logic ? 0.0 : $d_NICD;
 }
@@ -167,7 +167,7 @@ Node AKT1 {
 }
 
 Node p63 {
-  logic = (!NICD & !AKT2 & !p53 & !AKT1 & DNAdamage & !miR203);
+  logic = (!AKT2 & !p53 & !AKT1 & DNAdamage & !miR203);
   rate_up = @logic ? $u_p63 : 0.0;
   rate_down = @logic ? 0.0 : $d_p63;
 }
