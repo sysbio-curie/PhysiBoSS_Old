@@ -72,4 +72,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with: 
         name: tutorial_binary_macosx
-        path: project config
+        path: project

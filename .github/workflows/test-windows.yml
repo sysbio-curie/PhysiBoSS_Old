@@ -40,3 +40,36 @@ jobs:
     - name: Run PhysiBoSS cell lines project
       run: |
         .\\PhysiBoSS_Cell_Lines.exe
+        
+  build_physiboss_tutorial:
+
+    runs-on: windows-latest
+    
+    defaults:
+      run:
+        shell: msys2 {0}
+        
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: base-devel flex bison gcc make diffutils mingw-w64-x86_64-toolchain mingw-w64-x86_64-ca-certificates
+    
+    - name: Build PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        make
+        
+    - name: Run PhysiBoSS tutorial
+      run: |
+        .\\project.exe config\\cell_cycle\\PhysiCell_settings_cell_cycle_2D.xml
+        .\\project.exe config\\simple_tnf\\4_mutants.xml
+        .\\project.exe config\\differentiation\\PhysiCell_settings_2D_diff.xml
+        
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_windows
+        path: project.exe
