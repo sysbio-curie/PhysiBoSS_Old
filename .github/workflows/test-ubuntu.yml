@@ -50,6 +50,7 @@ jobs:
       run: |
         make physiboss-tutorial
         make
+        ldd project
         
     - name: Run PhysiBoSS tutorial
       run: |
