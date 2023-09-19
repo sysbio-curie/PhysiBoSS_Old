@@ -71,5 +71,63 @@ jobs:
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
-        name: tutorial_binary_macosx
+        name: tutorial_binary_macosx_macos11
+        path: project
+        
+    
+  build_physiboss_tutorial_macos12:
+
+    runs-on: macos-12
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run : brew install gcc@12
+      
+    - name: Build PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        make clean
+        make PHYSICELL_CPP=g++-12
+        
+    - name: Run PhysiBoSS tutorial
+      run: |
+        ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+        ./project config/simple_tnf/4_mutants.xml
+        ./project config/differentiation/PhysiCell_settings_2D_diff.xml
+        
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_macosx_macos12
+        path: project
+        
+    
+  build_physiboss_tutorial_macos13:
+
+    runs-on: macos-13
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run : brew install gcc@13
+      
+    - name: Build PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        make clean
+        make PHYSICELL_CPP=g++-13
+        
+    - name: Run PhysiBoSS tutorial
+      run: |
+        ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+        ./project config/simple_tnf/4_mutants.xml
+        ./project config/differentiation/PhysiCell_settings_2D_diff.xml
+        
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_macosx_macos13
         path: project
