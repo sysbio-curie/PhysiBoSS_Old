@@ -74,6 +74,8 @@ jobs:
       run: |
         make physiboss-tutorial
         make clean
+        make MaBoSS-clean
+        make Compile_MaBoSS PHYSICELL_CPP=g++-11
         make PHYSICELL_CPP=g++-11
         otool -L project
 
@@ -104,6 +106,8 @@ jobs:
       run: |
         make physiboss-tutorial
         make clean
+        make MaBoSS-clean
+        make Compile_MaBoSS PHYSICELL_CPP=g++-12
         make PHYSICELL_CPP=g++-12
         otool -L project
 
@@ -134,6 +138,8 @@ jobs:
       run: |
         make physiboss-tutorial
         make clean
+        make MaBoSS-clean
+        make Compile_MaBoSS PHYSICELL_CPP=g++-13
         make PHYSICELL_CPP=g++-13
         otool -L project
         
