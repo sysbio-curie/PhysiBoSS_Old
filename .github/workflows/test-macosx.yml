@@ -75,7 +75,8 @@ jobs:
         make physiboss-tutorial
         make clean
         make PHYSICELL_CPP=g++-11
-        
+        otool -L project
+
     - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
@@ -104,7 +105,8 @@ jobs:
         make physiboss-tutorial
         make clean
         make PHYSICELL_CPP=g++-12
-        
+        otool -L project
+
     - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
@@ -133,6 +135,7 @@ jobs:
         make physiboss-tutorial
         make clean
         make PHYSICELL_CPP=g++-13
+        otool -L project
         
     - name: Run PhysiBoSS tutorial
       run: |

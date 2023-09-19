@@ -74,7 +74,7 @@ jobs:
       run: |
         make physiboss-tutorial
         make
-        
+        ldd .\\project.exe
     - name: Run PhysiBoSS tutorial
       run: |
         .\\project.exe config\\cell_cycle\\PhysiCell_settings_cell_cycle_2D.xml
