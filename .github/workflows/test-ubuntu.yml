@@ -49,6 +49,8 @@ jobs:
     - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
+        make MaBoSS-clean
+        make Compile_MaBoSS
         make
         ldd project
         
