@@ -80,7 +80,7 @@ jobs:
     - name: Run PhysiBoSS tutorial
       run: |
         .\\project.exe config\\cell_cycle\\PhysiCell_settings_cell_cycle_2D.xml
-        .\\project.exe config\\simple_tnf\\4_mutants.xml
+        .\\project.exe config\\simple_tnf\\3_Fig4D_necrotic_core.xml
         .\\project.exe config\\differentiation\\PhysiCell_settings_2D_diff.xml
         
     - name: Save artifacts
