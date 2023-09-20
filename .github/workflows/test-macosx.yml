@@ -70,6 +70,11 @@ jobs:
        
   
   build_physiboss_tutorial:
+    runs-on: macos-11
+    steps:
+    - name: Install dependencies
+      run : brew install gcc@11
+      
     - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
