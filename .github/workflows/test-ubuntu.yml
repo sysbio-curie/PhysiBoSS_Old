@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - name: Install dependencies
       run: sudo apt-get install flex bison
@@ -24,6 +24,38 @@ jobs:
       run: |
         ./virus-sample
         
+  build_physimess:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: sudo apt-get install flex bison
+      
+    - name: Build PhysiMeSS project
+      run: |
+        make physimess-sample
+        make clean
+        make
+        
+    - name: Run PhysiMeSS project
+      run: |
+        ./project config/mymodel.xml
+        ./project config/Fibre_Initialisation/mymodel_initialisation.xml
+        ./project config/Cell_Fibre_Mechanics/mymodel_rotating.xml
+        
+  build_physiboss_examples:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: sudo apt-get install flex bison
+  
     - name: Build PhysiBoSS cell lines project
       run: |
         make reset
@@ -34,17 +66,14 @@ jobs:
     - name: Run PhysiBoSS cell lines project
       run: |
         ./PhysiBoSS_Cell_Lines
-        
-    - name: Build PhysiMeSS project
+
+    - name: Build PhysiBoSS tnf model
       run: |
         make reset
-        make physimess-sample
+        make physiboss-tnf-model
         make clean
         make
         
-    - name: Run PhysiMeSS project
+    - name: Run PhysiBoSS TNF project
       run: |
-        ./project
-        ./project config/Fibre_Initialisation/mymodel_initialisation.xml
-        ./project config/Cell_Fibre_Mechanics/mymodel_rotating.xml
-        
+        ./spheroid_TNF_model

@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@10
@@ -24,13 +24,33 @@ jobs:
       run: |
         ./virus-sample
 
+  build_physimess:
+    runs-on: macos-11
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run : brew install gcc@11
+
+    - name: Build PhysiMeSS project
+      run: |
+        make physimess-sample
+        make clean
+        make PHYSICELL_CPP=g++-11
+        
+    - name: Run PhysiMeSS project
+      run: |
+        ./project config/mymodel.xml
+        ./project config/Fibre_Initialisation/mymodel_initialisation.xml
+        ./project config/Cell_Fibre_Mechanics/mymodel_rotating.xml
 
   build_physiboss_cell_lines:
 
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@11
@@ -44,26 +64,23 @@ jobs:
     - name: Run PhysiBoSS cell lines project
       run: |
         ./PhysiBoSS_Cell_Lines
-  
-  build_physimess:
+        
+  build_spheroid_TNF_model:
 
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@11
       
-    - name: Build PhysiMeSS project
+    - name: Build PhysiBoSS TNF project
       run: |
-        make physimess-sample
+        make physiboss-tnf-model
         make clean
         make PHYSICELL_CPP=g++-11
         
-    - name: Run PhysiMeSS project
+    - name: Run PhysiBoSS TNF project
       run: |
-        ./project
-        ./project config/Fibre_Initialisation/mymodel_initialisation.xml
-        ./project config/Cell_Fibre_Mechanics/mymodel_rotating.xml
-        
+        ./spheroid_TNF_model

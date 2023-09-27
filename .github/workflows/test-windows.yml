@@ -14,7 +14,7 @@ jobs:
         shell: msys2 {0}
         
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - uses: msys2/setup-msys2@v2
       with:
@@ -29,7 +29,52 @@ jobs:
     - name: Run Virus Macrophage cell lines project
       run: |
         .\\virus-sample.exe
+    
+    
+  build_physimess:
+
+    runs-on: windows-latest
+    
+    defaults:
+      run:
+        shell: msys2 {0}
         
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: base-devel flex bison gcc make diffutils mingw-w64-x86_64-toolchain mingw-w64-x86_64-ca-certificates
+             
+    - name: Build PhysiMeSS project
+      run: |
+        make physimess-sample
+        make clean
+        make
+        
+    - name: Run PhysiMeSS project
+      run: |
+        .\\project config\\mymodel.xml
+        .\\project config\\Fibre_Initialisation\\mymodel_initialisation.xml
+        .\\project config\\Cell_Fibre_Mechanics\\mymodel_rotating.xml
+        
+        
+  build_physiboss:
+    runs-on: windows-latest
+    
+    defaults:
+      run:
+        shell: msys2 {0}
+        
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: base-devel flex bison gcc make diffutils mingw-w64-x86_64-toolchain mingw-w64-x86_64-ca-certificates
+         
     - name: Build PhysiBoSS cell lines project
       run: |
         make reset
@@ -40,17 +85,14 @@ jobs:
     - name: Run PhysiBoSS cell lines project
       run: |
         .\\PhysiBoSS_Cell_Lines.exe
-        
-    - name: Build PhysiMeSS project
+      
+    - name: Build PhysiBoSS TNF project
       run: |
         make reset
-        make physimess-sample
+        make physiboss-tnf-model
         make clean
-        make
-        
-    - name: Run PhysiMeSS project
+        make 
+      
+    - name: Run PhysiBoSS TNF project
       run: |
-        .\\project
-        .\\project config\\Fibre_Initialisation\\mymodel_initialisation.xml
-        .\\project config\\Cell_Fibre_Mechanics\\mymodel_rotating.xml
-        
+        .\\spheroid_TNF_model.exe
