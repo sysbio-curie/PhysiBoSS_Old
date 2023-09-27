@@ -75,7 +75,7 @@ list-projects:
 	@echo "                 celltypes3-sample heterogeneity-sample pred-prey-farmer virus-macrophage-sample"
 	@echo "                 worm-sample interaction-sample mechano-sample rules-sample physimess-sample"
 	@echo ""
-	@echo "Sample intracellular projects: ode-energy-sample physiboss-cell-lines-sample cancer-metabolism-sample"
+	@echo "Sample intracellular projects: ode-energy-sample physiboss-cell-lines-sample physiboss-tnf-model cancer-metabolism-sample"
 	@echo ""
 	
 template:
@@ -215,6 +215,16 @@ physiboss-cell-lines-sample:
 	cp ./sample_projects_intracellular/boolean/physiboss_cell_lines/Makefile .
 	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
 	cp ./sample_projects_intracellular/boolean/physiboss_cell_lines/config/* ./config/
+
+physiboss-tnf-model:
+	cp ./sample_projects_intracellular/boolean/spheroid_tnf_model/custom_modules/* ./custom_modules/
+	touch main.cpp && cp main.cpp main-backup.cpp
+	cp ./sample_projects_intracellular/boolean/spheroid_tnf_model/main-spheroid_TNF.cpp ./main.cpp 
+	cp Makefile Makefile-backup
+	cp ./sample_projects_intracellular/boolean/spheroid_tnf_model/Makefile .
+	cp ./config/PhysiCell_settings.xml ./config/PhysiCell_settings-backup.xml 
+	cp ./sample_projects_intracellular/boolean/spheroid_tnf_model/config/* ./config/
+	cp -r ./sample_projects_intracellular/boolean/spheroid_tnf_model/scripts ./
 
 ecoli-acetic-switch-sample:
 	cp ./sample_projects_intracellular/fba/ecoli_acetic_switch/custom_modules/* ./custom_modules/
