@@ -272,7 +272,7 @@ void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& 
 		pMe->custom_data["cell_contact"] += perc_distance;
 			}
 	else {
-		pMe->detach_cell_as_spring(pOther);
+		detach_cells_as_spring(pMe, pOther);
 	}
 
 	return; 
