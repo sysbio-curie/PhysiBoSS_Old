@@ -76,7 +76,7 @@ list-projects:
 	@echo "                 worm-sample interaction-sample mechano-sample rules-sample physimess-sample"
 	@echo ""
 	@echo "Sample intracellular projects: template_BM ode-energy-sample physiboss-cell-lines-sample"
-	@echo "                               cancer-metabolism-sample"
+	@echo "                               cancer-metabolism-sample physiboss-tutorial"
 	
 template:
 	cp ./sample_projects/template/custom_modules/* ./custom_modules/
