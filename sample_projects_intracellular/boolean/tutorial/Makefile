@@ -211,6 +211,7 @@ reset:
 	cp ./config/PhysiCell_settings-backup.xml ./config/PhysiCell_settings.xml 
 	rm -rf ./config/simple_tnf/
 	rm -fr ./config/cell_cycle/
+	rm -fr ./config/differentiation/
 	rm -rf ./scripts
 
 MaBoSS-clean:
