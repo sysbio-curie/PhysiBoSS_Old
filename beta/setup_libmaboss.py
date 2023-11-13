@@ -21,7 +21,7 @@ else:
     # Assume Windows
     mb_file = ""
     url = ""
-    maboss_version = "v2.5.2"
+    maboss_version = "v2.5.3"
     if os_type.lower() == 'darwin':
         if "ARM64" in platform.uname().version:
             mb_file = "libMaBoSS-macos-arm64.tar.gz"
