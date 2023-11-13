@@ -74,9 +74,14 @@ jobs:
     steps:
     - name: Install dependencies
       run : brew install gcc@11
-      
+
+    - name: Image diagnostic
+      run : |
+        xcodebuild -version
+              
     - name: Build PhysiBoSS tutorial
       run: |
+
         make physiboss-tutorial
         make clean
         make MaBoSS-clean
@@ -106,7 +111,11 @@ jobs:
 
     - name: Install dependencies
       run : brew install gcc@12
-      
+
+    - name: Image diagnostic
+      run : |
+        xcodebuild -version
+          
     - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
@@ -138,7 +147,11 @@ jobs:
 
     - name: Install dependencies
       run : brew install gcc@13
-      
+
+    - name: Image diagnostic
+      run : |
+        xcodebuild -version
+    
     - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
