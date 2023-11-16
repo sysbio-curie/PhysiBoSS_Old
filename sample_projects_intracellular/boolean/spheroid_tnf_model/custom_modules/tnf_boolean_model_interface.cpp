@@ -119,32 +119,13 @@ void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt
     return;
 }
 
-
-// custom cell phenotype function to run PhysiBoSS when is needed
-void update_phenotype_with_signaling(Cell *pCell, Phenotype &phenotype, double dt)
+void update_behaviors(Cell* pCell, Phenotype& phenotype, double dt) 
 {
-	if( phenotype.death.dead == true )
-	{
-		pCell->functions.update_phenotype = NULL;
-		return;
-	}
-
-    if ( pCell->phenotype.intracellular->need_update() )
-    {
-        // First we update the Boolean Model inputs
-        update_boolean_model_inputs(pCell, phenotype, dt );
-        
-		// Run maboss to update the boolean state of the cell
-        pCell->phenotype.intracellular->update();
-        
-		// update the cell fate based on the boolean outputs
+        // update the cell fate based on the boolean outputs
         update_cell_from_boolean_model(pCell, phenotype, dt);
 
         // Get track of some boolean node values for debugging
         update_monitor_variables(pCell);
-    }
-
-    return;
 }
 
 void update_monitor_variables(Cell* pCell )
