@@ -206,18 +206,16 @@
                         <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
                         <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
                     </options>
-                    <cell_BM_adhesion_strength units="micron/min">4.0</cell_BM_adhesion_strength>
-                    <cell_BM_repulsion_strength units="micron/min">10.0</cell_BM_repulsion_strength>
                     <attachment_elastic_constant units="1/min">0.1</attachment_elastic_constant>
                     <attachment_rate units="1/min">1.0</attachment_rate>
                     <detachment_rate units="1/min">0.0</detachment_rate>
                 </mechanics>
                 <motility>
-                    <speed units="micron/min">0.2</speed>
+                    <speed units="micron/min">0.0</speed>
                     <persistence_time units="min">1</persistence_time>
                     <migration_bias units="dimensionless">0.0</migration_bias>
                     <options>
-                        <enabled>false</enabled>
+                        <enabled>true</enabled>
                         <use_2D>true</use_2D>
                         <chemotaxis>
                             <enabled>false</enabled>
@@ -372,8 +370,9 @@
                         </output>
                         <output physicell_name="migration speed" intracellular_name="Cell_freeze">
                             <settings>
-                                <action>activation</action>
+                                <action>inhibition</action>
                                 <value>0.0</value>
+                                <base_value>0.2</base_value>
                                 <smoothing>0</smoothing>
                             </settings>
                         </output>
@@ -453,8 +452,6 @@
                         <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
                         <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
                     </options>
-                    <cell_BM_adhesion_strength units="micron/min">4.0</cell_BM_adhesion_strength>
-                    <cell_BM_repulsion_strength units="micron/min">10.0</cell_BM_repulsion_strength>
                     <attachment_elastic_constant units="1/min">0.0001</attachment_elastic_constant>
                     <attachment_rate units="1/min">0.4</attachment_rate>
                     <detachment_rate units="1/min">0.0</detachment_rate>
@@ -462,7 +459,7 @@
                 <motility>
                     <speed units="micron/min">0.2</speed>
                     <persistence_time units="min">1</persistence_time>
-                    <migration_bias units="dimensionless">0.2</migration_bias>
+                    <migration_bias units="dimensionless">0.0</migration_bias>
                     <options>
                         <enabled>true</enabled>
                         <use_2D>true</use_2D>
@@ -613,15 +610,15 @@
                             <settings>
                                 <action>activation</action>
                                 <value>0.8</value>
-                                <base_value>0.0</base_value>
-                                <smoothing>500</smoothing>
+                                <base_value>0.2</base_value>
+                                <smoothing>100</smoothing>
                             </settings>
                         </output>
                         <output physicell_name="migration bias" intracellular_name="Migration">
                             <settings>
                                 <action>activation</action>
                                 <value>0.8</value>
-                                <base_value>0.0</base_value>
+                                <base_value>0.2</base_value>
                                 <smoothing>100</smoothing>
                             </settings>
                         </output>
@@ -637,14 +634,8 @@
                             <settings>
                                 <action>inhibition</action>
                                 <value>0.0</value>
+                                <base_value>0.001</base_value>
                                 <smoothing>100</smoothing>
-                            </settings>
-                        </output>
-                        <output physicell_name="migration speed" intracellular_name="Cell_freeze">
-                            <settings>
-                                <action>activation</action>
-                                <value>0.0</value>
-                                <smoothing>0</smoothing>
                             </settings>
                         </output>
                         <output physicell_name="exit from cycle phase 0" intracellular_name="CellCycleArrest">
