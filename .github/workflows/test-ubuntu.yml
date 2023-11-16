@@ -58,7 +58,6 @@ jobs:
   
     - name: Build PhysiBoSS cell lines project
       run: |
-        make reset
         make physiboss-cell-lines-sample
         make clean
         make
@@ -67,9 +66,18 @@ jobs:
       run: |
         ./PhysiBoSS_Cell_Lines
 
+  build_physiboss_TNF:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: sudo apt-get install flex bison
+  
     - name: Build PhysiBoSS tnf model
       run: |
-        make reset
         make physiboss-tnf-model
         make clean
         make
