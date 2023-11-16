@@ -35,6 +35,8 @@ void create_cell_types( void )
 	cell_defaults.functions.update_migration_bias = NULL; 
 	cell_defaults.functions.update_phenotype = tumor_cell_phenotype_with_signaling;
 	cell_defaults.functions.custom_cell_rule = NULL; 
+	cell_defaults.functions.pre_update_intracellular = set_input_nodes;
+	cell_defaults.functions.post_update_intracellular = from_nodes_to_cell;
 	
 	cell_defaults.functions.add_cell_basement_membrane_interactions = NULL; 
 	cell_defaults.functions.calculate_distance_to_membrane = NULL; 
@@ -55,6 +57,16 @@ void create_cell_types( void )
 	cell_defaults.phenotype.molecular.fraction_released_at_death[binhib_substrate_index] = 0.0;
 
 	build_cell_definitions_maps(); 
+	/*
+	   This intializes cell signal and response dictionaries 
+	*/
+
+	setup_signal_behavior_dictionaries();
+
+	/*
+	   This summarizes the setup. 
+	*/
+	
 	display_cell_definitions( std::cout ); 
 
 	return; 
@@ -118,22 +130,11 @@ void setup_tissue( void )
 void tumor_cell_phenotype_with_signaling( Cell* pCell, Phenotype& phenotype, double dt )
 {
 	update_cell_and_death_parameters_O2_based(pCell, phenotype, dt);
-	static int index_next_physiboss_run = pCell->custom_data.find_variable_index("next_physiboss_run");
 
 	if( phenotype.death.dead == true )
 	{
 		pCell->functions.update_phenotype = NULL;
 		return;
-	}
-
-	if (pCell->phenotype.intracellular->need_update())
-	{
-		set_input_nodes(pCell);
-
-		pCell->phenotype.intracellular->update();
-		
-		update_custom_variables(pCell);
-		from_nodes_to_cell(pCell, phenotype, dt);
 	}
 }
 
@@ -144,7 +145,7 @@ std::vector<std::string> my_coloring_function( Cell* pCell )
 	return output; 
 }
 
-void set_input_nodes(Cell* pCell) {
+void set_input_nodes(Cell* pCell, Phenotype& phenotype, double dt) {
 	static int ainhib_index = microenvironment.find_density_index( "Ainhib" );
 	static double ainhib_threshold = parameters.doubles("ainhib_threshold");
 	static int binhib_index = microenvironment.find_density_index( "Binhib" );
@@ -165,6 +166,8 @@ void set_input_nodes(Cell* pCell) {
 
 void from_nodes_to_cell(Cell* pCell, Phenotype& phenotype, double dt)
 {
+	update_custom_variables(pCell);
+
 	double prosurvival_value = pCell->phenotype.intracellular->get_boolean_variable_value("C") ? 1.0 : 0.0;
 
 	static int start_phase_index; // Q_phase_index; 

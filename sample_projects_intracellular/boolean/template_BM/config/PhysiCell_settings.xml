@@ -238,7 +238,6 @@
 				</intracellular>
 			</phenotype>
 			<custom_data>
-				<next_physiboss_run units="dimensionless">10.</next_physiboss_run>
 				<ainhib_concentration units="dimensionless">0</ainhib_concentration>
 				<ainhib_node units="dimensionless">0</ainhib_node>
 				<binhib_concentration units="dimensionless">0</binhib_concentration>
