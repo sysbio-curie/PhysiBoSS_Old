@@ -47,7 +47,6 @@ jobs:
          
     - name: Build PhysiBoSS cell lines project
       run: |
-        make reset
         make physiboss-cell-lines-sample
         make clean
         make 
