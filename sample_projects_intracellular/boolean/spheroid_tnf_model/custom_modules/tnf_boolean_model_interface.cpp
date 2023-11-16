@@ -31,7 +31,7 @@ void tnf_boolean_model_interface_setup()
     tnf_bm_interface_info.name = "TNF Boolean model interface"; 
 	tnf_bm_interface_info.version = "0.2.0";
 	
-    tnf_bm_interface_info.main_function= update_phenotype_with_signaling; 
+    // tnf_bm_interface_info.main_function= update_phenotype_with_signaling; 
 
 	// These are just auxiliary variables to keep track of some BN nodes
 	tnf_bm_interface_info.cell_variables.push_back( "tnf_node" );
