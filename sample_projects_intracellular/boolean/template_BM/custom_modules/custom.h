@@ -39,7 +39,7 @@ void tumor_cell_phenotype_with_signaling( Cell* pCell, Phenotype& phenotype, dou
 
 void update_custom_variables( Cell* pCell );
 
-void set_input_nodes(Cell* pCell); 
+void set_input_nodes(Cell* pCell, Phenotype& phenotype, double dt); 
 void from_nodes_to_cell(Cell* pCell, Phenotype& phenotype, double dt);
 void do_proliferation( Cell* pCell, Phenotype& phenotype, double dt );
 
