@@ -92,6 +92,9 @@ void create_cell_types(void)
 	cell_defaults.custom_data["bound_internal_TNFR"] = 0;
 
 	build_cell_definitions_maps();
+	
+	setup_signal_behavior_dictionaries();
+
 	display_cell_definitions(std::cout);
 
 	return;
