@@ -206,9 +206,9 @@
                     <bnd_filename>config/cell_cycle/boolean_network/intracellular_model.bnd</bnd_filename>
                     <cfg_filename>config/cell_cycle/boolean_network/intracellular_model.cfg</cfg_filename>
                     <settings>
-                        <intracellular_dt>6.0</intracellular_dt>
+                        <intracellular_dt>2.5</intracellular_dt>
                         <time_stochasticity>0</time_stochasticity>
-                        <scaling>30.0</scaling>
+                        <scaling>37.5</scaling>
                         <start_time>0.0</start_time>
                         <inheritance global="True" />
                         <mutations>

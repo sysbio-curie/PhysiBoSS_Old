@@ -1,5 +1,14 @@
 <PhysiCell_settings version="devel-version">
 
+    <cell_rules>
+        <rulesets>
+            <ruleset protocol="CBHG" version="2.0" format="csv" enabled="true">
+                <folder>config</folder>
+                <filename>rules.csv</filename>
+            </ruleset>
+        </rulesets>
+    </cell_rules>
+
     <domain>
         <x_min>-600</x_min>
         <x_max>600</x_max>
@@ -149,8 +158,6 @@
                         <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
                         <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
                     </options>
-                    <cell_BM_adhesion_strength units="micron/min">4.0</cell_BM_adhesion_strength>
-                    <cell_BM_repulsion_strength units="micron/min">10.0</cell_BM_repulsion_strength>
                     <attachment_elastic_constant units="1/min">0.01</attachment_elastic_constant>
                     <attachment_rate units="1/min">0.0</attachment_rate>
                     <detachment_rate units="1/min">0.0</detachment_rate>
@@ -206,9 +213,9 @@
                     <bnd_filename>config/cell_cycle/boolean_network/intracellular_model.bnd</bnd_filename>
                     <cfg_filename>config/cell_cycle/boolean_network/intracellular_model.cfg</cfg_filename>
                     <settings>
-                        <intracellular_dt>6.0</intracellular_dt>
+                        <intracellular_dt>2.5</intracellular_dt>
                         <time_stochasticity>0</time_stochasticity>
-                        <scaling>30.0</scaling>
+                        <scaling>37.5</scaling>
                         <start_time>0.0</start_time>
                         <inheritance global="True" />
                     </settings>
