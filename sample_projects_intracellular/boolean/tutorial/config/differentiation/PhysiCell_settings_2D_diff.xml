@@ -220,8 +220,8 @@
                     </transformation_rates>
                 </cell_transformations>
                 <intracellular type="maboss">
-                    <bnd_filename>config/differentiation/boolean_network/corral.bnd</bnd_filename>
-                    <cfg_filename>config/differentiation/boolean_network/corral_latest_andrea.cfg</cfg_filename>
+                    <bnd_filename>config/differentiation/boolean_network/tcell_corral.bnd</bnd_filename>
+                    <cfg_filename>config/differentiation/boolean_network/tcell_corral.cfg</cfg_filename>
                     <settings>
                         <intracellular_dt>6.0</intracellular_dt>
                         <time_stochasticity>0</time_stochasticity>
