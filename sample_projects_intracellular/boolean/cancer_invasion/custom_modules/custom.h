@@ -89,6 +89,7 @@ std::vector<std::string> my_coloring_function( Cell* );
 
 void phenotype_function( Cell* pCell, Phenotype& phenotype, double dt );
 void custom_function( Cell* pCell, Phenotype& phenotype , double dt );
+void set_substrate_density(int density_index, double max, double min);
 
 /** \brief Get the current value of integrin strength */
 inline double get_integrin_strength( double percent )

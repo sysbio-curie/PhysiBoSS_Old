@@ -183,7 +183,21 @@ void setup_microenvironment( void )
 	
 	// initialize BioFVM 
 	
-	initialize_microenvironment(); 	
+	initialize_microenvironment(); 
+
+	double ECM_min = parameters.doubles("density_ECM_min");
+	double ECM_max = parameters.doubles("density_ECM_max");
+	double tgfbeta_max = parameters.doubles("density_tgfbeta_max");
+	double tgfbeta_min = parameters.doubles("density_tgfbeta_min");
+
+	if(ECM_max != ECM_min){
+	int ecm_index = microenvironment.find_density_index("ecm");
+	set_substrate_density(ecm_index, ECM_max, ECM_min);
+	}
+	if(tgfbeta_max != tgfbeta_min){
+	int tgfbeta_index = microenvironment.find_density_index("TGFbeta");
+	set_substrate_density(tgfbeta_index, tgfbeta_max, tgfbeta_min);
+	}
 
 	return; 
 }
@@ -289,7 +303,6 @@ void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
 }
 
 void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
-
 	return;
 }
 
@@ -361,6 +374,19 @@ void add_ecm_interaction(Cell* pC, int index_ecm, int index_voxel )
 		axpy( &pC->velocity , tmp_r , pC->displacement ); 
 	}
 
+}
+
+void set_substrate_density(int density_index, double max, double min)
+{
+	std::cout << "SETTING SUBSTRATE \n";
+
+	std::cout << microenvironment.number_of_voxels() << "\n";
+	#pragma omp parallel for
+	for (int n = 0; n < microenvironment.number_of_voxels(); n++)
+	{
+		auto current_voxel = microenvironment.voxels(n);
+		microenvironment.density_vector(n)[density_index] = current_value(min, max, uniform_random());
+	}
 }
 
 	// FUNCTIONS TO PLOT CELLS
