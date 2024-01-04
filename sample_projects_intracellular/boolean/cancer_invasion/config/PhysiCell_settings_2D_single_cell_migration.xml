@@ -360,6 +360,14 @@
                                 <smoothing>50</smoothing>
                             </settings>
                         </output>
+                        <output physicell_name="ecm uptake" intracellular_name="ECM_degrad">
+                            <settings>
+                                <action>activation</action>
+                                <value>0.5</value>
+                                <base_value>0</base_value>
+                                <smoothing>0</smoothing>
+                            </settings>
+                        </output>
                         <output physicell_name="exit from cycle phase 1" intracellular_name="Cell_growth">
                             <settings>
                                 <action>activation</action>
@@ -620,6 +628,14 @@
                                 <value>0.8</value>
                                 <base_value>0.2</base_value>
                                 <smoothing>100</smoothing>
+                            </settings>
+                        </output>
+                        <output physicell_name="chemotactic response to oxygen" intracellular_name="Migration">
+                            <settings>
+                                <action>activation</action>
+                                <value>1</value>
+                                <base_value>0.0</base_value>
+                                <smoothing>50</smoothing>
                             </settings>
                         </output>
                         <output physicell_name="apoptosis" intracellular_name="Apoptosis">

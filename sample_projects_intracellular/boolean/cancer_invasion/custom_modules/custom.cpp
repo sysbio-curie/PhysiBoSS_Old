@@ -290,23 +290,6 @@ void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
 
 void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt){
 
-
-	if (pCell->phenotype.intracellular->get_boolean_variable_value("ECM_degrad")){
-		std::vector<double> scaled_orientation = phenotype.geometry.radius * pCell->state.orientation;
-		std::vector<double> position_membrane = pCell->position + scaled_orientation;
-		int voxel_membrane = microenvironment.nearest_voxel_index( position_membrane );
-		int ecm_index = BioFVM::microenvironment.find_density_index("ecm");
-		double collagen_density = microenvironment.density_vector(voxel_membrane)[ecm_index];
-		
-		// Compute the new collagen density to simulate degradation
-		collagen_density *= (1 - pCell->phenotype.secretion.uptake_rates[ecm_index]); 
-		
-		// Update the current voxel with the new collagen density
-		microenvironment.density_vector(voxel_membrane)[ecm_index] = collagen_density;
-
-
-	}
-
 	return;
 }
 
