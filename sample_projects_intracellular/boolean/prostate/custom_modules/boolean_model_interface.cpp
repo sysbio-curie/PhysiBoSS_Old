@@ -184,25 +184,21 @@ void from_nodes_to_cell(Cell* pCell, Phenotype& phenotype, double dt)
 
 
 void boolean_model_interface_main (Cell* pCell, Phenotype& phenotype, double dt){
-    static int index_next_physiboss_run = pCell->custom_data.find_variable_index("next_physiboss_run");
-
+    
 	if( phenotype.death.dead == true )
 	{
 		pCell->functions.update_phenotype = NULL;
 		return;
 	}
+}
 
-	if (PhysiCell_globals.current_time >= pCell->custom_data.variables.at(index_next_physiboss_run).value)
-	{
-		set_input_nodes(pCell);
+void pre_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt)
+{
+	set_input_nodes(pCell);
+}
 
-		pCell->boolean_network.run_maboss();
-		// Get noisy step size
-		double next_run_in = pCell->boolean_network.get_time_to_update();
-		pCell->custom_data.variables.at(index_next_physiboss_run).value = PhysiCell_globals.current_time + next_run_in;
-		
-		update_custom_variables(pCell);
-
-		from_nodes_to_cell(pCell, phenotype, dt);
-	}
+void post_update_intracellular(Cell* pCell, Phenotype& phenotype, double dt)
+{	
+	update_custom_variables(pCell);
+	from_nodes_to_cell(pCell, phenotype, dt);
 }
