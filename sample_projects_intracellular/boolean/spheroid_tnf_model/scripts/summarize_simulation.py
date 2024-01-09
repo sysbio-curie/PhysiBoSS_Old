@@ -67,7 +67,7 @@ def plot_cells(df_time_course, color_dict, ax):
 
 def main():
 
-    color_dict = {"live": "g", "apoptotic": "r", "necrotic":"k"}
+    color_dict = {"alive": "g", "apoptotic": "r", "necrotic":"k"}
 
 
     output_folder = sys.argv[1]
