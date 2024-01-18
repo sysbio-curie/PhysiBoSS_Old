@@ -196,20 +196,6 @@ void PhysiCell_Settings::read_from_pugixml( void )
 	SVG_save_interval = xml_get_double_value( node , "interval" );
 	enable_SVG_saves = xml_get_bool_value( node , "enable" ); 
 
-	pugi::xml_node node_legend;
-	node_legend = xml_find_node( node , "legend" );
-	enable_legend = node_legend.attribute("enabled").as_bool();
-
-	if(enable_legend){
-		cell_phase = xml_get_bool_value(node_legend, "cell_phase");
-		cell_type = xml_get_bool_value(node_legend, "cell_type");
-		if(cell_phase && cell_type){
-			std::cout << "Please select just one criteria for the legend in the .xml file" << std::endl;
-			cell_phase = false;
-			cell_type = true;
-		}
-	}
-
 	pugi::xml_node node_plot_substrate; 
 	node_plot_substrate = xml_find_node( node , "plot_substrate" );
 	enable_substrate_plot = node_plot_substrate.attribute("enabled").as_bool();
@@ -222,12 +208,6 @@ void PhysiCell_Settings::read_from_pugixml( void )
 			max_concentration = xml_get_double_value(node_plot_substrate, "max_conc");
 		}
 	};
-
-	pugi::xml_node node_cell_coloring_function;
-	node_cell_coloring_function = xml_find_node( node , "cell_coloring_function");
-	if (node_cell_coloring_function){
-		cell_coloring_function = xml_get_my_string_value(node_cell_coloring_function);
-	}
 	node = node.parent(); 
 
 	node = xml_find_node( node , "intracellular_data" ); 

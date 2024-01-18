@@ -160,9 +160,7 @@ extern double intracellular_dt;
 
 
 extern std::unordered_map<std::string,int> cycle_model_codes;
-extern std::unordered_map<int, std::string> cycle_phase_names;
 int find_cycle_model_code( std::string model_name ); 
-std::string find_cycle_phase_names( int model_code ); 
 
 };
 
