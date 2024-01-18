@@ -432,7 +432,7 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 		exit(-1); 
 	} 
 	
-	if(PhysiCell_settings.enable_substrate_plot && (*substrate_coloring_function) != NULL && !PhysiCell_settings.enable_legend){ // in this case I want just the substrate visualization
+	if(PhysiCell_settings.enable_substrate_plot == true && (*substrate_coloring_function) != NULL){
 
 		double legend_padding = 140.0; // I have to add a margin on the left to visualize the bar plot and the values
 
@@ -442,46 +442,7 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 		Write_SVG_rect( os , 0 , 0 , plot_width + legend_padding, plot_height + top_margin , 0.002 * plot_height , "white", "white" );
 
 	}
-	else if (PhysiCell_settings.enable_substrate_plot && (*substrate_coloring_function) != NULL && PhysiCell_settings.enable_legend) // in this case I want both the legend and the substrate
-	{
-
-		// useful parameters to fit the legend and the barplot into the svg
-
-		temp_cell_radius = 15; 
-
-		double relative_padding = 0.15; 
-		padding = relative_padding * 2.0 * temp_cell_radius; 
-
-		double row_height = 3.0 * temp_cell_radius + 2*padding;
-
-		double legend_padding = 140.0;
-		// end of the useful parameters
-
-		Write_SVG_start( os, plot_width + legend_padding, plot_height + top_margin + (row_height * 3)); // 3 is a good number, it is odd, prime and it represents the holy trinity
-
-		// draw the background 
-		Write_SVG_rect( os , 0 , 0 , plot_width + legend_padding, plot_height + top_margin + (row_height * 3) , 0.002 * plot_height , "white", "white" );
-	}
-	else if (!PhysiCell_settings.enable_substrate_plot && PhysiCell_settings.enable_legend) // in this case I want just the legend and NOT the substrate
-	{
-
-		// useful parameters to fit the legend into the svg
-
-		temp_cell_radius = 15; 
-
-		double relative_padding = 0.15; 
-		padding = relative_padding * 2.0 * temp_cell_radius; 
-
-		double row_height = 3.0 * temp_cell_radius + 2*padding;
-
-		// end of the useful parameters
-
-		Write_SVG_start( os, plot_width, plot_height + top_margin + (row_height * 3));
-
-		// draw the background 
-		Write_SVG_rect( os , 0 , 0 , plot_width, plot_height + top_margin + (row_height * 3) , 0.002 * plot_height , "white", "white" );
-	}
-	else{ // in this case NO legend and NOT the substrate
+	else{ 
 
 		Write_SVG_start( os, plot_width , plot_height + top_margin );
 
@@ -789,103 +750,9 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 			PhysiCell_SVG_options.font_color.c_str() , PhysiCell_SVG_options.font.c_str() ); // misterious values set with a trial and error approach due to OCD. But now the legend is coherent at pixel level
 
 		delete [] szString;
+	}
 		
-		Write_SVG_rect(os, 25.0 + plot_width, top_margin, 25.0, plot_height - 25, 0.002 * plot_height , "black", "none"); // nice black contour around the legend
-	}
-	
-	std::map<std::string, int> color_map;
-	if (PhysiCell_settings.cell_phase && PhysiCell_settings.enable_legend)
-	{
-		for (int i=0 ; i < total_cell_count ; i++)
-		{
-			Cell* pC = (*all_cells)[i]; // global_cell_list[i];
-			color_map.insert( std::pair<std::string, int>(cell_coloring_function( pC )[0], pC->phenotype.cycle.current_phase().code) );
-		}
-
-		// draw the legend below the plot window
-		std::map<std::string,int>::iterator it = color_map.begin();
-
-		double cursor_x = padding + temp_cell_radius; 
-		double cursor_y = padding + temp_cell_radius; 	
-		double horizontal_padding = 0.0;	
-		int iterator = 0;
-		for( it=color_map.begin(); it!=color_map.end(); ++it )
-		{ 
-			// place a big circle with cytoplasm colors 
-			Write_SVG_circle(os,cursor_x + horizontal_padding, plot_height + top_margin + cursor_y + 20, temp_cell_radius , 1.0 , it->first , it->first ); 
-			// place a small circle with nuclear colors 
-			//Write_SVG_circle(os,cursor_x, cursor_y , 0.5*temp_cell_radius , 1.0 , colors[2] , colors[3] ); 
-			
-			// place the label 
-			
-			cursor_x += temp_cell_radius + 2*padding; 
-			cursor_y += 0.3*font_size; 
-			
-			char* szString; 
-			szString = new char [1024]; 
-
-			sprintf( szString , find_cycle_phase_names(it->second).c_str(), time_label.c_str(), 
-			z_slice , PhysiCell_SVG_options.simulation_space_units.c_str() );
-
-			Write_SVG_text( os , szString, cursor_x + horizontal_padding, plot_height + top_margin + cursor_y + 20, font_size , 
-				PhysiCell_SVG_options.font_color.c_str() , PhysiCell_SVG_options.font.c_str() );
-			
-			// move the cursor down to the next row 
-			
-			cursor_y -= 0.3*font_size; 
-			cursor_y += ( 2.0 * padding + 2.0*temp_cell_radius ); 
-			cursor_x = padding + temp_cell_radius;
-
-			if ((iterator + 1) % 3 == 0) {
-				horizontal_padding = horizontal_padding + 200.0;
-				cursor_y = padding + temp_cell_radius;
-			}
-
-			iterator++;
-
-		}
-	}
-	else if (PhysiCell_settings.cell_type && PhysiCell_settings.enable_legend)
-	{
-		double cursor_x = padding + temp_cell_radius; 
-		double cursor_y = padding + temp_cell_radius;
-		int number_of_cell_types = cell_definitions_by_index.size();
-		double horizontal_padding = 0.0;
-		for( int k=0 ; k < number_of_cell_types ; k++ )
-		{
-			// switch to the cell type 
-			Cell C; 
-			C.convert_to_cell_definition( *(cell_definitions_by_index[k]) );
-
-			// get the colors using the current coloring function 
-			std::vector<std::string> colors = cell_coloring_function(&C); 
-			
-			// place a big circle with cytoplasm colors 
-			Write_SVG_circle(os,cursor_x + horizontal_padding, plot_height + top_margin + cursor_y + 20, temp_cell_radius , 1.0 , colors[1] , colors[0] ); 
-			// place a small circle with nuclear colors 
-			Write_SVG_circle(os,cursor_x + horizontal_padding, plot_height + top_margin + cursor_y + 20, 0.5*temp_cell_radius , 1.0 , colors[3] , colors[2] ); 
-			
-			// place the label 
-			
-			cursor_x += temp_cell_radius + 2*padding; 
-			cursor_y += 0.3*font_size; 
-			
-			Write_SVG_text( os , cell_definitions_by_index[k]->name.c_str() , cursor_x + horizontal_padding, plot_height + top_margin + cursor_y + 20, font_size , 
-				PhysiCell_SVG_options.font_color.c_str() , PhysiCell_SVG_options.font.c_str() );
-			
-			// move the cursor down to the next row 
-			
-			cursor_y -= 0.3*font_size; 
-			cursor_y += ( 2.0 * padding + 2.0*temp_cell_radius ) + 5.0; 
-			cursor_x = padding + temp_cell_radius;
-
-			if ((k + 1) % 3 == 0) {
-				horizontal_padding = horizontal_padding + 200.0;
-				cursor_y = padding + temp_cell_radius;
-			}
-		}
-	}
-	
+	Write_SVG_rect(os, 25.0 + plot_width, top_margin, 25.0, plot_height - 25, 0.002 * plot_height , "black", "none"); // nice black contour around the legend
 
 	// close the svg tag, close the file
 	Write_SVG_end( os ); 
@@ -1079,35 +946,7 @@ void standard_agent_legend(std::ofstream& os, Cell_Definition* cell_definition, 
 	Write_SVG_circle(os,cursor_x, cursor_y , temp_cell_radius , 1.0 , colors[1] , colors[0] ); 
 	// place a small circle with nuclear colors 
 	Write_SVG_circle(os,cursor_x, cursor_y , 0.5*temp_cell_radius , 1.0 , colors[3] , colors[2] ); 
-}
-
-cell_coloring_function cell_coloring_functions(std::string function_string){
-	std::cout << "Choosing coloring function : " << function_string << std::endl;
-	if (function_string == "simple") {
-		return simple_cell_coloring;
-		
-	} else if (function_string == "type") {
-		return paint_by_number_cell_coloring;
-		
-	} else if (function_string == "cell_cycle") {
-		
-		if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::live_cells_cycle_model) {
-			return false_cell_coloring_live_dead;
-		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::flow_cytometry_cycle_model || cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::flow_cytometry_separated_cycle_model) {
-			return false_cell_coloring_cytometry;
-		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::basic_Ki67_cycle_model || cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::advanced_Ki67_cycle_model) {
-			return false_cell_coloring_Ki67;
-		} else if (cell_defaults.phenotype.cycle.model().code == PhysiCell_constants::cycling_quiescent_model) {
-			return false_cell_coloring_cycling_quiescent;
-		} else {
-			std::cout << "Could not find cell coloring function for cell cycle " << cell_defaults.phenotype.cycle.model().name << ", setting it to live cell cycle model coloring function" << std::endl;
-			return false_cell_coloring_live_dead;
-		}
-		
-	} else {
-		std::cout << "Could not find cell coloring function for " << function_string << ", setting it to simple cell coloring" << std::endl;
-		return simple_cell_coloring;
-	}
+	
 }
 
 };
