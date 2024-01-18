@@ -80,6 +80,7 @@
 
 #include "./custom_modules/custom.h" 
 #include "./addons/PhysiBoSS/src/maboss_intracellular.h"	
+#include "./custom_modules/treatment.h"
 
 using namespace BioFVM;
 using namespace PhysiCell;

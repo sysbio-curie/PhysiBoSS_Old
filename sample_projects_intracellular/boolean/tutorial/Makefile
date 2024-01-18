@@ -77,7 +77,7 @@ MaBoSS := ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src/BooleanNetwork.h
 
 PhysiBoSS_OBJECTS := maboss_network.o maboss_intracellular.o
 
-PhysiCell_custom_module_OBJECTS := custom.o
+PhysiCell_custom_module_OBJECTS := custom.o treatment.o
 
 pugixml_OBJECTS := pugixml.o
 
@@ -198,6 +198,9 @@ maboss_intracellular.o: ./addons/PhysiBoSS/src/maboss_intracellular.cpp $(MaBoSS
 
 custom.o: ./custom_modules/custom.cpp $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -c ./custom_modules/custom.cpp
+
+treatment.o: ./custom_modules/treatment.cpp
+	$(COMPILE_COMMAND) -c ./custom_modules/treatment.cpp
 
 # cleanup
 
