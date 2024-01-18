@@ -152,49 +152,51 @@ void setup_microenvironment( void )
 
 void setup_tissue( void )
 {
+	double Xmin = microenvironment.mesh.bounding_box[0]; 
+	double Ymin = microenvironment.mesh.bounding_box[1]; 
+	double Zmin = microenvironment.mesh.bounding_box[2]; 
+
+	double Xmax = microenvironment.mesh.bounding_box[3]; 
+	double Ymax = microenvironment.mesh.bounding_box[4]; 
+	double Zmax = microenvironment.mesh.bounding_box[5]; 
+	
+	if( default_microenvironment_options.simulate_2D == true )
+	{
+		Zmin = 0.0; 
+		Zmax = 0.0; 
+	}
+	
+	double Xrange = Xmax - Xmin; 
+	double Yrange = Ymax - Ymin; 
+	double Zrange = Zmax - Zmin; 
+	
+	// create some of each type of cell 
+	
+	Cell* pC;
+	
+	for( int k=0; k < cell_definitions_by_index.size() ; k++ )
+	{
+		Cell_Definition* pCD = cell_definitions_by_index[k]; 
+		std::cout << "Placing cells of type " << pCD->name << " ... " << std::endl; 
+		for( int n = 0 ; n < parameters.ints("number_of_cells") ; n++ )
+		{
+			std::vector<double> position = {0,0,0}; 
+			position[0] = Xmin + UniformRandom()*Xrange; 
+			position[1] = Ymin + UniformRandom()*Yrange; 
+			position[2] = Zmin + UniformRandom()*Zrange; 
+			
+			pC = create_cell( *pCD ); 
+			pC->assign_position( position );
+		}
+	}
+	std::cout << std::endl; 
+	
 	// load cells from your CSV file
 	load_cells_from_pugixml(); 	
 }
 
-// std::vector<std::string> my_coloring_function( Cell* pCell )
-// { 
-// 	std::vector< std::string > output( 4 , "rgb(0,0,0)" );
-
-// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::G0G1_phase)
-// 	{
-// 		output[0] = "rgb(255,255,0)"; //yellow
-// 		output[2] = "rgb(125,125,0)";
-		
-		
-// 	}
-// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::S_phase)
-// 	{
-// 		output[0] = "rgb(0,255,0)"; //green
-// 		output[2] = "rgb(0,125,0)";
-		
-// 	}
-// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::G2M_phase )
-// 	{
-// 		output[0] = "rgb(95,158,160)"; //cadetblue
-// 		output[2] = "rgb(47,79,80)";
-		
-// 	}
-
-// 	if ( pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::M_phase )
-// 	{
-// 		output[0] = "rgb(138,43,226)"; //purple
-// 		output[2] = "rgb(69,21,113)";
-		
-// 	}
-
-// 	if (pCell->phenotype.cycle.current_phase().code == PhysiCell_constants::apoptotic )  
-// 	{
-// 		output[0] = "rgb(0,0,0)"; //black
-// 		output[2] = "rgb(0,0,0)";
-// 	}
-
-// 	return output;
-// }
+std::vector<std::string> my_coloring_function( Cell* pCell )
+{ return paint_by_number_cell_coloring(pCell); }
 
 void phenotype_function( Cell* pCell, Phenotype& phenotype, double dt )
 { return; }
