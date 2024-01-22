@@ -938,13 +938,6 @@
 
     <user_parameters>
         <random_seed type="int" units="dimensionless" description="">0</random_seed>
-        <linphonode_radius type="double" units="micron" description="">75.0</linphonode_radius>
-        <X_linfonode_center type="double" units="micron" description="">-200.0</X_linfonode_center>
-        <Y_linfonode_center type="double" units="micron" description="">200.0</Y_linfonode_center>
-        <dendritic_core_radius type="double" units="micron" description="">20.0</dendritic_core_radius>
-        <X_dendritic_center type="double" units="micron" description="">250.0</X_dendritic_center>
-        <Y_dendritic_center type="double" units="micron" description="">-250.0</Y_dendritic_center>
-        <node_to_visualize type="string" units="" description="change the node to visualize in the plot tab when coloring cells by custom data value">Th1</node_to_visualize>
-        <color_function type="int" units="" description="change the basic color function: 1 for cell type based color, 2 for node based color">1</color_function>
+        <number_of_cells type="int" units="none" description="initial number of cells (for each cell type)">0</number_of_cells>
     </user_parameters>
 </PhysiCell_settings>
