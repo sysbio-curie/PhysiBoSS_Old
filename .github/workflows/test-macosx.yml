@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@10
@@ -30,7 +30,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@11
@@ -50,7 +50,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@11
@@ -73,7 +73,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@11
@@ -92,7 +92,15 @@ jobs:
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
         ./project config/simple_tnf/3_Fig4D_necrotic_core.xml
         ./project config/differentiation/PhysiCell_settings_2D_diff.xml
-        
+       
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+        key: ${{ runner.os }}-macos11-project-${{ github.run_id }}
+     
+       
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
@@ -105,7 +113,7 @@ jobs:
     runs-on: macos-12
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@12
@@ -124,7 +132,14 @@ jobs:
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
         ./project config/simple_tnf/3_Fig4D_necrotic_core.xml
         ./project config/differentiation/PhysiCell_settings_2D_diff.xml
-        
+    
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+        key: ${{ runner.os }}-macos12-project-${{ github.run_id }}
+         
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
@@ -137,7 +152,7 @@ jobs:
     runs-on: macos-13
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run : brew install gcc@13
@@ -156,9 +171,54 @@ jobs:
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
         ./project config/simple_tnf/3_Necrotic_core_2D.xml
         ./project config/differentiation/PhysiCell_settings_2D_diff.xml
-        
+    
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+        key: ${{ runner.os }}-macos13-project-${{ github.run_id }}
+     
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
         name: tutorial_binary_macosx_macos13
+        path: project
+
+  build_physiboss_tutorial_m1:
+    runs-on: flyci-macos-large-latest-m1
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run : brew install gcc@13
+      
+    - name: Build PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        make clean
+        make PHYSICELL_CPP=g++-13
+        
+    - name: Run PhysiBoSS tutorial
+      run: |
+        ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+        
+        
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+        key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
+     
+    - name: Look at the generated binary
+      run: |
+        otool -L project
+        lipo -archs project 
+      
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_macosx_m1
         path: project
