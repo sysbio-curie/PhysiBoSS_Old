@@ -256,6 +256,7 @@ jobs:
         
     - name: Run PhysiBoSS tutorial
       run: |
+        make physiboss-tutorial
         ./project_macos_universal config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
 
     - name: Save artifacts
