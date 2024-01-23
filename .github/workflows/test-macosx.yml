@@ -85,7 +85,7 @@ jobs:
         make MaBoSS-clean
         make Compile_MaBoSS PHYSICELL_CPP=g++-11
         make PHYSICELL_CPP=g++-11
-        otool -L project
+        cp project project_macos11
 
     - name: Run PhysiBoSS tutorial
       run: |
@@ -97,9 +97,13 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos11
         key: ${{ runner.os }}-macos11-project-${{ github.run_id }}
-     
+    
+    - name: Look at the generated binary
+      run: |
+        otool -L project
+        lipo -archs project           
        
     - name: Save artifacts
       uses: actions/upload-artifact@v3
@@ -125,7 +129,7 @@ jobs:
         make MaBoSS-clean
         make Compile_MaBoSS PHYSICELL_CPP=g++-12
         make PHYSICELL_CPP=g++-12
-        otool -L project
+        cp project project_macos12
 
     - name: Run PhysiBoSS tutorial
       run: |
@@ -137,9 +141,14 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos12
         key: ${{ runner.os }}-macos12-project-${{ github.run_id }}
-         
+    
+    - name: Look at the generated binary
+      run: |
+        otool -L project
+        lipo -archs project          
+    
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
@@ -164,8 +173,8 @@ jobs:
         make MaBoSS-clean
         make Compile_MaBoSS PHYSICELL_CPP=g++-13
         make PHYSICELL_CPP=g++-13
-        otool -L project
-        
+        cp project project_macos13
+
     - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
@@ -176,9 +185,14 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos13
         key: ${{ runner.os }}-macos13-project-${{ github.run_id }}
-     
+    
+    - name: Look at the generated binary
+      run: |
+        otool -L project
+        lipo -archs project      
+    
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
@@ -199,7 +213,8 @@ jobs:
         make physiboss-tutorial
         make clean
         make PHYSICELL_CPP=g++-13
-        
+        cp project project_macos_m1
+
     - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
@@ -209,7 +224,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos_m1
         key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
      
     - name: Look at the generated binary
