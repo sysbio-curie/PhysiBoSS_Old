@@ -237,6 +237,7 @@ jobs:
         
   build_physiboss_tutorial_universal:
     runs-on: macos-13
+    needs: [build_physiboss_tutorial_m1, build_physiboss_tutorial_macos13]
 
     steps:
     - uses: actions/checkout@v4
