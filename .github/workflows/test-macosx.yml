@@ -204,18 +204,17 @@ jobs:
         make physiboss-tutorial
         make clean
         make PHYSICELL_CPP=g++-13
-        cp project project_macos_m1
+        cp project project_macosm1
 
     - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
         
-        
     - name: Caching produced project binary 
       uses: actions/cache@v3
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos_m1
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1
         key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
      
     - name: Look at the generated binary
@@ -226,7 +225,7 @@ jobs:
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
-        name: tutorial_binary_macosx_m1
+        name: tutorial_binary_macos_m1
         path: project
         
   build_physiboss_tutorial_universal:
@@ -240,7 +239,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos_m1
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1
         key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
     
     - name: Caching produced project binary 
@@ -254,8 +253,8 @@ jobs:
       run: |
         ls 
         lipo -archs project_macos13
-        lipo -archs project_macos_m1
-        lipo -create -output project_macos13 project_macos_m1 project_macos_universal
+        lipo -archs project_macosm1
+        lipo -create -output project_macos13 project_macosm1 project_macos_universal
         lipo -archs project_macos_universal
         
     - name: Run PhysiBoSS tutorial
