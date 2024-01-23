@@ -209,6 +209,8 @@ jobs:
     - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+        ls -al /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/
+        ls -al /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1
         
     - name: Caching produced project binary 
       uses: actions/cache@v3
