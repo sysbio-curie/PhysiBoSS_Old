@@ -251,7 +251,7 @@ jobs:
         ls 
         lipo -archs project_macos13
         lipo -archs project_macosm1
-        lipo -create -output project_macos13 project_macosm1 project_macos_universal
+        lipo -create -output project_macos_universal project_macos13 project_macosm1
         lipo -archs project_macos_universal
         
     - name: Run PhysiBoSS tutorial
