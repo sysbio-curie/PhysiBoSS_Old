@@ -54,7 +54,7 @@ ARCH := native # best auto-tuning
 # ARCH := nocona #64-bit pentium 4 or later 
 
 # CFLAGS := -march=$(ARCH) -Ofast -s -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
-CFLAGS := -g -march=$(ARCH) -O3 -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
+CFLAGS := -g -march=$(ARCH) -O3 -fomit-frame-pointer -fopenmp -m64 -std=c++11
 # debug:
 # CFLAGS := -march=$(ARCH) -O0 -ggdb -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
 
