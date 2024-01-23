@@ -248,7 +248,6 @@ jobs:
     
     - name: Looking at caches binaries
       run: |
-        cp /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1 .
         ls 
         lipo -archs project_macos13
         lipo -archs project_macosm1
