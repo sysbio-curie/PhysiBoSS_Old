@@ -20,13 +20,16 @@ jobs:
         make physiboss-tutorial
         make clean
         make PHYSICELL_CPP=g++-11
-        otool -L project
-        lipo --archs project 
         
     - name: Run PhysiBoSS tutorial
       run: |
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
         
+    - name: Look at the generated binary
+      run: |
+        otool -L project
+        lipo -archs project 
+      
     - name: Save artifacts
       uses: actions/upload-artifact@v3
       with: 
