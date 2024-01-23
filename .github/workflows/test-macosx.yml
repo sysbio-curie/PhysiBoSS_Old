@@ -237,3 +237,43 @@ jobs:
       with: 
         name: tutorial_binary_macosx_m1
         path: project
+        
+  build_physiboss_tutorial_universal:
+    runs-on: macos-13
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos_m1
+        key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
+    
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos13
+        key: ${{ runner.os }}-macos13-project-${{ github.run_id }}
+    
+    - name: Looking at caches binaries
+      run: |
+        ls 
+        lipo -archs project_macos13
+        lipo -archs project_macos_m1
+        lipo -create -output project_macos13 project_macos_m1 project_macos_universal
+        lipo -archs project_macos_universal
+        
+    - name: Run PhysiBoSS tutorial
+      run: |
+        ./project_macos_universal config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_macosx_universal
+        path: project_macos_universal
+        
+    
