@@ -671,7 +671,7 @@
               </initial_conditions>
             </settings>
             <mapping>
-              <input intracellular_name="HGMB1" physicell_name="CCL21">
+              <input intracellular_name="CCR7" physicell_name="CCL21">
                 <settings>
                   <action>activation</action>
                   <threshold>20.0</threshold>

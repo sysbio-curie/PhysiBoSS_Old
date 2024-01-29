@@ -4,10 +4,10 @@ Node ATP {
   rate_down = @logic ? 0 : $d_ATP;
 }
 
-Node HGMB1 {
-  logic = (HGMB1);
-  rate_up = @logic ? $u_HGMB1 : 0;
-  rate_down = @logic ? 0 : $d_HGMB1;
+Node CCR7 {
+  logic = (CCR7);
+  rate_up = @logic ? $u_CCR7 : 0;
+  rate_down = @logic ? 0 : $d_CCR7;
 }
 
 Node Contact {
@@ -29,7 +29,7 @@ Node Migration_1 {
 }
 
 Node Maturation {
-  logic = (HGMB1 & Contact);
+  logic = (CCR7 & Contact);
   rate_up = @logic ? $u_Maturation : 0;
   rate_down = @logic ? 0 : $u_Maturation;
 }
