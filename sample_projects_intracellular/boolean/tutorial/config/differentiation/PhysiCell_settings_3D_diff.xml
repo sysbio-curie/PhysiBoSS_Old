@@ -42,7 +42,7 @@
         <cell_type>true</cell_type>
       </legend>
       <plot_substrate enabled="true" limits="true">
-        <substrate>CCL19</substrate>
+        <substrate>CCL21</substrate>
         <min_conc>0.0</min_conc>
         <max_conc>0.1</max_conc>
       </plot_substrate>
@@ -68,7 +68,7 @@
         <Dirichlet_boundary_condition enabled="True" units="mmHg">38.0</Dirichlet_boundary_condition>
       </variable>
 
-    <variable ID="1" name="CCL19" units="dimensionless">
+    <variable ID="1" name="CCL21" units="dimensionless">
         <physical_parameter_set>
           <diffusion_coefficient units="micron^2/min">1000.0</diffusion_coefficient>
           <decay_rate units="1/min">0.001</decay_rate>
@@ -178,7 +178,7 @@
           </motility>
 
           <secretion>
-            <substrate name="CCL19">
+            <substrate name="CCL21">
               <secretion_rate units="1/min">1000</secretion_rate>
               <secretion_target units="substrate density">100</secretion_target>
               <uptake_rate units="1/min">0.0</uptake_rate>
@@ -368,7 +368,7 @@
           </motility>
 
           <secretion>
-            <substrate name="CCL19">
+            <substrate name="CCL21">
               <secretion_rate units="1/min">0</secretion_rate>
               <secretion_target units="substrate density">0</secretion_target>
               <uptake_rate units="1/min">0.0</uptake_rate>
@@ -457,14 +457,14 @@
               <use_2D>false</use_2D>
               <chemotaxis>
                 <enabled>false</enabled>
-                <substrate>CCL19</substrate>
+                <substrate>CCL21</substrate>
                 <direction>1</direction>
               </chemotaxis>
             </options>
           </motility>
 
           <secretion>
-            <substrate name="CCL19">
+            <substrate name="CCL21">
               <secretion_rate units="1/min">0</secretion_rate>
               <secretion_target units="substrate density">0</secretion_target>
               <uptake_rate units="1/min">0.0</uptake_rate>
@@ -555,7 +555,7 @@
           </motility>
 
           <secretion>
-            <substrate name="CCL19">
+            <substrate name="CCL21">
               <secretion_rate units="1/min">0</secretion_rate>
               <secretion_target units="substrate density">0</secretion_target>
               <uptake_rate units="1/min">0.5</uptake_rate>
@@ -644,14 +644,14 @@
               <use_2D>false</use_2D>
               <chemotaxis>
                 <enabled>true</enabled>
-                <substrate>CCL19</substrate>
+                <substrate>CCL21</substrate>
                 <direction>1</direction>
               </chemotaxis>
             </options>
           </motility>
 
           <secretion>
-            <substrate name="CCL19">
+            <substrate name="CCL21">
               <secretion_rate units="1/min">0</secretion_rate>
               <secretion_target units="substrate density">0</secretion_target>
               <uptake_rate units="1/min">0.0</uptake_rate>
@@ -671,7 +671,7 @@
               </initial_conditions>
             </settings>
             <mapping>
-              <input intracellular_name="HGMB1" physicell_name="CCL19">
+              <input intracellular_name="HGMB1" physicell_name="CCL21">
                 <settings>
                   <action>activation</action>
                   <threshold>20.0</threshold>
@@ -685,7 +685,7 @@
                   <smoothing>0</smoothing>
                 </settings>
             </input>
-              <output intracellular_name="Migration_2" physicell_name="chemotactic response to CCL19">
+              <output intracellular_name="Migration_2" physicell_name="chemotactic response to CCL21">
                 <settings>
                   <action>activation</action>
                   <value>1</value>

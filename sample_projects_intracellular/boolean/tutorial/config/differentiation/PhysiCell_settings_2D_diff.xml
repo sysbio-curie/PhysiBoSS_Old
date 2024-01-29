@@ -40,7 +40,7 @@
                 <cell_type>true</cell_type>
             </legend>
             <plot_substrate enabled="true" limits="false">
-                <substrate>CCL19</substrate>
+                <substrate>CCL21</substrate>
                 <min_conc>0.0</min_conc>
                 <max_conc>0.1</max_conc>
             </plot_substrate>
@@ -57,7 +57,7 @@
     </options>
 
     <microenvironment_setup>
-        <variable name="CCL19" units="dimensionless" ID="0">
+        <variable name="CCL21" units="dimensionless" ID="0">
             <physical_parameter_set>
                 <diffusion_coefficient units="micron^2/min">100.0</diffusion_coefficient>
                 <decay_rate units="1/min">0.005</decay_rate>
@@ -165,20 +165,20 @@
                         <use_2D>true</use_2D>
                         <chemotaxis>
                             <enabled>false</enabled>
-                            <substrate>CCL19</substrate>
+                            <substrate>CCL21</substrate>
                             <direction>1</direction>
                         </chemotaxis>
                         <advanced_chemotaxis>
                             <enabled>false</enabled>
                             <normalize_each_gradient>false</normalize_each_gradient>
                             <chemotactic_sensitivities>
-                                <chemotactic_sensitivity substrate="CCL19">0.0</chemotactic_sensitivity>
+                                <chemotactic_sensitivity substrate="CCL21">0.0</chemotactic_sensitivity>
                             </chemotactic_sensitivities>
                         </advanced_chemotaxis>
                     </options>
                 </motility>
                 <secretion>
-                    <substrate name="CCL19">
+                    <substrate name="CCL21">
                         <secretion_rate units="1/min">10</secretion_rate>
                         <secretion_target units="substrate density">100</secretion_target>
                         <uptake_rate units="1/min">0.0</uptake_rate>
@@ -403,20 +403,20 @@
                         <use_2D>true</use_2D>
                         <chemotaxis>
                             <enabled>false</enabled>
-                            <substrate>CCL19</substrate>
+                            <substrate>CCL21</substrate>
                             <direction>1</direction>
                         </chemotaxis>
                         <advanced_chemotaxis>
                             <enabled>false</enabled>
                             <normalize_each_gradient>false</normalize_each_gradient>
                             <chemotactic_sensitivities>
-                                <chemotactic_sensitivity substrate="CCL19">0.0</chemotactic_sensitivity>
+                                <chemotactic_sensitivity substrate="CCL21">0.0</chemotactic_sensitivity>
                             </chemotactic_sensitivities>
                         </advanced_chemotaxis>
                     </options>
                 </motility>
                 <secretion>
-                    <substrate name="CCL19">
+                    <substrate name="CCL21">
                         <secretion_rate units="1/min">0</secretion_rate>
                         <secretion_target units="substrate density">0</secretion_target>
                         <uptake_rate units="1/min">0.0</uptake_rate>
@@ -541,20 +541,20 @@
                         <use_2D>true</use_2D>
                         <chemotaxis>
                             <enabled>false</enabled>
-                            <substrate>CCL19</substrate>
+                            <substrate>CCL21</substrate>
                             <direction>1</direction>
                         </chemotaxis>
                         <advanced_chemotaxis>
                             <enabled>false</enabled>
                             <normalize_each_gradient>false</normalize_each_gradient>
                             <chemotactic_sensitivities>
-                                <chemotactic_sensitivity substrate="CCL19">0.0</chemotactic_sensitivity>
+                                <chemotactic_sensitivity substrate="CCL21">0.0</chemotactic_sensitivity>
                             </chemotactic_sensitivities>
                         </advanced_chemotaxis>
                     </options>
                 </motility>
                 <secretion>
-                    <substrate name="CCL19">
+                    <substrate name="CCL21">
                         <secretion_rate units="1/min">0</secretion_rate>
                         <secretion_target units="substrate density">0</secretion_target>
                         <uptake_rate units="1/min">0.0</uptake_rate>
@@ -679,20 +679,20 @@
                         <use_2D>true</use_2D>
                         <chemotaxis>
                             <enabled>false</enabled>
-                            <substrate>CCL19</substrate>
+                            <substrate>CCL21</substrate>
                             <direction>1</direction>
                         </chemotaxis>
                         <advanced_chemotaxis>
                             <enabled>false</enabled>
                             <normalize_each_gradient>false</normalize_each_gradient>
                             <chemotactic_sensitivities>
-                                <chemotactic_sensitivity substrate="CCL19">0.0</chemotactic_sensitivity>
+                                <chemotactic_sensitivity substrate="CCL21">0.0</chemotactic_sensitivity>
                             </chemotactic_sensitivities>
                         </advanced_chemotaxis>
                     </options>
                 </motility>
                 <secretion>
-                    <substrate name="CCL19">
+                    <substrate name="CCL21">
                         <secretion_rate units="1/min">0</secretion_rate>
                         <secretion_target units="substrate density">0</secretion_target>
                         <uptake_rate units="1/min">0.5</uptake_rate>
@@ -817,20 +817,20 @@
                         <use_2D>true</use_2D>
                         <chemotaxis>
                             <enabled>true</enabled>
-                            <substrate>CCL19</substrate>
+                            <substrate>CCL21</substrate>
                             <direction>1</direction>
                         </chemotaxis>
                         <advanced_chemotaxis>
                             <enabled>false</enabled>
                             <normalize_each_gradient>false</normalize_each_gradient>
                             <chemotactic_sensitivities>
-                                <chemotactic_sensitivity substrate="CCL19">0.0</chemotactic_sensitivity>
+                                <chemotactic_sensitivity substrate="CCL21">0.0</chemotactic_sensitivity>
                             </chemotactic_sensitivities>
                         </advanced_chemotaxis>
                     </options>
                 </motility>
                 <secretion>
-                    <substrate name="CCL19">
+                    <substrate name="CCL21">
                         <secretion_rate units="1/min">0</secretion_rate>
                         <secretion_target units="substrate density">0</secretion_target>
                         <uptake_rate units="1/min">0.0</uptake_rate>
@@ -882,7 +882,7 @@
                         <inheritance global="False" />
                     </settings>
                     <mapping>
-                        <input physicell_name="CCL19" intracellular_name="HGMB1">
+                        <input physicell_name="CCL21" intracellular_name="HGMB1">
                             <settings>
                                 <action>activation</action>
                                 <threshold>1.0</threshold>
@@ -896,7 +896,7 @@
                                 <smoothing>0</smoothing>
                             </settings>
                         </input>
-                        <output physicell_name="chemotactic response to CCL19" intracellular_name="Migration_2">
+                        <output physicell_name="chemotactic response to CCL21" intracellular_name="Migration_2">
                             <settings>
                                 <action>activation</action>
                                 <value>1</value>
