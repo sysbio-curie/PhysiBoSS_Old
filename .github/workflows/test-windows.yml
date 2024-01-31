@@ -74,6 +74,7 @@ jobs:
       run: |
         make physiboss-tutorial
         make MaBoSS-clean
+        python3 beta/setup_windows_dep.py
         make Compile_MaBoSS
         make
         ldd .\\project.exe
