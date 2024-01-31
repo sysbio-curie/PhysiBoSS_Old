@@ -68,13 +68,13 @@ jobs:
     - uses: msys2/setup-msys2@v2
       with:
         update: true
-        install: base-devel flex bison gcc make diffutils mingw-w64-x86_64-toolchain mingw-w64-x86_64-ca-certificates
-    
+        install: mingw-w64-x86_64-binutils mingw-w64-x86_64-gcc mingw-w64-x86_64-headers-git mingw-w64-x86_64-gcc-libs mingw-w64-x86_64-libwinpthread-git mingw-w64-x86_64-lapack mingw-w64-x86_64-openblas mingw-w64-x86_64-libxml2 mingw-w64-x86_64-bzip2 mingw-w64-x86_64-python mingw-w64-x86_64-python-zstandard mingw-w64-x86_64-python-cffi make mingw-w64-x86_64-ca-certificates
+
     - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
         make MaBoSS-clean
-        python3 beta/setup_windows_dep.py
+        python beta/setup_windows_dep.py
         make Compile_MaBoSS
         make
         ldd .\\project.exe
