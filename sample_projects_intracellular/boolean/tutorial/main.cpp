@@ -94,7 +94,7 @@ int main( int argc, char* argv[] )
 	if( argc > 1 )
 	{
 		XML_status = load_PhysiCell_config_file( argv[1] ); 
-		sprintf( copy_command , "cp %s %s" , argv[1] , PhysiCell_settings.folder.c_str() ); 
+		sprintf( copy_command , "cp %s %s/PhysiCell_settings.xml" , argv[1] , PhysiCell_settings.folder.c_str() ); 
 	}
 	else
 	{
