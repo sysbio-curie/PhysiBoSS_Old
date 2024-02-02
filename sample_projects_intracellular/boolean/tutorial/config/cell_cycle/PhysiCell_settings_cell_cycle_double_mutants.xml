@@ -227,6 +227,8 @@
                             <mutation intracellular_name="p110_H">1.0</mutation>
                         </mutations>
                     </settings>
+                    <mapping>
+                        <output physicell_name="cycle entry" intracellular_name="S_entry">
                             <settings>
                                 <action>activation</action>
                                 <value>1000000</value>
