@@ -13,7 +13,7 @@ endif
 
 # prostate model has more than 64 nodes, so we have 
 # to set up this var to the number of nodes
-MABOSS_MAX_NODES = 150
+MABOSS_MAX_NODES = 256
 
 ### MaBoSS configuration 
 # MaBoSS max nodes
@@ -78,7 +78,7 @@ BioFVM_utilities.o BioFVM_basic_agent.o BioFVM_MultiCellDS.o BioFVM_agent_contai
 
 PhysiCell_core_OBJECTS := PhysiCell_phenotype.o PhysiCell_cell_container.o PhysiCell_standard_models.o \
 PhysiCell_cell.o PhysiCell_custom.o PhysiCell_utilities.o PhysiCell_constants.o PhysiCell_basic_signaling.o \
-PhysiCell_signal_behavior.o 
+PhysiCell_signal_behavior.o PhysiCell_rules.o
 
 PhysiCell_module_OBJECTS := PhysiCell_SVG.o PhysiCell_pathology.o PhysiCell_MultiCellDS.o PhysiCell_various_outputs.o \
 PhysiCell_pugixml.o PhysiCell_settings.o PhysiCell_geometry.o
@@ -136,7 +136,10 @@ PhysiCell_constants.o: ./core/PhysiCell_constants.cpp
 	
 PhysiCell_signal_behavior.o: ./core/PhysiCell_signal_behavior.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_signal_behavior.cpp 
-	
+
+PhysiCell_rules.o: ./core/PhysiCell_rules.cpp
+	$(COMPILE_COMMAND) -c ./core/PhysiCell_rules.cpp 
+
 # BioFVM core components (needed by PhysiCell)
 	
 BioFVM_vector.o: ./BioFVM/BioFVM_vector.cpp
@@ -198,7 +201,7 @@ PhysiCell_geometry.o: ./modules/PhysiCell_geometry.cpp
 # user-defined PhysiCell modules
 
 Compile_MaBoSS: ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src/BooleanNetwork.h
-	cd ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src;make CXX=$(CC) install_alib;make clean; cd ../../../../..
+	cd ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src;make CXX=$(CC) MAXNODES=$(MABOSS_MAX_NODES) install_alib;make clean; cd ../../../../..
 
 $(MaBoSS): 
 ifeq ($(OS), Windows_NT)
