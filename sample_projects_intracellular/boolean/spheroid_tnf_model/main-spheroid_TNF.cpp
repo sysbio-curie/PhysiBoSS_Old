@@ -124,11 +124,9 @@ int main( int argc, char* argv[] )
 	double time_remove_tnf = parameters.doubles("time_remove_tnf");
 	double membrane_lenght = parameters.doubles("membrane_length"); // radious around which the tnf pulse is injected
 	
-	// double tnf_pulse_timer = tnf_pulse_period;
-	// double tnf_pulse_injection_timer = -1;
-
+	
 	double tnf_pulse_timer = tnf_pulse_period;
-	double tnf_pulse_injection_timer = -1;
+	double tnf_pulse_injection_timer = tnf_pulse_duration * 0.5; // tnf_pulse_duration; // -1;
 	static int tnf_idx = microenvironment.find_density_index("tnf");	
 
 

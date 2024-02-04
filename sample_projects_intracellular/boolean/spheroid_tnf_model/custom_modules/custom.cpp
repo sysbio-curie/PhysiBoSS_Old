@@ -80,6 +80,7 @@ void create_cell_types(void)
 	//  This sets the pre and post intracellular update functions
 	cell_defaults.functions.pre_update_intracellular =  update_boolean_model_inputs;
 	cell_defaults.functions.post_update_intracellular = update_behaviors;
+	cell_defaults.functions.update_phenotype = NULL; 
 	
 	//  This initializes the the TNF receptor model
 	tnf_receptor_model_setup();

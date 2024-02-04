@@ -58,16 +58,63 @@ void update_boolean_model_inputs( Cell* pCell, Phenotype& phenotype, double dt )
     return;
 }
 
+
+/** 
+void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt)
+{	
+    static int nTNF_external = microenvironment.find_density_index( "tnf" );
+    static int nTNF_export_rate = pCell->custom_data.find_variable_index( "TNF_net_production_rate" );
+
+    static int apoptosis_model_index = phenotype.death.find_death_model_index( "Apoptosis" );
+    static int necrosis_model_index = phenotype.death.find_death_model_index( "Necrosis" );
+    
+    // Getting the state of the boolean model readouts (Readout can be in the XML)
+    bool apoptosis = pCell->phenotype.intracellular->get_boolean_variable_value( "Apoptosis" );
+    bool nonACD    = pCell->phenotype.intracellular->get_boolean_variable_value( "NonACD" );
+    bool survival  = pCell->phenotype.intracellular->get_boolean_variable_value( "Survival" );
+    bool NFkB      = pCell->phenotype.intracellular->get_boolean_variable_value( "NFkB" );
+	
+	if ( apoptosis ) {
+		pCell->start_death(apoptosis_model_index);
+		return;
+	}
+
+	if ( nonACD ) {
+		pCell->start_death(necrosis_model_index);
+		return;
+	}
+
+	if ( survival && pCell->phenotype.cycle.current_phase_index() == PhysiCell_constants::Ki67_negative ) { 
+        pCell->phenotype.cycle.advance_cycle(pCell, phenotype, dt); 
+    }
+
+    // If NFkB node is active produce some TNF
+	if ( NFkB )	{ 
+        double tnf_export_rate = pCell->custom_data[nTNF_export_rate]; 
+        phenotype.secretion.net_export_rates[nTNF_external] = tnf_export_rate;
+    } else {
+        phenotype.secretion.net_export_rates[nTNF_external] = 0;
+    }
+    
+    return;
+}
+*/
+
+
+
 void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt)
 {	
 
-    static int nTNF_external = microenvironment.find_density_index( "tnf" );      
-    static int nTNF_export_rate = pCell->custom_data.find_variable_index( "TNF_net_production_rate" );
-    static int death_decay_idx = pCell->custom_data.find_variable_index( "death_commitment_decay" );
+    
     static int necrosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::necrosis_death_model ); 
     static int apoptosis_index = phenotype.death.find_death_model_index( PhysiCell_constants::apoptosis_death_model );
     static int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
     static int cycle_end_index = live.find_phase_index( PhysiCell_constants::live );  
+
+    static int nTNF_external = microenvironment.find_density_index( "tnf" );      
+    static int nTNF_export_rate = pCell->custom_data.find_variable_index( "TNF_net_production_rate" );
+    static int death_decay_idx = pCell->custom_data.find_variable_index( "death_commitment_decay" );
+
 
     static float necrosis_rate = pCell->custom_data["necrosis_rate"];
     static float apoptosis_rate = pCell->custom_data["apoptosis_rate"];
@@ -83,9 +130,8 @@ void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt
     if ( apoptosis ) {
         // pCell->start_death(apoptosis_index);
         phenotype.death.rates[apoptosis_index] = apoptosis_rate;
-		return;
 	} else {
-        phenotype.death.rates[apoptosis_index] -= phenotype.death.rates[apoptosis_index] * death_commitment_decay;
+        phenotype.death.rates[apoptosis_index] -= apoptosis_rate * death_commitment_decay;
         if (phenotype.death.rates[apoptosis_index] < 0)
             phenotype.death.rates[apoptosis_index] = 0;
     }
@@ -93,10 +139,9 @@ void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt
     if ( nonACD ) {
         // pCell->start_death(necrosis_index);
         phenotype.death.rates[necrosis_index] = necrosis_rate;
-		return;
 	}
     else {
-        phenotype.death.rates[necrosis_index] -= phenotype.death.rates[necrosis_index] * death_commitment_decay;
+        phenotype.death.rates[necrosis_index] -= necrosis_rate * death_commitment_decay;
         if (phenotype.death.rates[necrosis_index] < 0)
             phenotype.death.rates[necrosis_index] = 0;
     } 
@@ -118,6 +163,7 @@ void update_cell_from_boolean_model(Cell* pCell, Phenotype& phenotype, double dt
     // update_cell_and_death_parameters_O2_based(pCell, phenotype, dt);
     return;
 }
+
 
 void update_behaviors(Cell* pCell, Phenotype& phenotype, double dt) 
 {
