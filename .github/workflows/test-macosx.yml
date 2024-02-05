@@ -110,7 +110,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos13
+          /Users/runner/work/PhysiBoSS/PhysiBoSS/project_macos13
         key: ${{ runner.os }}-macos13-project-${{ github.run_id }}
     
     - name: Look at the generated binary
@@ -147,7 +147,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1
+          /opt/actions-runner/_work/PhysiBoSS/PhysiBoSS/project_macosm1
         key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
      
     - name: Look at the generated binary
@@ -172,14 +172,14 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1
+          /opt/actions-runner/_work/PhysiBoSS/PhysiBoSS/project_macosm1
         key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
     
     - name: Caching produced project binary 
       uses: actions/cache@v4
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos13
+          /Users/runner/work/PhysiBoSS/PhysiBoSS/project_macos13
         key: ${{ runner.os }}-macos13-project-${{ github.run_id }}
     
     - name: Creating universal binary
@@ -224,7 +224,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macos13
+          /Users/runner/work/PhysiBoSS/PhysiBoSS/invasion_model_macos13
         key: ${{ runner.os }}-macos13-cancer_invasion-${{ github.run_id }}
     
     - name: Run PhysiBoSS cancer invasion model
@@ -265,7 +265,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macosm1
+          /opt/actions-runner/_work/PhysiBoSS/PhysiBoSS/invasion_model_macosm1
         key: ${{ runner.os }}-macosm1-cancer_invasion-${{ github.run_id }}
      
     - name: Look at the generated binary
@@ -290,14 +290,14 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macosm1
+          /opt/actions-runner/_work/PhysiBoSS/PhysiBoSS/invasion_model_macosm1
         key: ${{ runner.os }}-macosm1-cancer_invasion-${{ github.run_id }}
     
     - name: Caching produced project binary 
       uses: actions/cache@v4
       with:
         path: |
-          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macos13
+          /Users/runner/work/PhysiBoSS/PhysiBoSS/invasion_model_macos13
         key: ${{ runner.os }}-macos13-cancer_invasion-${{ github.run_id }}
     
     - name: Creating universal binary

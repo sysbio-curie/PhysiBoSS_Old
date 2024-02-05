@@ -156,7 +156,7 @@ jobs:
     
     - name: Run PhysiBoSS cancer invasion
       run: |
-        .\\project.exe config\\PhysiCell_settings_2D.xml    
+        .\\invasion_model.exe config\\PhysiCell_settings_2D.xml    
     
     - name: Save artifacts
       uses: actions/upload-artifact@v4
