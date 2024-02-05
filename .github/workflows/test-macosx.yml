@@ -84,6 +84,7 @@ jobs:
     - name: Run PhysiBoSS TNF project
       run: |
         ./spheroid_TNF_model
+
   build_physiboss_tutorial_macos:
 
     runs-on: macos-latest
@@ -184,10 +185,8 @@ jobs:
     - name: Creating universal binary
       run: | 
         lipo -create -output project_macos_universal project_macos13 project_macosm1
-        lipo -archs project_macos_universal
-        otool -L project_macos_universal
 
-    - name: Creating universal binary
+    - name: Checking universal binary
       run: |
         lipo -archs project_macos_universal
         otool -L project_macos_universal
@@ -202,5 +201,110 @@ jobs:
       with: 
         name: tutorial_binary_macosx_universal
         path: project_macos_universal
+        
+        
+  build_physiboss_cancer_invasion_macos:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run : brew install gcc@11
+      
+    - name: Build PhysiBoSS cancer invasion
+      run: |
+        make physiboss-tutorial-invasion
+        make clean
+        make PHYSICELL_CPP=g++-11 static
+        cp invasion_model invasion_model_macos13
+
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macos13
+        key: ${{ runner.os }}-macos13-cancer_invasion-${{ github.run_id }}
+    
+    - name: Look at the generated binary
+      run: |
+        otool -L invasion_model
+        lipo -archs invasion_model      
+    
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: invasion_model_macosx_macos13
+        path: invasion_model
+
+  build_physiboss_cancer_invasion_m1:
+    runs-on: flyci-macos-large-latest-m1
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run : brew install gcc@11
+      
+    - name: Build PhysiBoSS cancer invasion
+      run: |
+        make physiboss-tutorial-invasion
+        make PHYSICELL_CPP=g++-11 EXTRA_FLAGS=-Wl,-ld_classic static
+        cp invasion_model invasion_model_macosm1
+
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macosm1
+        key: ${{ runner.os }}-macosm1-cancer_invasion-${{ github.run_id }}
+     
+    - name: Look at the generated binary
+      run: |
+        otool -L invasion_model
+        lipo -archs invasion_model 
+      
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: invasion_model_binary_macos_m1
+        path: invasion_model
+        
+  build_physiboss_cancer_invasion_universal:
+    runs-on: macos-latest
+    needs: [build_physiboss_tutorial_m1, build_physiboss_tutorial_macos]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macosm1
+        key: ${{ runner.os }}-macosm1-cancer_invasion-${{ github.run_id }}
+    
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/invasion_model_macos13
+        key: ${{ runner.os }}-macos13-cancer_invasion-${{ github.run_id }}
+    
+    - name: Creating universal binary
+      run: | 
+        lipo -create -output invasion_model_macos_universal invasion_model_macos13 invasion_model_macosm1
+
+    - name: Checking universal binary
+      run: |
+        lipo -archs invasion_model_macos_universal
+        otool -L invasion_model_macos_universal
+        
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: invasion_model_binary_macosx_universal
+        path: invasion_model_macos_universal
         
     
