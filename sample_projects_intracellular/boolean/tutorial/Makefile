@@ -95,7 +95,7 @@ MaBoSS := ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src/BooleanNetwork.h
 
 PhysiBoSS_OBJECTS := maboss_network.o maboss_intracellular.o
 
-PhysiCell_custom_module_OBJECTS := custom.o treatment.o
+PhysiCell_custom_module_OBJECTS := custom.o
 
 pugixml_OBJECTS := pugixml.o
 
@@ -138,10 +138,10 @@ PhysiCell_constants.o: ./core/PhysiCell_constants.cpp
 	
 PhysiCell_signal_behavior.o: ./core/PhysiCell_signal_behavior.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_signal_behavior.cpp 
-	
+
 PhysiCell_rules.o: ./core/PhysiCell_rules.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_rules.cpp 
-
+	
 # BioFVM core components (needed by PhysiCell)
 	
 BioFVM_vector.o: ./BioFVM/BioFVM_vector.cpp
@@ -206,9 +206,9 @@ Compile_MaBoSS: ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src/BooleanNetwork.h
 
 $(MaBoSS): 
 ifeq ($(OS), Windows_NT)
-	python beta/setup_libmaboss.py
+	python addons/PhysiBoSS/setup_libmaboss.py
 else
-	python3 beta/setup_libmaboss.py
+	python3 addons/PhysiBoSS/setup_libmaboss.py
 endif
 
 maboss_network.o: ./addons/PhysiBoSS/src/maboss_network.cpp $(MaBoSS)
@@ -219,9 +219,6 @@ maboss_intracellular.o: ./addons/PhysiBoSS/src/maboss_intracellular.cpp $(MaBoSS
 
 custom.o: ./custom_modules/custom.cpp $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -c ./custom_modules/custom.cpp
-
-treatment.o: ./custom_modules/treatment.cpp
-	$(COMPILE_COMMAND) -c ./custom_modules/treatment.cpp
 
 # cleanup
 

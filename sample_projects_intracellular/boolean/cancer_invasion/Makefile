@@ -35,6 +35,10 @@ ifeq ($(shell expr $(MABOSS_MAX_NODES) '>' 64), 1)
 LIB := -L$(CUR_DIR)/$(MABOSS_DIR)/lib -lMaBoSS_$(MABOSS_MAX_NODES)n-static $(LDL_FLAG)
 endif
 
+ifndef STATIC_OPENMP
+	STATIC_OPENMP = -fopenmp
+endif
+
 ARCH := native # best auto-tuning
 # ARCH := core2 # a reasonably safe default for most CPUs since 2007
 # ARCH := corei7
@@ -54,23 +58,40 @@ ARCH := native # best auto-tuning
 # ARCH := nocona #64-bit pentium 4 or later 
 
 # CFLAGS := -march=$(ARCH) -Ofast -s -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
-CFLAGS := -march=$(ARCH) -O3 -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
+CFLAGS := -g -march=$(ARCH) -O3 -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
 # debug:
 # CFLAGS := -march=$(ARCH) -O0 -ggdb -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
 
+ifeq ($(OS),Windows_NT)
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Darwin)
+		UNAME_P := $(shell uname -p)
+		var := $(shell which $(CC) | xargs file)
+		ifeq ($(lastword $(var)),arm64)
+		  CFLAGS := -march=$(ARCH) -O3 -fomit-frame-pointer -fopenmp -m64 -std=c++11
+		endif
+	endif
+endif
+
+CFLAGS_LINK := $(shell echo $(CFLAGS) | sed -e "s/-fopenmp//g")
 COMPILE_COMMAND := $(CC) $(CFLAGS) 
+LINK_COMMAND := $(CC) $(CFLAGS_LINK)
 
 BioFVM_OBJECTS := BioFVM_vector.o BioFVM_mesh.o BioFVM_microenvironment.o BioFVM_solvers.o BioFVM_matlab.o \
 BioFVM_utilities.o BioFVM_basic_agent.o BioFVM_MultiCellDS.o BioFVM_agent_container.o 
 
 PhysiCell_core_OBJECTS := PhysiCell_phenotype.o PhysiCell_cell_container.o PhysiCell_standard_models.o \
-PhysiCell_cell.o PhysiCell_custom.o PhysiCell_utilities.o PhysiCell_constants.o PhysiCell_signal_behavior.o \
-PhysiCell_rules.o
+PhysiCell_cell.o PhysiCell_custom.o PhysiCell_utilities.o PhysiCell_constants.o PhysiCell_basic_signaling.o \
+PhysiCell_signal_behavior.o PhysiCell_rules.o
+
 
 PhysiCell_module_OBJECTS := PhysiCell_SVG.o PhysiCell_pathology.o PhysiCell_MultiCellDS.o PhysiCell_various_outputs.o \
-PhysiCell_pugixml.o PhysiCell_settings.o PhysiCell_basic_signaling.o PhysiCell_geometry.o
+PhysiCell_pugixml.o PhysiCell_settings.o PhysiCell_geometry.o
 
 # put your custom objects here (they should be in the custom_modules directory)
+
+MaBoSS := ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src/BooleanNetwork.h
 
 PhysiBoSS_OBJECTS := maboss_network.o maboss_intracellular.o
 
@@ -83,8 +104,11 @@ ALL_OBJECTS := $(PhysiCell_OBJECTS) $(PhysiCell_custom_module_OBJECTS) $(PhysiBo
 
 # compile the project 
 
-all: MaBoSS main.cpp $(ALL_OBJECTS)
+all: main.cpp $(ALL_OBJECTS) $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -o $(PROGRAM_NAME) $(ALL_OBJECTS) main.cpp $(LIB)
+
+static: main.cpp $(ALL_OBJECTS) $(MaBoSS)
+	$(LINK_COMMAND) $(INC) -o $(PROGRAM_NAME) $(ALL_OBJECTS) main.cpp $(LIB) -static-libgcc -static-libstdc++ $(STATIC_OPENMP)
 
 # PhysiCell core components	
 
@@ -94,7 +118,7 @@ PhysiCell_phenotype.o: ./core/PhysiCell_phenotype.cpp
 PhysiCell_digital_cell_line.o: ./core/PhysiCell_digital_cell_line.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_digital_cell_line.cpp
 
-PhysiCell_cell.o: ./core/PhysiCell_cell.cpp
+PhysiCell_cell.o: ./core/PhysiCell_cell.cpp $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -c ./core/PhysiCell_cell.cpp 
 
 PhysiCell_cell_container.o: ./core/PhysiCell_cell_container.cpp
@@ -177,21 +201,23 @@ PhysiCell_geometry.o: ./modules/PhysiCell_geometry.cpp
 	$(COMPILE_COMMAND) -c ./modules/PhysiCell_geometry.cpp 	
 
 # user-defined PhysiCell modules
+Compile_MaBoSS: ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src/BooleanNetwork.h
+	cd ./addons/PhysiBoSS/MaBoSS-env-2.0/engine/src;make CXX=$(CC) MAXNODES=$(MABOSS_MAX_NODES) install_alib;make clean; cd ../../../../..
 
-MaBoSS: 
+$(MaBoSS): 
 ifeq ($(OS), Windows_NT)
-	python beta/setup_libmaboss.py
+	python addons/PhysiBoSS/setup_libmaboss.py
 else
-	python3 beta/setup_libmaboss.py
+	python3 addons/PhysiBoSS/setup_libmaboss.py
 endif
 
-maboss_network.o: ./addons/PhysiBoSS/src/maboss_network.cpp
+maboss_network.o: ./addons/PhysiBoSS/src/maboss_network.cpp $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -c ./addons/PhysiBoSS/src/maboss_network.cpp
 
-maboss_intracellular.o: ./addons/PhysiBoSS/src/maboss_intracellular.cpp
+maboss_intracellular.o: ./addons/PhysiBoSS/src/maboss_intracellular.cpp $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -c ./addons/PhysiBoSS/src/maboss_intracellular.cpp
 
-custom.o: ./custom_modules/custom.cpp 
+custom.o: ./custom_modules/custom.cpp $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -c ./custom_modules/custom.cpp
 
 # cleanup
