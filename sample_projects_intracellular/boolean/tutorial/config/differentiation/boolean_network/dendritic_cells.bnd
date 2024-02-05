@@ -1,0 +1,42 @@
+Node ATP {
+  logic = (ATP);
+  rate_up = @logic ? $u_ATP : 0;
+  rate_down = @logic ? 0 : $d_ATP;
+}
+
+Node CCR7 {
+  logic = (CCR7);
+  rate_up = @logic ? $u_CCR7 : 0;
+  rate_down = @logic ? 0 : $d_CCR7;
+}
+
+Node Contact {
+  logic = (Contact);
+  rate_up = @logic ? $u_Contact : 0;
+  rate_down = @logic ? 0 : $u_Contact;
+}
+
+Node Contact_2 {
+  logic = (Contact_2);
+  rate_up = @logic ? $u_Contact_2 : 0;
+  rate_down = @logic ? 0 : $u_Contact_2;
+}
+
+Node Migration_1 {
+  logic = (ATP & !Migration_2);
+  rate_up = @logic ? $u_Migration_1 : 0;
+  rate_down = @logic ? 0 : $d_Migration_1;
+}
+
+Node Maturation {
+  logic = (CCR7 & Contact);
+  rate_up = @logic ? $u_Maturation : 0;
+  rate_down = @logic ? 0 : $u_Maturation;
+}
+
+Node Migration_2 {
+  logic = (Maturation & !Contact_2);
+  rate_up = @logic ? $u_Migration_2 : 0;
+  rate_down = @logic ? 0 : $d_Migration_2;
+}
+

@@ -1,0 +1,741 @@
+<PhysiCell_settings version="devel-version">
+	<domain>
+		<x_min>-300</x_min>
+		<x_max>300</x_max>
+		<y_min>-300</y_min>
+		<y_max>300</y_max>
+		<z_min>-300</z_min>
+		<z_max>300</z_max>
+		<dx>10</dx>
+		<dy>10</dy>
+		<dz>10</dz>
+		<use_2D>false</use_2D>
+	</domain>
+	
+	<overall>
+		<max_time units="min">5000</max_time> 
+		<time_units>min</time_units>
+		<space_units>micron</space_units>
+	
+		<dt_diffusion units="min">0.01</dt_diffusion>
+		<dt_mechanics units="min">0.1</dt_mechanics>
+		<dt_phenotype units="min">6</dt_phenotype>	
+	</overall>
+	
+	<parallel>
+		<omp_num_threads>10</omp_num_threads>
+	</parallel> 
+	
+	<save>
+		<folder>output</folder>  
+
+		<full_data>
+			<interval units="min">100</interval>
+			<enable>true</enable>
+		</full_data>
+		
+		<SVG>
+			<interval units="min">30</interval>
+			<enable>true</enable>
+      <legend enabled="true">
+        <cell_phase>false</cell_phase>
+        <cell_type>true</cell_type>
+      </legend>
+      <plot_substrate enabled="true" limits="true">
+        <substrate>CCL21</substrate>
+        <min_conc>0.0</min_conc>
+        <max_conc>0.1</max_conc>
+      </plot_substrate>
+		</SVG>
+		
+		<legacy_data>
+			<enable>true</enable>
+		</legacy_data>
+	</save>
+	
+	<options>
+		<legacy_random_points_on_sphere_in_divide>false</legacy_random_points_on_sphere_in_divide>
+    <virtual_wall_at_domain_edge>true</virtual_wall_at_domain_edge>
+	</options>	
+
+	<microenvironment_setup>
+		<variable ID="0" name="oxygen" units="mmHg">
+        <physical_parameter_set>
+          <diffusion_coefficient units="micron^2/min">6000.0</diffusion_coefficient>
+          <decay_rate units="1/min">.1</decay_rate>
+        </physical_parameter_set>
+        <initial_condition units="mmHg">38.0</initial_condition>
+        <Dirichlet_boundary_condition enabled="True" units="mmHg">38.0</Dirichlet_boundary_condition>
+      </variable>
+
+    <variable ID="1" name="CCL21" units="dimensionless">
+        <physical_parameter_set>
+          <diffusion_coefficient units="micron^2/min">1000.0</diffusion_coefficient>
+          <decay_rate units="1/min">0.001</decay_rate>
+        </physical_parameter_set>
+        <initial_condition units="mmHg">0.0</initial_condition>
+        <Dirichlet_boundary_condition enabled="False" units="mmHg">0.0</Dirichlet_boundary_condition>
+        <Dirichlet_options>
+          <boundary_value ID="xmin" enabled="False">0.0</boundary_value>
+          <boundary_value ID="xmax" enabled="False">0.0</boundary_value>
+          <boundary_value ID="ymin" enabled="False">0.0</boundary_value>
+          <boundary_value ID="ymax" enabled="False">0.0</boundary_value>
+          <boundary_value ID="zmin" enabled="False">0.0</boundary_value>
+          <boundary_value ID="zmax" enabled="False">0.0</boundary_value>
+        </Dirichlet_options>
+      </variable>
+
+      <options>
+			<calculate_gradients>true</calculate_gradients>
+			<track_internalized_substrates_in_each_agent>true</track_internalized_substrates_in_each_agent>
+			 
+			<initial_condition enabled="false" type="matlab">
+				<filename>./config/initial.mat</filename>
+			</initial_condition>
+			 
+			<dirichlet_nodes enabled="false" type="matlab">
+				<filename>./config/dirichlet.mat</filename>
+			</dirichlet_nodes>
+		</options>
+	</microenvironment_setup>	
+	
+	<cell_definitions>
+		  <cell_definition ID="0" name="T0">
+        <phenotype>
+          <cycle code="5" name="live"> 
+            <phase_transition_rates units="1/min">
+              <rate start_index="0" end_index="0" fixed_duration="false">0</rate>
+            </phase_transition_rates>
+          </cycle>
+
+          <death>
+            <model code="100" name="apoptosis">
+              <death_rate units="1/min">0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">0</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+            <model code="101" name="necrosis">
+              <death_rate units="1/min">0.0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">0</duration>
+              <duration fixed_duration="true" index="1">86400</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+          </death>
+
+          <volume>
+            <total units="micron^3">2494</total>
+            <fluid_fraction units="dimensionless">0.75</fluid_fraction>
+            <nuclear units="micron^3">540</nuclear>
+            <fluid_change_rate units="1/min">0.05</fluid_change_rate>
+            <cytoplasmic_biomass_change_rate units="1/min">0.0045</cytoplasmic_biomass_change_rate>
+            <nuclear_biomass_change_rate units="1/min">0.0055</nuclear_biomass_change_rate>
+            <calcified_fraction units="dimensionless">0</calcified_fraction>
+            <calcification_rate units="1/min">0</calcification_rate>
+            <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+          </volume>
+
+          <mechanics>
+            <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
+            <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
+            <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+            <cell_adhesion_affinities>
+            </cell_adhesion_affinities>
+            <options>
+              <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
+              <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
+            </options>
+            <attachment_elastic_constant units="1/min">0.0</attachment_elastic_constant>
+            <attachment_rate units="1/min">0.0</attachment_rate>
+            <detachment_rate units="1/min">0.0</detachment_rate>
+          </mechanics>
+
+          <motility>
+            <speed units="micron/min">0</speed>
+            <persistence_time units="min">0</persistence_time>
+            <migration_bias units="dimensionless">0.0</migration_bias>
+            <options>
+              <enabled>false</enabled>
+              <use_2D>false</use_2D>
+            </options>
+          </motility>
+
+          <secretion>
+            <substrate name="CCL21">
+              <secretion_rate units="1/min">1000</secretion_rate>
+              <secretion_target units="substrate density">100</secretion_target>
+              <uptake_rate units="1/min">0.0</uptake_rate>
+              <net_export_rate units="total substrate/min">0</net_export_rate>
+            </substrate>
+          </secretion>
+
+			    <intracellular type="maboss">
+            <bnd_filename>config/differentiation/boolean_network/tcell_corral.bnd</bnd_filename>
+            <cfg_filename>config/differentiation/boolean_network/tcell_corral.cfg</cfg_filename>
+            <settings>
+              <intracellular_dt>6.0</intracellular_dt>
+              <time_stochasticity>0</time_stochasticity>
+              <scaling>30.0</scaling>
+              <inheritance global="False"/>
+              <initial_conditions>
+              </initial_conditions>
+            </settings>
+            <mapping>
+            <input intracellular_name="IL1_In" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="MHCII_b1" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="MHCII_b2" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="IL12_In" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="IL6_In" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="CD80" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="CD4" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="IL23_In" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+            <input intracellular_name="PIP2" physicell_name="contact with dendritic_cell">
+                <settings>
+                  <action>activation</action>
+                  <threshold>1.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+              <output intracellular_name="Treg" physicell_name="transform to Treg">
+                <settings>
+                  <action>activation</action>
+                  <value>1000000</value>
+                  <base_value>0</base_value>
+                </settings>
+              </output>
+              <output intracellular_name="Th1" physicell_name="transform to Th1">
+                <settings>
+                  <action>activation</action>
+                  <value>1000000</value>
+                  <base_value>0</base_value>
+                </settings>
+              </output>
+              <output intracellular_name="Th17" physicell_name="transform to Th17">
+                <settings>
+                  <action>activation</action>
+                  <value>1000000</value>
+                  <base_value>0</base_value>
+                </settings>
+              </output>
+            </mapping>
+          </intracellular>
+        </phenotype>
+        <custom_data>
+          <somedata conserved="false" description="" units="dimensionless">1.0</somedata>
+        </custom_data>
+      </cell_definition>
+
+      <cell_definition ID="1" name="Treg">
+        <phenotype>
+          <cycle code="5" name="live"> 
+            <phase_transition_rates units="1/min">
+              <rate start_index="0" end_index="0" fixed_duration="false">0</rate>
+            </phase_transition_rates>
+          </cycle>
+
+          <death>
+            <model code="100" name="apoptosis">
+              <death_rate units="1/min">0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">516</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+            <model code="101" name="necrosis">
+              <death_rate units="1/min">0.0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">0</duration>
+              <duration fixed_duration="true" index="1">86400</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+          </death>
+
+          <volume>
+            <total units="micron^3">2494</total>
+            <fluid_fraction units="dimensionless">0.75</fluid_fraction>
+            <nuclear units="micron^3">540</nuclear>
+            <fluid_change_rate units="1/min">0.05</fluid_change_rate>
+            <cytoplasmic_biomass_change_rate units="1/min">0.0045</cytoplasmic_biomass_change_rate>
+            <nuclear_biomass_change_rate units="1/min">0.0055</nuclear_biomass_change_rate>
+            <calcified_fraction units="dimensionless">0</calcified_fraction>
+            <calcification_rate units="1/min">0</calcification_rate>
+            <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+          </volume>
+
+          <mechanics>
+            <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
+            <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
+            <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+            <cell_adhesion_affinities>
+            </cell_adhesion_affinities>
+            <options>
+              <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
+              <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
+            </options>
+            <attachment_elastic_constant units="1/min">0.0</attachment_elastic_constant>
+            <attachment_rate units="1/min">0.0</attachment_rate>
+            <detachment_rate units="1/min">0.0</detachment_rate>
+          </mechanics>
+
+          <motility>
+            <speed units="micron/min">0.5</speed>
+            <persistence_time units="min">1</persistence_time>
+            <migration_bias units="dimensionless">0.5</migration_bias>
+            <options>
+              <enabled>true</enabled>
+              <use_2D>false</use_2D>
+            </options>
+          </motility>
+
+          <secretion>
+            <substrate name="CCL21">
+              <secretion_rate units="1/min">0</secretion_rate>
+              <secretion_target units="substrate density">0</secretion_target>
+              <uptake_rate units="1/min">0.0</uptake_rate>
+              <net_export_rate units="total substrate/min">0</net_export_rate>
+            </substrate>
+          </secretion>
+          </phenotype>
+        <custom_data>
+          <somedata conserved="false" description="" units="dimensionless">1.0</somedata>
+        </custom_data>
+      </cell_definition>
+
+      <cell_definition ID="2" name="Th1">
+        <phenotype>
+          <cycle code="5" name="live"> 
+            <phase_transition_rates units="1/min">
+              <rate start_index="0" end_index="0" fixed_duration="false">0</rate>
+            </phase_transition_rates>
+          </cycle>
+
+          <death>
+            <model code="100" name="apoptosis">
+              <death_rate units="1/min">0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">516</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+            <model code="101" name="necrosis">
+              <death_rate units="1/min">0.0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">0</duration>
+              <duration fixed_duration="true" index="1">86400</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+          </death>
+
+          <volume>
+            <total units="micron^3">2494</total>
+            <fluid_fraction units="dimensionless">0.75</fluid_fraction>
+            <nuclear units="micron^3">540</nuclear>
+            <fluid_change_rate units="1/min">0.05</fluid_change_rate>
+            <cytoplasmic_biomass_change_rate units="1/min">0.0045</cytoplasmic_biomass_change_rate>
+            <nuclear_biomass_change_rate units="1/min">0.0055</nuclear_biomass_change_rate>
+            <calcified_fraction units="dimensionless">0</calcified_fraction>
+            <calcification_rate units="1/min">0</calcification_rate>
+            <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+          </volume>
+
+          <mechanics>
+            <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
+            <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
+            <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+            <cell_adhesion_affinities>
+            </cell_adhesion_affinities>
+            <options>
+              <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
+              <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
+            </options>
+            <attachment_elastic_constant units="1/min">0.0</attachment_elastic_constant>
+            <attachment_rate units="1/min">0.0</attachment_rate>
+            <detachment_rate units="1/min">0.0</detachment_rate>
+          </mechanics>
+
+          <motility>
+            <speed units="micron/min">0.5</speed>
+            <persistence_time units="min">1</persistence_time>
+            <migration_bias units="dimensionless">0.5</migration_bias>
+            <options>
+              <enabled>false</enabled>
+              <use_2D>false</use_2D>
+              <chemotaxis>
+                <enabled>false</enabled>
+                <substrate>CCL21</substrate>
+                <direction>1</direction>
+              </chemotaxis>
+            </options>
+          </motility>
+
+          <secretion>
+            <substrate name="CCL21">
+              <secretion_rate units="1/min">0</secretion_rate>
+              <secretion_target units="substrate density">0</secretion_target>
+              <uptake_rate units="1/min">0.0</uptake_rate>
+              <net_export_rate units="total substrate/min">0</net_export_rate>
+            </substrate>
+          </secretion>
+          </phenotype>
+        <custom_data>
+          <somedata conserved="false" description="" units="dimensionless">1.0</somedata>
+        </custom_data>
+      </cell_definition>
+
+      <cell_definition ID="3" name="Th17">
+        <phenotype>
+          <cycle code="5" name="live"> 
+            <phase_transition_rates units="1/min">
+              <rate start_index="0" end_index="0" fixed_duration="false">0</rate>
+            </phase_transition_rates>
+          </cycle>
+
+          <death>
+            <model code="100" name="apoptosis">
+              <death_rate units="1/min">0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">516</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+            <model code="101" name="necrosis">
+              <death_rate units="1/min">0.0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">0</duration>
+              <duration fixed_duration="true" index="1">86400</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+          </death>
+
+          <volume>
+            <total units="micron^3">2494</total>
+            <fluid_fraction units="dimensionless">0.75</fluid_fraction>
+            <nuclear units="micron^3">540</nuclear>
+            <fluid_change_rate units="1/min">0.05</fluid_change_rate>
+            <cytoplasmic_biomass_change_rate units="1/min">0.0045</cytoplasmic_biomass_change_rate>
+            <nuclear_biomass_change_rate units="1/min">0.0055</nuclear_biomass_change_rate>
+            <calcified_fraction units="dimensionless">0</calcified_fraction>
+            <calcification_rate units="1/min">0</calcification_rate>
+            <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+          </volume>
+
+          <mechanics>
+            <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
+            <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
+            <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+            <cell_adhesion_affinities>
+            </cell_adhesion_affinities>
+            <options>
+              <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
+              <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
+            </options>
+            <attachment_elastic_constant units="1/min">0.0</attachment_elastic_constant>
+            <attachment_rate units="1/min">0.0</attachment_rate>
+            <detachment_rate units="1/min">0.0</detachment_rate>
+          </mechanics>
+
+          <motility>
+            <speed units="micron/min">0.5</speed>
+            <persistence_time units="min">1</persistence_time>
+            <migration_bias units="dimensionless">0.5</migration_bias>
+            <options>
+              <enabled>true</enabled>
+              <use_2D>false</use_2D>
+            </options>
+          </motility>
+
+          <secretion>
+            <substrate name="CCL21">
+              <secretion_rate units="1/min">0</secretion_rate>
+              <secretion_target units="substrate density">0</secretion_target>
+              <uptake_rate units="1/min">0.5</uptake_rate>
+              <net_export_rate units="total substrate/min">0</net_export_rate>
+            </substrate>
+          </secretion>
+          </phenotype>
+        <custom_data>
+          <somedata conserved="false" description="" units="dimensionless">1.0</somedata>
+        </custom_data>
+      </cell_definition>
+
+      <cell_definition ID="4" name="dendritic_cell">
+        <phenotype>
+          <cycle code="5" name="live"> 
+            <phase_transition_rates units="1/min">
+              <rate start_index="0" end_index="0" fixed_duration="false">0</rate>
+            </phase_transition_rates>
+          </cycle>
+
+          <death>
+            <model code="100" name="apoptosis">
+              <death_rate units="1/min">0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">516</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+            <model code="101" name="necrosis">
+              <death_rate units="1/min">0.0</death_rate>
+              <phase_durations units="min">
+                <duration fixed_duration="true" index="0">0</duration>
+              <duration fixed_duration="true" index="1">86400</duration>
+              </phase_durations>
+              <parameters>
+                <unlysed_fluid_change_rate units="1/min">0.05</unlysed_fluid_change_rate>
+                <lysed_fluid_change_rate units="1/min">0</lysed_fluid_change_rate>
+                <cytoplasmic_biomass_change_rate units="1/min">1.66667e-02</cytoplasmic_biomass_change_rate>
+                <nuclear_biomass_change_rate units="1/min">5.83333e-03</nuclear_biomass_change_rate>
+                <calcification_rate units="1/min">0</calcification_rate>
+                <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+              </parameters>
+            </model>
+          </death>
+
+          <volume>
+            <total units="micron^3">2494</total>
+            <fluid_fraction units="dimensionless">0.75</fluid_fraction>
+            <nuclear units="micron^3">540</nuclear>
+            <fluid_change_rate units="1/min">0.05</fluid_change_rate>
+            <cytoplasmic_biomass_change_rate units="1/min">0.0045</cytoplasmic_biomass_change_rate>
+            <nuclear_biomass_change_rate units="1/min">0.0055</nuclear_biomass_change_rate>
+            <calcified_fraction units="dimensionless">0</calcified_fraction>
+            <calcification_rate units="1/min">0</calcification_rate>
+            <relative_rupture_volume units="dimensionless">2.0</relative_rupture_volume>
+          </volume>
+
+          <mechanics>
+            <cell_cell_adhesion_strength units="micron/min">0.4</cell_cell_adhesion_strength>
+            <cell_cell_repulsion_strength units="micron/min">10.0</cell_cell_repulsion_strength>
+            <relative_maximum_adhesion_distance units="dimensionless">1.25</relative_maximum_adhesion_distance>
+            <cell_adhesion_affinities>
+            </cell_adhesion_affinities>
+            <options>
+              <set_relative_equilibrium_distance enabled="false" units="dimensionless">1.8</set_relative_equilibrium_distance>
+              <set_absolute_equilibrium_distance enabled="false" units="micron">15.12</set_absolute_equilibrium_distance>
+            </options>
+            <attachment_elastic_constant units="1/min">0.0</attachment_elastic_constant>
+            <attachment_rate units="1/min">0.0</attachment_rate>
+            <detachment_rate units="1/min">0.0</detachment_rate>
+          </mechanics>
+
+          <motility>
+            <speed units="micron/min">0.0</speed>
+            <persistence_time units="min">1</persistence_time>
+            <migration_bias units="dimensionless">0.0</migration_bias>
+            <options>
+              <enabled>true</enabled>
+              <use_2D>false</use_2D>
+              <chemotaxis>
+                <enabled>true</enabled>
+                <substrate>CCL21</substrate>
+                <direction>1</direction>
+              </chemotaxis>
+            </options>
+          </motility>
+
+          <secretion>
+            <substrate name="CCL21">
+              <secretion_rate units="1/min">0</secretion_rate>
+              <secretion_target units="substrate density">0</secretion_target>
+              <uptake_rate units="1/min">0.0</uptake_rate>
+              <net_export_rate units="total substrate/min">0</net_export_rate>
+            </substrate>
+          </secretion>
+
+          <intracellular type="maboss">
+            <bnd_filename>config/differentiation/boolean_network/dendritic_cells.bnd</bnd_filename>
+            <cfg_filename>config/differentiation/boolean_network/dendritic_cells.cfg</cfg_filename>
+            <settings>
+              <intracellular_dt>6.0</intracellular_dt>
+              <time_stochasticity>0</time_stochasticity>
+              <scaling>30.0</scaling>
+              <inheritance global="False"/>
+              <initial_conditions>
+              </initial_conditions>
+            </settings>
+            <mapping>
+              <input intracellular_name="CCR7" physicell_name="CCL21">
+                <settings>
+                  <action>activation</action>
+                  <threshold>20.0</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+              </input>
+              <input intracellular_name="Contact_2" physicell_name="contact with T0">
+                <settings>
+                  <action>activation</action>
+                  <threshold>0.8</threshold>
+                  <smoothing>0</smoothing>
+                </settings>
+            </input>
+              <output intracellular_name="Migration_2" physicell_name="chemotactic response to CCL21">
+                <settings>
+                  <action>activation</action>
+                  <value>1</value>
+                  <base_value>0</base_value>
+                </settings>
+              </output>
+              <output intracellular_name="Migration_2" physicell_name="migration bias">
+                <settings>
+                  <action>activation</action>
+                  <value>1</value>
+                  <base_value>0</base_value>
+                </settings>
+              </output>
+              <output intracellular_name="Migration_2" physicell_name="migration speed">
+                <settings>
+                  <action>activation</action>
+                  <value>0.8</value>
+                  <base_value>0</base_value>
+                </settings>
+              </output>
+            </mapping>
+          </intracellular>
+          
+        </phenotype>
+        <custom_data>
+          <somedata conserved="false" description="" units="dimensionless">1.0</somedata>
+        </custom_data>
+      </cell_definition>
+  </cell_definitions>
+	
+	<initial_conditions>
+		<cell_positions enabled="true" type="csv">
+			<folder>./config/differentiation</folder>
+			<filename>cells_3D.csv</filename>
+		</cell_positions>
+	</initial_conditions>	
+	
+	<user_parameters>
+    <random_seed description="" type="int" units="dimensionless">0</random_seed>
+    <linphonode_radius description="" type="double" units="micron">75.0</linphonode_radius>
+    <X_linfonode_center description="" type="double" units="micron">-200.0</X_linfonode_center>
+    <Y_linfonode_center description="" type="double" units="micron">200.0</Y_linfonode_center>
+    <dendritic_core_radius description="" type="double" units="micron">20.0</dendritic_core_radius>
+    <X_dendritic_center description="" type="double" units="micron">250.0</X_dendritic_center>
+    <Y_dendritic_center description="" type="double" units="micron">-250.0</Y_dendritic_center>
+    <!-- substrates parameters -->
+    <!-- motility parameters -->
+    <!-- visualization -->
+		<node_to_visualize type="string" units="" description="change the node to visualize in the plot tab when coloring cells by custom data value">Th1</node_to_visualize> <!-- insert the name of the node you want to visualize in paraview-->
+		<color_function type="int" units="" description="change the basic color function: 1 for cell type based color, 2 for node based color">1</color_function> 
+  </user_parameters>
+	
+</PhysiCell_settings>
