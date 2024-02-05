@@ -117,7 +117,7 @@ jobs:
       run: |
         make physiboss-tutorial
         python beta/setup_windows_dep.py
-        make
+        make static
         ldd .\\project.exe
     - name: Run PhysiBoSS tutorial
       run: |

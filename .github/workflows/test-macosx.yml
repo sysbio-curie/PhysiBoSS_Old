@@ -98,7 +98,7 @@ jobs:
       run: |
         make physiboss-tutorial
         make clean
-        make PHYSICELL_CPP=g++-11
+        make PHYSICELL_CPP=g++-11 static
         cp project project_macos13
 
     - name: Run PhysiBoSS tutorial
@@ -135,7 +135,7 @@ jobs:
     - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
-        make PHYSICELL_CPP=g++-11
+        make PHYSICELL_CPP=g++-11 static
         cp project project_macosm1
 
     - name: Run PhysiBoSS tutorial
