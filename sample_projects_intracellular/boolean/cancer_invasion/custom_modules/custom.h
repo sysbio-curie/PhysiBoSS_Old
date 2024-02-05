@@ -80,12 +80,7 @@ void setup_tissue( void );
 // set up the BioFVM microenvironment 
 void setup_microenvironment( void ); 
 
-// custom pathology coloring function 
-
-std::vector<std::string> my_coloring_function( Cell* );
-
 // custom functions can go here 
-
 
 void phenotype_function( Cell* pCell, Phenotype& phenotype, double dt );
 void custom_function( Cell* pCell, Phenotype& phenotype , double dt );
