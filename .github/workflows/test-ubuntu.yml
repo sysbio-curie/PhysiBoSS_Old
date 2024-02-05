@@ -104,7 +104,7 @@ jobs:
         ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
         
     - name: Save artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with: 
         name: tutorial_binary_linux
         path: project
@@ -123,8 +123,12 @@ jobs:
         make static STATIC_OPENMP=/usr/lib/gcc/x86_64-linux-gnu/11/libgomp.a
         ldd invasion_model
         
+    - name: Run PhysiBoSS cancer invasion
+      run: |
+        ./invasion_model config/PhysiCell_settings_2D.xml
+        
     - name: Save artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with: 
         name: tutorial_binary_linux
         path: invasion_model
