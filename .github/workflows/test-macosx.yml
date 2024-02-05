@@ -7,7 +7,7 @@ on:
 jobs:
   build_virus_macrophage:
 
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
         ./virus-sample
 
   build_physimess:
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
 
   build_physiboss_cell_lines:
 
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
   
   build_spheroid_TNF_model:
 
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -86,7 +86,7 @@ jobs:
         ./spheroid_TNF_model
   build_physiboss_tutorial_macos:
 
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -130,7 +130,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Install dependencies
-      run : brew install gcc@11
+      run : brew reinstall -sv gcc@11
       
     - name: Build PhysiBoSS tutorial
       run: |
@@ -161,7 +161,7 @@ jobs:
         path: project
         
   build_physiboss_tutorial_universal:
-    runs-on: macos-13
+    runs-on: macos-latest
     needs: [build_physiboss_tutorial_m1, build_physiboss_tutorial_macos]
 
     steps:
