@@ -7,7 +7,7 @@ on:
 jobs:
   build_virus_macrophage:
 
-    runs-on: macos-11
+    runs-on: macos-13
 
     steps:
     - uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
         ./virus-sample
 
   build_physimess:
-    runs-on: macos-11
+    runs-on: macos-13
 
     steps:
     - uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
 
   build_physiboss_cell_lines:
 
-    runs-on: macos-11
+    runs-on: macos-13
 
     steps:
     - uses: actions/checkout@v4
@@ -64,10 +64,10 @@ jobs:
     - name: Run PhysiBoSS cell lines project
       run: |
         ./PhysiBoSS_Cell_Lines
-        
+  
   build_spheroid_TNF_model:
 
-    runs-on: macos-11
+    runs-on: macos-13
 
     steps:
     - uses: actions/checkout@v4
@@ -84,3 +84,123 @@ jobs:
     - name: Run PhysiBoSS TNF project
       run: |
         ./spheroid_TNF_model
+  build_physiboss_tutorial_macos:
+
+    runs-on: macos-13
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run : brew install gcc@11
+      
+    - name: Build PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        make clean
+        make PHYSICELL_CPP=g++-11
+        cp project project_macos13
+
+    - name: Run PhysiBoSS tutorial
+      run: |
+        ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+    
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos13
+        key: ${{ runner.os }}-macos13-project-${{ github.run_id }}
+    
+    - name: Look at the generated binary
+      run: |
+        otool -L project
+        lipo -archs project      
+    
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_macosx_macos13
+        path: project
+
+  build_physiboss_tutorial_m1:
+    runs-on: flyci-macos-large-latest-m1
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run : brew install gcc@11
+      
+    - name: Build PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        make PHYSICELL_CPP=g++-11
+        cp project project_macosm1
+
+    - name: Run PhysiBoSS tutorial
+      run: |
+        ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+        
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1
+        key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
+     
+    - name: Look at the generated binary
+      run: |
+        otool -L project
+        lipo -archs project 
+      
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_macos_m1
+        path: project
+        
+  build_physiboss_tutorial_universal:
+    runs-on: macos-13
+    needs: [build_physiboss_tutorial_m1, build_physiboss_tutorial_macos]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /opt/actions-runner/_work/PhysiBoSSv2/PhysiBoSSv2/project_macosm1
+        key: ${{ runner.os }}-macosm1-project-${{ github.run_id }}
+    
+    - name: Caching produced project binary 
+      uses: actions/cache@v3
+      with:
+        path: |
+          /Users/runner/work/PhysiBoSSv2/PhysiBoSSv2/project_macos13
+        key: ${{ runner.os }}-macos13-project-${{ github.run_id }}
+    
+    - name: Creating universal binary
+      run: | 
+        lipo -create -output project_macos_universal project_macos13 project_macosm1
+        lipo -archs project_macos_universal
+        otool -L project_macos_universal
+
+    - name: Creating universal binary
+      run: |
+        lipo -archs project_macos_universal
+        otool -L project_macos_universal
+        
+    - name: Run PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        ./project_macos_universal config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_macosx_universal
+        path: project_macos_universal
+        
+    

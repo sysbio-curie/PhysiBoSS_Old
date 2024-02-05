@@ -37,7 +37,6 @@ jobs:
     - name: Build PhysiMeSS project
       run: |
         make physimess-sample
-        make clean
         make
         
     - name: Run PhysiMeSS project
@@ -46,7 +45,7 @@ jobs:
         ./project config/Fibre_Initialisation/mymodel_initialisation.xml
         ./project config/Cell_Fibre_Mechanics/mymodel_rotating.xml
         
-  build_physiboss_examples:
+  build_physiboss_cell_lines:
 
     runs-on: ubuntu-latest
 
@@ -85,3 +84,30 @@ jobs:
     - name: Run PhysiBoSS TNF project
       run: |
         ./spheroid_TNF_model
+        
+         
+  build_physiboss_tutorial:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install dependencies
+      run: sudo apt-get install flex bison
+      
+    - name: Build PhysiBoSS tutorial
+      run: |
+        make physiboss-tutorial
+        make static STATIC_OPENMP=/usr/lib/gcc/x86_64-linux-gnu/11/libgomp.a
+        ldd project
+        
+    - name: Run PhysiBoSS tutorial
+      run: |
+        ./project config/cell_cycle/PhysiCell_settings_cell_cycle_2D.xml
+        
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+        name: tutorial_binary_linux
+        path: project
