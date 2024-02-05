@@ -130,12 +130,12 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Install dependencies
-      run : brew reinstall -sv gcc@11
+      run : brew install gcc@11
       
     - name: Build PhysiBoSS tutorial
       run: |
         make physiboss-tutorial
-        make PHYSICELL_CPP=g++-11 static
+        make PHYSICELL_CPP=g++-11 EXTRA_FLAGS=-Wl,-ld_classic static
         cp project project_macosm1
 
     - name: Run PhysiBoSS tutorial
