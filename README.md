@@ -1,5 +1,7 @@
 # PhysiCell: an Open Source Physics-Based Cell Simulator for 3-D Multicellular Systems
 
+⚠️ This is an archive version. For the latest version, please visit https://github.com/PhysiBoSS/PhysiBoSS ⚠️
+
 **Version:** 1.11.0
 
 **Release date:** 20 March 2023
